@@ -22,6 +22,9 @@ pygtk.require('2.0')
 import gtk
 import os
 
+#Null string to represent the absence of a subcategory in any of the main categories
+NULL_CATEGORY_STRING = '0000000'
+
 ##default path for the open/save dialogs
 DEFAULT_FILE_PATH = os.getcwd()
 
