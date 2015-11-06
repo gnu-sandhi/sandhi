@@ -92,9 +92,9 @@ class MainWindow(gtk.Window):
 		self.flow_graph_vpaned = gtk.VPaned()
 		#flow_graph_box.pack_start(self.scrolled_window)
 		self.flow_graph_vpaned.pack1(self.notebook)
-		self.hpaned.pack1(self.flow_graph_vpaned)
+		self.hpaned.pack2(self.flow_graph_vpaned, False, False)
 		self.btwin = BlockTreeWindow(platform, self.get_flow_graph);
-		self.hpaned.pack2(self.btwin, False) #dont allow resize
+		self.hpaned.pack1(self.btwin, False, True) #dont allow resize
 		#create the reports window
 		self.text_display = TextDisplay()
 		#house the reports in a scrolled window
