@@ -266,6 +266,7 @@ add_subdirectory(gr-controls)
 add_subdirectory(gr-sbhs)
 add_subdirectory(gr-serial)
 add_subdirectory(gr-input)
+add_subdirectory(gr-calculation)
 
 #finalize cpack after subdirs processed
 include(GrPackage)
