@@ -23,16 +23,38 @@ include(GrPython)
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    DESTINATION ${GR_PYTHON_DIR}/gnuradio/input
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/sandhi_plot
     COMPONENT "input_python"
 )
 
 GR_PYTHON_INSTALL(
     FILES
-    Calculator.py
-    DESTINATION ${GR_PYTHON_DIR}/gnuradio/input
+    Bode.py
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/sandhi_plot
     COMPONENT "input_python"
 )
+
+GR_PYTHON_INSTALL(
+    FILES
+    plzr_plot.py
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/sandhi_plot
+    COMPONENT "input_python"
+)
+
+GR_PYTHON_INSTALL(
+    FILES
+    plot_sink.py
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/sandhi_plot
+    COMPONENT "input_python"
+)
+
+GR_PYTHON_INSTALL(
+    FILES
+    matplotsink.py
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/sandhi_plot
+    COMPONENT "input_python"
+)
+    
 
 
 
