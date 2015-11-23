@@ -49,7 +49,7 @@ if(ENABLE_PYTHON)
     add_subdirectory(grc)
 endif(ENABLE_PYTHON)
 #add_subdirectory(examples)
-add_subdirectory(doc)
+#add_subdirectory(doc)
 
 
 endif(ENABLE_GR_CALCULATION)
