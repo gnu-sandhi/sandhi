@@ -4,6 +4,7 @@ import unittest
 from PMC import *
 from foo_bar import *
 
+
 class TestBasicTypes(unittest.TestCase):
 
     def test_make_a_foo_bar(self):

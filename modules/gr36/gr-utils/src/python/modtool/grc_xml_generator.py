@@ -27,18 +27,21 @@ try:
 except ImportError:
     LXML_IMPORTED = False
 
+
 class GRCXMLGenerator(object):
     """ Create and write the XML bindings for a GRC block. """
+
     def __init__(self, modname=None, blockname=None, doc=None, params=None, iosig=None):
         """docstring for __init__"""
-        params_list = ['$'+s['key'] for s in params if s['in_constructor']]
+        params_list = ['$' + s['key'] for s in params if s['in_constructor']]
         # Can't make a dict 'cause order matters
         self._header = (('name', blockname.replace('_', ' ').capitalize()),
                         ('key', '%s_%s' % (modname, blockname)),
                         ('category', modname.upper()),
                         ('import', 'import %s' % modname),
-                        ('make', '%s.%s(%s)' % (modname, blockname, ', '.join(params_list)))
-                       )
+                        ('make', '%s.%s(%s)' %
+                         (modname, blockname, ', '.join(params_list)))
+                        )
         self.params = params
         self.iosig = iosig
         self.doc = doc
@@ -51,9 +54,9 @@ class GRCXMLGenerator(object):
     def _lxml_prettyprint(self):
         """ XML pretty printer using lxml """
         return lxml.etree.tostring(
-                   lxml.etree.fromstring(ET.tostring(self.root, encoding="UTF-8")),
-                   pretty_print=True
-               )
+            lxml.etree.fromstring(ET.tostring(self.root, encoding="UTF-8")),
+            pretty_print=True
+        )
 
     def _manual_prettyprint(self):
         """ XML pretty printer using xml_indent """
@@ -78,7 +81,8 @@ class GRCXMLGenerator(object):
             if iosig[inout]['max_ports'] == '0':
                 continue
             for i in range(len(iosig[inout]['type'])):
-                s_tag = ET.SubElement(root, {'in': 'sink', 'out': 'source'}[inout])
+                s_tag = ET.SubElement(
+                    root, {'in': 'sink', 'out': 'source'}[inout])
                 ET.SubElement(s_tag, 'name').text = inout
                 ET.SubElement(s_tag, 'type').text = iosig[inout]['type'][i]
                 if iosig[inout]['vlen'][i] != '1':
@@ -86,13 +90,14 @@ class GRCXMLGenerator(object):
                     if is_number(vlen):
                         ET.SubElement(s_tag, 'vlen').text = vlen
                     else:
-                        ET.SubElement(s_tag, 'vlen').text = '$'+vlen
-                if i == len(iosig[inout]['type'])-1:
+                        ET.SubElement(s_tag, 'vlen').text = '$' + vlen
+                if i == len(iosig[inout]['type']) - 1:
                     if not is_number(iosig[inout]['max_ports']):
-                        ET.SubElement(s_tag, 'nports').text = iosig[inout]['max_ports']
+                        ET.SubElement(s_tag, 'nports').text = iosig[
+                            inout]['max_ports']
                     elif len(iosig[inout]['type']) < int(iosig[inout]['max_ports']):
                         ET.SubElement(s_tag, 'nports').text = str(int(iosig[inout]['max_ports']) -
-                                                                  len(iosig[inout]['type'])+1)
+                                                                  len(iosig[inout]['type']) + 1)
         if self.doc is not None:
             ET.SubElement(root, 'doc').text = self.doc
         self.root = root
@@ -101,4 +106,3 @@ class GRCXMLGenerator(object):
         """ Write the XML file """
         self.make_xml()
         open(filename, 'w').write(self._prettyprint())
-

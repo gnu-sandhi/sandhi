@@ -24,12 +24,13 @@ import time
 
 from gnuradio import gr, gr_unittest
 
+
 class test_probe_signal (gr_unittest.TestCase):
 
-    def setUp (self):
+    def setUp(self):
         self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
@@ -50,7 +51,7 @@ class test_probe_signal (gr_unittest.TestCase):
 
         vector_length = 10
         repeats = 10
-        value = [0.5+i for i in range(0, vector_length)]
+        value = [0.5 + i for i in range(0, vector_length)]
         src_data = value * repeats
 
         src = gr.vector_source_f(src_data)

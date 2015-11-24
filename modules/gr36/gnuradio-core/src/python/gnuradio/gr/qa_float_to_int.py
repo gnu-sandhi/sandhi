@@ -22,12 +22,13 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_float_to_int (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
@@ -47,9 +48,9 @@ class test_float_to_int (gr_unittest.TestCase):
 
     def test_002(self):
 
-        src_data = ( 2147483647,  2147483648,  2200000000,
+        src_data = (2147483647,  2147483648,  2200000000,
                     -2147483648, -2147483649, -2200000000)
-        expected_result = [ 2147483647,  2147483647,  2147483647,
+        expected_result = [2147483647,  2147483647,  2147483647,
                            -2147483647, -2147483647, -2147483647]
         src = gr.vector_source_f(src_data)
         op = gr.float_to_int()
@@ -61,13 +62,12 @@ class test_float_to_int (gr_unittest.TestCase):
 
         self.assertEqual(expected_result, result_data)
 
-
     def test_003(self):
 
         scale = 2
         vlen = 3
         src_data = (0.0, 1.1, 2.2, 3.3, 4.4, 5.5, -1.1, -2.2, -3.3)
-        expected_result = [0, 2, 4, 7, 9, 11, -2, -4, -7,]
+        expected_result = [0, 2, 4, 7, 9, 11, -2, -4, -7, ]
         src = gr.vector_source_f(src_data)
         s2v = gr.stream_to_vector(gr.sizeof_float, vlen)
         op = gr.float_to_int(vlen, scale)
@@ -82,4 +82,3 @@ class test_float_to_int (gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_float_to_int, "test_float_to_int.xml")
-

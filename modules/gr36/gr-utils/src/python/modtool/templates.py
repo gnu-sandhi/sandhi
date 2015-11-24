@@ -510,7 +510,7 @@ GR_SWIG_BLOCK_MAGIC2($modname, $blockname);
 #end if
 """
 
-## Old stuff
+# Old stuff
 # C++ file of a GR block
 Templates['block_cpp36'] = '''/* -*- c++ -*- */
 ${str_to_fancyc_comment($license)}
@@ -715,4 +715,3 @@ add_executable($basename $filename)
 target_link_libraries($basename gnuradio-$modname \${Boost_LIBRARIES})
 GR_ADD_TEST($basename $basename)
 """
-

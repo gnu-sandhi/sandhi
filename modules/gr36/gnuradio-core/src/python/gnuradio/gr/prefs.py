@@ -33,8 +33,10 @@ import glob
 def _user_prefs_filename():
     return os.path.expanduser('~/.gnuradio/config.conf')
 
+
 def _sys_prefs_dirname():
     return gsp.prefsdir()
+
 
 def _bool(x):
     """
@@ -53,6 +55,7 @@ class _prefs(_prefs_base):
     for SWIG directors.  This allows C++ code to magically and transparently
     invoke the methods in this python class.
     """
+
     def __init__(self):
         _prefs_base.__init__(self)
         self.cp = ConfigParser.RawConfigParser()
@@ -70,7 +73,7 @@ class _prefs(_prefs_base):
     def _read_files(self):
         filenames = self._sys_prefs_filenames()
         filenames.append(_user_prefs_filename())
-        #print "filenames: ", filenames
+        # print "filenames: ", filenames
         self.cp.read(filenames)
 
     # ----------------------------------------------------------------
@@ -119,6 +122,7 @@ if os.getenv("GR_DONT_LOAD_PREFS", None) is None:
 
 
 _prefs_base.set_singleton(_prefs_db)    # tell C++ what instance to use
+
 
 def prefs():
     """

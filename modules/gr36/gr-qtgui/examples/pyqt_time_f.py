@@ -31,7 +31,9 @@ except ImportError:
     print "Error: Program requires PyQt4 and gr-qtgui."
     sys.exit(1)
 
+
 class dialog_box(QtGui.QWidget):
+
     def __init__(self, display, control):
         QtGui.QWidget.__init__(self, None)
         self.setWindowTitle('PyQt Test GUI')
@@ -42,7 +44,9 @@ class dialog_box(QtGui.QWidget):
 
         self.resize(800, 500)
 
+
 class control_box(QtGui.QWidget):
+
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setWindowTitle('Control Panel')
@@ -65,14 +69,12 @@ class control_box(QtGui.QWidget):
         self.connect(self.amp1Edit, QtCore.SIGNAL("editingFinished()"),
                      self.amp1EditText)
 
-
         # Control the second signal
         self.freq2Edit = QtGui.QLineEdit(self)
         self.freq2Edit.setMinimumWidth(100)
         self.layout.addRow("Signal 2 Frequency:", self.freq2Edit)
         self.connect(self.freq2Edit, QtCore.SIGNAL("editingFinished()"),
                      self.freq2EditText)
-
 
         self.amp2Edit = QtGui.QLineEdit(self)
         self.amp2Edit.setMinimumWidth(100)
@@ -89,13 +91,17 @@ class control_box(QtGui.QWidget):
 
     def attach_signal1(self, signal):
         self.signal1 = signal
-        self.freq1Edit.setText(QtCore.QString("%1").arg(self.signal1.frequency()))
-        self.amp1Edit.setText(QtCore.QString("%1").arg(self.signal1.amplitude()))
+        self.freq1Edit.setText(QtCore.QString(
+            "%1").arg(self.signal1.frequency()))
+        self.amp1Edit.setText(QtCore.QString(
+            "%1").arg(self.signal1.amplitude()))
 
     def attach_signal2(self, signal):
         self.signal2 = signal
-        self.freq2Edit.setText(QtCore.QString("%1").arg(self.signal2.frequency()))
-        self.amp2Edit.setText(QtCore.QString("%1").arg(self.signal2.amplitude()))
+        self.freq2Edit.setText(QtCore.QString(
+            "%1").arg(self.signal2.frequency()))
+        self.amp2Edit.setText(QtCore.QString(
+            "%1").arg(self.signal2.amplitude()))
 
     def freq1EditText(self):
         try:
@@ -110,7 +116,6 @@ class control_box(QtGui.QWidget):
             self.signal1.set_amplitude(newamp)
         except ValueError:
             print "Bad amplitude value entered"
-
 
     def freq2EditText(self):
         try:
@@ -128,6 +133,7 @@ class control_box(QtGui.QWidget):
 
 
 class my_top_block(gr.top_block):
+
     def __init__(self):
         gr.top_block.__init__(self)
 
@@ -141,17 +147,17 @@ class my_top_block(gr.top_block):
 
         src1 = gr.sig_source_f(Rs, gr.GR_SIN_WAVE, f1, 0.1, 0)
         src2 = gr.sig_source_f(Rs, gr.GR_SIN_WAVE, f2, 0.1, 0)
-        src  = gr.add_ff()
-        thr = gr.throttle(gr.sizeof_float, 100*npts)
+        src = gr.add_ff()
+        thr = gr.throttle(gr.sizeof_float, 100 * npts)
         noise = gr.noise_source_f(gr.GR_GAUSSIAN, 0.001)
         add = gr.add_ff()
         self.snk1 = qtgui.time_sink_f(npts, Rs,
                                       "Complex Time Example", 3)
 
-        self.connect(src1, (src,0))
-        self.connect(src2, (src,1))
-        self.connect(src, thr, (add,0))
-        self.connect(noise, (add,1))
+        self.connect(src1, (src, 0))
+        self.connect(src2, (src, 1))
+        self.connect(src, thr, (add, 0))
+        self.connect(noise, (add, 1))
         self.connect(add, self.snk1)
         self.connect(src1, (self.snk1, 1))
         self.connect(src2, (self.snk1, 2))
@@ -161,7 +167,7 @@ class my_top_block(gr.top_block):
         self.ctrl_win.attach_signal2(src2)
 
         # Get the reference pointer to the SpectrumDisplayForm QWidget
-        pyQt  = self.snk1.pyqwidget()
+        pyQt = self.snk1.pyqwidget()
 
         # Wrap the pointer as a PyQt SIP object
         # This can now be manipulated as a PyQt4.QtGui.QWidget
@@ -177,13 +183,12 @@ class my_top_block(gr.top_block):
         # Can also set the color of a curve
         #self.snk1.set_color(5, "blue")
 
-        #pyWin.show()
+        # pyWin.show()
         self.main_box = dialog_box(pyWin, self.ctrl_win)
         self.main_box.show()
 
 if __name__ == "__main__":
-    tb = my_top_block();
+    tb = my_top_block()
     tb.start()
     tb.qapp.exec_()
     tb.stop()
-

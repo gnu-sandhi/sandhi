@@ -94,8 +94,8 @@ class Base(object):
         for cls in self.mem_classes:
             if cls.can_parse(mem):
                 return cls
-        raise StandardError(("Did not find a class for object '%s'." \
-                                 % (mem.get_name())))
+        raise StandardError(("Did not find a class for object '%s'."
+                             % (mem.get_name())))
 
     def convert_mem(self, mem):
         try:

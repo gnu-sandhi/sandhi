@@ -23,6 +23,7 @@
 from gnuradio import gr, gr_unittest
 import blocks_swig as blocks
 
+
 class test_peak_detector2(gr_unittest.TestCase):
 
     def setUp(self):
@@ -39,7 +40,6 @@ class test_peak_detector2(gr_unittest.TestCase):
 
         expected_result = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-
 
         src = gr.vector_source_f(data, False)
         regen = blocks.peak_detector2_fb()

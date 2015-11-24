@@ -6,11 +6,13 @@ from gras import TestUtils
 import numpy
 import time
 
+
 class test_stream_selector(unittest.TestCase):
 
     def test_stream_selector_simple(self):
-        ss = gras.make('/grex/stream_selector', numpy.dtype(numpy.float32).itemsize)
-        ss.set_paths([1, 0]) #in[0] -> out[1], in[1] -> out[0]
+        ss = gras.make('/grex/stream_selector',
+                       numpy.dtype(numpy.float32).itemsize)
+        ss.set_paths([1, 0])  # in[0] -> out[1], in[1] -> out[0]
 
         src0 = TestUtils.VectorSource(numpy.float32, [1, 2, 3, 4])
         src1 = TestUtils.VectorSource(numpy.float32, [5, 6, 7, 8])
@@ -29,9 +31,9 @@ class test_stream_selector(unittest.TestCase):
         self.assertEqual((1, 2, 3, 4), dst1.data())
         self.assertEqual((5, 6, 7, 8), dst0.data())
 
-    #TODO test non forwarding inputs
-    #TODO test tag propagation
-    #TODO test live change
+    # TODO test non forwarding inputs
+    # TODO test tag propagation
+    # TODO test live change
 
 if __name__ == '__main__':
     unittest.main()

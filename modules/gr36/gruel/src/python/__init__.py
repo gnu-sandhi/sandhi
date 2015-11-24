@@ -25,5 +25,4 @@
 The GNU Radio Utility Etcetera Library.
 '''
 
-import pmt;
-
+import pmt

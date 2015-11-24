@@ -31,7 +31,8 @@ if style == 'auto' or style == 'gl':
         from waterfallsink_gl import waterfall_sink_f, waterfall_sink_c
     except ImportError:
         if style == 'gl':
-            raise RuntimeError("Unable to import OpenGL.  Are Python wrappers for OpenGL installed?")
+            raise RuntimeError(
+                "Unable to import OpenGL.  Are Python wrappers for OpenGL installed?")
         else:
             # Fall backto non-gl sinks
             from waterfallsink_nongl import waterfall_sink_f, waterfall_sink_c

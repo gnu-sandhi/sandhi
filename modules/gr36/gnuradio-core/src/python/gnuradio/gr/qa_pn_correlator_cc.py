@@ -22,10 +22,11 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_pn_correlator_cc(gr_unittest.TestCase):
 
     def setUp(self):
-        self.tb = gr.top_block ()
+        self.tb = gr.top_block()
 
     def tearDown(self):
         self.tb = None
@@ -35,16 +36,16 @@ class test_pn_correlator_cc(gr_unittest.TestCase):
 
     def test_001_correlate(self):
         degree = 10
-        length = 2**degree-1
+        length = 2**degree - 1
         src = gr.glfsr_source_f(degree)
-        head = gr.head(gr.sizeof_float, length*length)
+        head = gr.head(gr.sizeof_float, length * length)
         f2c = gr.float_to_complex()
         corr = gr.pn_correlator_cc(degree)
         dst = gr.vector_sink_c()
         self.tb.connect(src, head, f2c, corr, dst)
         self.tb.run()
         data = dst.data()
-        self.assertEqual(data[-1], (1.0+0j))
+        self.assertEqual(data[-1], (1.0 + 0j))
 
 if __name__ == '__main__':
     gr_unittest.run(test_pn_correlator_cc, "test_pn_correlator_cc.xml")

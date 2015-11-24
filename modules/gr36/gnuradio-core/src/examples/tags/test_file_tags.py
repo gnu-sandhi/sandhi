@@ -29,9 +29,10 @@ except ImportError:
     print "Error: Program requires scipy (see: www.scipy.org)."
     sys.exit(1)
 
+
 def main():
     data = scipy.arange(0, 32000, 1).tolist()
-    trig = 100*[0,] + 100*[1,]
+    trig = 100 * [0, ] + 100 * [1, ]
 
     src = gr.vector_source_s(data, True)
     trigger = gr.vector_source_s(trig, True)
@@ -51,5 +52,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

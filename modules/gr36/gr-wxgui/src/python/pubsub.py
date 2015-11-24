@@ -26,11 +26,13 @@ Abstract GNU Radio publisher/subscriber interface
 This is a proof of concept implementation, will likely change significantly.
 """
 
+
 class pubsub(dict):
+
     def __init__(self):
-        self._publishers = { }
-        self._subscribers = { }
-        self._proxies = { }
+        self._publishers = {}
+        self._subscribers = {}
+        self._proxies = {}
 
     def __missing__(self, key, value=None):
         dict.__setitem__(self, key, value)
@@ -52,7 +54,8 @@ class pubsub(dict):
             sub(val)
 
     def __getitem__(self, key):
-        if not self.has_key(key): self.__missing__(key)
+        if not self.has_key(key):
+            self.__missing__(key)
         if self._proxies[key] is not None:
             (p, pkey) = self._proxies[key]
             return p[pkey]
@@ -62,7 +65,8 @@ class pubsub(dict):
             return dict.__getitem__(self, key)
 
     def publish(self, key, publisher):
-        if not self.has_key(key): self.__missing__(key)
+        if not self.has_key(key):
+            self.__missing__(key)
         if self._proxies[key] is not None:
             (p, pkey) = self._proxies[key]
             p.publish(pkey, publisher)
@@ -70,7 +74,8 @@ class pubsub(dict):
             self._publishers[key] = publisher
 
     def subscribe(self, key, subscriber):
-        if not self.has_key(key): self.__missing__(key)
+        if not self.has_key(key):
+            self.__missing__(key)
         if self._proxies[key] is not None:
             (p, pkey) = self._proxies[key]
             p.subscribe(pkey, subscriber)
@@ -92,8 +97,10 @@ class pubsub(dict):
             self._subscribers[key].remove(subscriber)
 
     def proxy(self, key, p, pkey=None):
-        if not self.has_key(key): self.__missing__(key)
-        if pkey is None: pkey = key
+        if not self.has_key(key):
+            self.__missing__(key)
+        if pkey is None:
+            pkey = key
         self._proxies[key] = (p, pkey)
 
     def unproxy(self, key):
@@ -115,29 +122,31 @@ if __name__ == "__main__":
 
     # The second is a class member function
     class subber(object):
+
         def __init__(self, param):
             self._param = param
+
         def printer(self, x):
             print self._param, `x`
     s = subber('param')
     o.subscribe('foo', s.printer)
 
     # The third is a lambda function
-    o.subscribe('foo', lambda x: sys.stdout.write('val='+`x`+'\n'))
+    o.subscribe('foo', lambda x: sys.stdout.write('val=' + `x`+'\n'))
 
     # Update key 'foo', will notify subscribers
     print "Updating 'foo' with three subscribers:"
-    o['foo'] = 'bar';
+    o['foo'] = 'bar'
 
     # Remove first subscriber
     o.unsubscribe('foo', print_len)
 
     # Update now will only trigger second and third subscriber
     print "Updating 'foo' after removing a subscriber:"
-    o['foo'] = 'bar2';
+    o['foo'] = 'bar2'
 
     # Publish a key as a function, in this case, a lambda function
-    o.publish('baz', lambda : 42)
+    o.publish('baz', lambda: 42)
     print "Published value of 'baz':", o['baz']
 
     # Unpublish the key

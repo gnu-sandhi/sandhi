@@ -26,6 +26,7 @@ import os
 
 
 class pipeline(gr.hier_block2):
+
     def __init__(self, nstages, ntaps=256):
         """
         Create a pipeline of nstages of gr.fir_filter_fff's connected in serial
@@ -34,7 +35,7 @@ class pipeline(gr.hier_block2):
         gr.hier_block2.__init__(self, "pipeline",
                                 gr.io_signature(1, 1, gr.sizeof_float),
                                 gr.io_signature(0, 0, 0))
-        taps = ntaps*[1.0/ntaps]
+        taps = ntaps * [1.0 / ntaps]
         upstream = self
         for i in range(nstages):
             op = gr.fir_filter_fff(1, taps)
@@ -45,11 +46,12 @@ class pipeline(gr.hier_block2):
 
 
 class top(gr.top_block):
+
     def __init__(self):
         gr.top_block.__init__(self)
 
         default_nsamples = 10e6
-        parser=OptionParser(option_class=eng_option)
+        parser = OptionParser(option_class=eng_option)
         parser.add_option("-p", "--npipelines", type="intx", default=1,
                           metavar="NPIPES", help="the number of pipelines to create (default=%default)")
         parser.add_option("-s", "--nstages", type="intx", default=1,
@@ -87,23 +89,23 @@ def time_it(tb):
     start = os.times()
     tb.run()
     stop = os.times()
-    delta = map((lambda a, b: a-b), stop, start)
+    delta = map((lambda a, b: a - b), stop, start)
     user, sys, childrens_user, childrens_sys, real = delta
     total_user = user + childrens_user
-    total_sys  = sys + childrens_sys
+    total_sys = sys + childrens_sys
     if tb.machine_readable:
         print "%3d %3d %.3e %7.3f %7.3f %7.3f %7.3f %.6e %.3e" % (
-            tb.npipes, tb.nstages, tb.nsamples, real, total_user, total_sys, (total_user+total_sys)/real, tb.flop, tb.flop/real)
+            tb.npipes, tb.nstages, tb.nsamples, real, total_user, total_sys, (total_user + total_sys) / real, tb.flop, tb.flop / real)
     else:
-        print "npipes           %7d"   % (tb.npipes,)
-        print "nstages          %7d"   % (tb.nstages,)
-        print "nsamples         %s"    % (eng_notation.num_to_str(tb.nsamples),)
+        print "npipes           %7d" % (tb.npipes,)
+        print "nstages          %7d" % (tb.nstages,)
+        print "nsamples         %s" % (eng_notation.num_to_str(tb.nsamples),)
         print "real             %7.3f" % (real,)
         print "user             %7.3f" % (total_user,)
         print "sys              %7.3f" % (total_sys,)
-        print "(user+sys)/real  %7.3f" % ((total_user + total_sys)/real,)
-        print "pseudo_flop      %s"    % (eng_notation.num_to_str(tb.flop),)
-        print "pseudo_flop/real %s"    % (eng_notation.num_to_str(tb.flop/real),)
+        print "(user+sys)/real  %7.3f" % ((total_user + total_sys) / real,)
+        print "pseudo_flop      %s" % (eng_notation.num_to_str(tb.flop),)
+        print "pseudo_flop/real %s" % (eng_notation.num_to_str(tb.flop / real),)
 
 
 if __name__ == "__main__":
@@ -112,7 +114,3 @@ if __name__ == "__main__":
         time_it(tb)
     except KeyboardInterrupt:
         raise SystemExit, 128
-
-
-
-

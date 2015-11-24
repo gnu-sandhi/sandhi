@@ -28,10 +28,13 @@ import sys
 try:
     from gnuradio import audio
 except ImportError:
-    sys.stderr.write("Failed to import gnuradio.audio. Make sure gr-audio component is installed.\n")
+    sys.stderr.write(
+        "Failed to import gnuradio.audio. Make sure gr-audio component is installed.\n")
     sys.exit(1)
 
+
 class audio_sink(gr.top_block):
+
     def __init__(self, host, port, pkt_size, sample_rate, eof, wait):
         gr.top_block.__init__(self, "audio_sink")
         src = gr.udp_source(gr.sizeof_float, host, port, pkt_size,
@@ -69,4 +72,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         # Ctrl-C exits
         pass
-

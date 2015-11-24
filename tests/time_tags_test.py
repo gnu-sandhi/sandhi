@@ -5,6 +5,7 @@ import gras
 import numpy
 import time
 
+
 class TimeTagsTest(unittest.TestCase):
 
     def test_make_time_tag(self):
@@ -20,11 +21,11 @@ class TimeTagsTest(unittest.TestCase):
         t2 = gras.TimeTag.from_ticks(-1000, 1e9)
         self.assertEqual(t2.to_ticks(1e9), -1000)
 
-        time_ns_now = long(time.time()*1e9)
+        time_ns_now = long(time.time() * 1e9)
         t3 = gras.TimeTag.from_ticks(time_ns_now, 1e9)
         self.assertEqual(t3.to_ticks(1e9), time_ns_now)
 
-        time_us_now = long(time.time()*1e6)
+        time_us_now = long(time.time() * 1e6)
         t4 = gras.TimeTag.from_ticks(time_us_now, 1e6)
         self.assertEqual(t4.to_ticks(1e6), time_us_now)
 
@@ -59,18 +60,18 @@ class TimeTagsTest(unittest.TestCase):
         self.assertEqual(t3.to_ticks(), (99 + 98))
 
     def test_time_tag_pmc_foo(self):
-        time_us_now = long(time.time()*1e6)
+        time_us_now = long(time.time() * 1e6)
         t0 = gras.TimeTag.from_ticks(time_us_now, 1e6)
 
-        #test the validity of the time tuple
+        # test the validity of the time tuple
         p0 = t0.to_pmc()
         tp = p0()
-        full = long(time_us_now/1e6)
+        full = long(time_us_now / 1e6)
         self.assertEqual(tp[0], full)
-        delta = time_us_now - full*long(1e6)
-        self.assertEqual(tp[1], (delta/1e6))
+        delta = time_us_now - full * long(1e6)
+        self.assertEqual(tp[1], (delta / 1e6))
 
-        #and check if it loops back
+        # and check if it loops back
         t1 = gras.TimeTag.from_pmc(p0)
         self.assertEqual(t0, t1)
 

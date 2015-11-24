@@ -3,15 +3,18 @@
 import unittest
 from PMC import *
 
+
 class TestBasicTypes(unittest.TestCase):
 
     def loopback(self, x):
         y = PMC2Py(Py2PMC(x))
         print type(x), type(y)
-        #ctypes are not as smart as numpy,
-        #give the assert equal some help
-        if hasattr(x, 'value'): x = x.value
-        if hasattr(y, 'value'): y = y.value
+        # ctypes are not as smart as numpy,
+        # give the assert equal some help
+        if hasattr(x, 'value'):
+            x = x.value
+        if hasattr(y, 'value'):
+            y = y.value
         self.assertEqual(x, y)
 
     def test_none(self):
@@ -42,8 +45,10 @@ class TestBasicTypes(unittest.TestCase):
         self.loopback(ctypes.c_int8(-42))
         self.loopback(ctypes.c_uint16(4200))
         self.loopback(ctypes.c_int16(-4200))
-        try: import numpy
-        except ImportError: return
+        try:
+            import numpy
+        except ImportError:
+            return
         self.loopback(numpy.uint16(4200))
         self.loopback(numpy.int16(-4200))
 
@@ -52,17 +57,21 @@ class TestBasicTypes(unittest.TestCase):
         import ctypes
         self.loopback(ctypes.c_float(4.2))
         self.loopback(ctypes.c_double(4.2))
-        try: import numpy
-        except ImportError: return
+        try:
+            import numpy
+        except ImportError:
+            return
         self.loopback(numpy.float32(4.2))
         self.loopback(numpy.float64(4.2))
 
     def test_complex(self):
-        self.loopback(4+2j)
-        try: import numpy
-        except ImportError: return
-        self.loopback(numpy.complex64(4-2j))
-        self.loopback(numpy.complex128(4-1j))
+        self.loopback(4 + 2j)
+        try:
+            import numpy
+        except ImportError:
+            return
+        self.loopback(numpy.complex64(4 - 2j))
+        self.loopback(numpy.complex128(4 - 1j))
 
     def test_string(self):
         self.loopback("hello world")

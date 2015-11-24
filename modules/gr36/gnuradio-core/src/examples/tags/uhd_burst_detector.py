@@ -28,7 +28,9 @@ from gnuradio.eng_option import eng_option
 from gnuradio.gr import firdes
 from optparse import OptionParser
 
+
 class uhd_burst_detector(gr.top_block):
+
     def __init__(self, uhd_address, options):
 
         gr.top_block.__init__(self)
@@ -53,24 +55,23 @@ class uhd_burst_detector(gr.top_block):
         self.tagger = gr.burst_tagger(gr.sizeof_gr_complex)
 
         # Dummy signaler to collect a burst on known periods
-        data = 1000*[0,] + 1000*[1,]
+        data = 1000 * [0, ] + 1000 * [1, ]
         self.signal = gr.vector_source_s(data, True)
 
         # Energy detector to get signal burst
-        ## use squelch to detect energy
-        self.det  = gr.simple_squelch_cc(self.threshold, 0.01)
-        ## convert to mag squared (float)
+        # use squelch to detect energy
+        self.det = gr.simple_squelch_cc(self.threshold, 0.01)
+        # convert to mag squared (float)
         self.c2m = gr.complex_to_mag_squared()
-        ## average to debounce
+        # average to debounce
         self.avg = gr.single_pole_iir_filter_ff(0.01)
-        ## rescale signal for conversion to short
+        # rescale signal for conversion to short
         self.scale = gr.multiply_const_ff(2**16)
-        ## signal input uses shorts
+        # signal input uses shorts
         self.f2s = gr.float_to_short()
 
         # Use file sink burst tagger to capture bursts
         self.fsnk = gr.tagged_file_sink(gr.sizeof_gr_complex, self.samp_rate)
-
 
         ##################################################
         # Connections
@@ -96,7 +97,7 @@ if __name__ == '__main__':
     parser = OptionParser(option_class=eng_option, usage="%prog: [options]")
     parser.add_option("-a", "--address", type="string", default="addr=192.168.10.2",
                       help="select address of the device [default=%default]")
-    #parser.add_option("-A", "--antenna", default=None,
+    # parser.add_option("-A", "--antenna", default=None,
     #                  help="select Rx Antenna (only on RFX-series boards)")
     parser.add_option("-f", "--freq", type="eng_float", default=450e6,
                       help="set frequency to FREQ", metavar="FREQ")

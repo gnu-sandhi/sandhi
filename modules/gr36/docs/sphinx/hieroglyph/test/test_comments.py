@@ -3,6 +3,7 @@ import unittest
 from hieroglyph.hieroglyph import parse_hieroglyph_text
 from hieroglyph.errors import HieroglyphError
 
+
 class CommentTests(unittest.TestCase):
 
     def test_comment1(self):
@@ -414,7 +415,8 @@ All of the source sequence will be consumed.
                         u'    ValueError: If line does not have the expected form.',
                         u'']
 
-        self.assertRaises(HieroglyphError, lambda: parse_hieroglyph_text(source_lines))
+        self.assertRaises(
+            HieroglyphError, lambda: parse_hieroglyph_text(source_lines))
 
     def test_comment10(self):
         source = """
@@ -582,5 +584,5 @@ All of the source sequence will be consumed.
         """
 
         source_lines = source.splitlines()
-        self.assertRaises(HieroglyphError, lambda: parse_hieroglyph_text(source_lines))
-
+        self.assertRaises(
+            HieroglyphError, lambda: parse_hieroglyph_text(source_lines))

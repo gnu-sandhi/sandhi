@@ -21,13 +21,16 @@
 
 import math
 
-def gcd(a,b):
+
+def gcd(a, b):
     while b:
-        a,b = b, a % b
+        a, b = b, a % b
     return a
 
-def lcm(a,b):
+
+def lcm(a, b):
     return a * b / gcd(a, b)
 
+
 def log2(x):
-    return math.log(x)/math.log(2)
+    return math.log(x) / math.log(2)

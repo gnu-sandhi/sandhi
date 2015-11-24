@@ -22,6 +22,7 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_tag_debug(gr_unittest.TestCase):
 
     def setUp(self):

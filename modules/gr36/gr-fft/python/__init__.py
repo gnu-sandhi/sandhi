@@ -25,4 +25,3 @@ processing blocks for FFT and related functions.
 '''
 
 from fft_swig import *
-

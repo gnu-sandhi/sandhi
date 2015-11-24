@@ -27,6 +27,7 @@ __kernel void add_2x_complex64(
 }
 """
 
+
 class test_opencl_block(unittest.TestCase):
 
     def setUp(self):
@@ -41,8 +42,10 @@ class test_opencl_block(unittest.TestCase):
         op.set_input_size(0, 4)
         op.set_output_size(0, 4)
 
-        vec0 = numpy.array(numpy.random.randint(-150, +150, 1e6), numpy.float32)
-        vec1 = numpy.array(numpy.random.randint(-150, +150, 1e6), numpy.float32)
+        vec0 = numpy.array(
+            numpy.random.randint(-150, +150, 1e6), numpy.float32)
+        vec1 = numpy.array(
+            numpy.random.randint(-150, +150, 1e6), numpy.float32)
 
         src0 = TestUtils.VectorSource(numpy.float32, vec0)
         src1 = TestUtils.VectorSource(numpy.float32, vec1)
@@ -64,8 +67,10 @@ class test_opencl_block(unittest.TestCase):
         op.set_input_size(0, 8)
         op.set_output_size(0, 8)
 
-        vec0 = numpy.array(numpy.random.randint(-150, +150, 1e6), numpy.complex64)
-        vec1 = numpy.array(numpy.random.randint(-150, +150, 1e6), numpy.complex64)
+        vec0 = numpy.array(
+            numpy.random.randint(-150, +150, 1e6), numpy.complex64)
+        vec1 = numpy.array(
+            numpy.random.randint(-150, +150, 1e6), numpy.complex64)
 
         src0 = TestUtils.VectorSource(numpy.complex64, vec0)
         src1 = TestUtils.VectorSource(numpy.complex64, vec1)
@@ -83,4 +88,3 @@ class test_opencl_block(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

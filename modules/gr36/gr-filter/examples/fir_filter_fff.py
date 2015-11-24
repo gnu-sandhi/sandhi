@@ -17,7 +17,9 @@ except ImportError:
     print "Error: could not import pylab (http://matplotlib.sourceforge.net/)"
     sys.exit(1)
 
+
 class example_fir_filter_fff(gr.top_block):
+
     def __init__(self, N, fs, bw, tw, atten, D):
         gr.top_block.__init__(self)
 
@@ -27,10 +29,11 @@ class example_fir_filter_fff(gr.top_block):
         self._tw = tw
         self._at = atten
         self._decim = D
-        taps = filter.firdes.low_pass_2(1, self._fs, self._bw, self._tw, self._at)
+        taps = filter.firdes.low_pass_2(
+            1, self._fs, self._bw, self._tw, self._at)
         print "Num. Taps: ", len(taps)
 
-        self.src  = gr.noise_source_f(gr.GR_GAUSSIAN, 1)
+        self.src = gr.noise_source_f(gr.GR_GAUSSIAN, 1)
         self.head = gr.head(gr.sizeof_float, self._nsamps)
 
         self.filt0 = filter.fir_filter_fff(self._decim, taps)
@@ -40,6 +43,7 @@ class example_fir_filter_fff(gr.top_block):
 
         self.connect(self.src, self.head, self.vsnk_src)
         self.connect(self.head, self.filt0, self.vsnk_out)
+
 
 def main():
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
@@ -55,7 +59,7 @@ def main():
                       help="Stopband attenuation [default=%default]")
     parser.add_option("-D", "--decimation", type="int", default=1,
                       help="Decmation factor [default=%default]")
-    (options, args) = parser.parse_args ()
+    (options, args) = parser.parse_args()
 
     put = example_fir_filter_fff(options.nsamples,
                                  options.samplerate,
@@ -70,23 +74,22 @@ def main():
 
     # Plot the signals PSDs
     nfft = 1024
-    f1 = pylab.figure(1, figsize=(12,10))
-    s1 = f1.add_subplot(1,1,1)
-    s1.psd(data_src, NFFT=nfft, noverlap=nfft/4,
+    f1 = pylab.figure(1, figsize=(12, 10))
+    s1 = f1.add_subplot(1, 1, 1)
+    s1.psd(data_src, NFFT=nfft, noverlap=nfft / 4,
            Fs=options.samplerate)
-    s1.psd(data_snk, NFFT=nfft, noverlap=nfft/4,
+    s1.psd(data_snk, NFFT=nfft, noverlap=nfft / 4,
            Fs=options.samplerate)
 
-    f2 = pylab.figure(2, figsize=(12,10))
-    s2 = f2.add_subplot(1,1,1)
+    f2 = pylab.figure(2, figsize=(12, 10))
+    s2 = f2.add_subplot(1, 1, 1)
     s2.plot(data_src)
     s2.plot(data_snk.real, 'g')
 
     pylab.show()
-    
+
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
         pass
-

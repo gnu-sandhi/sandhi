@@ -24,7 +24,9 @@ from gnuradio import gr
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
 
+
 class vector_sink(gr.top_block):
+
     def __init__(self, host, port, pkt_size, eof, wait):
         gr.top_block.__init__(self, "vector_sink")
 
@@ -61,4 +63,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         # Ctrl-C exits
         pass
-

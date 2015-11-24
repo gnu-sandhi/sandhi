@@ -23,7 +23,8 @@
 import sys
 import re
 
-def write_header (f):
+
+def write_header(f):
     f.write ('''/* -*- c++ -*- */
 /*
  * Copyright 2004 Free Software Foundation, Inc.
@@ -57,55 +58,56 @@ def write_header (f):
 
 ''')
 
-def write_trailer (f):
+
+def write_trailer(f):
     f.write ('''
 #endif /* INCLUDED_GNURADIO_SWIG_BUG_WORKAROUND_H */
 ''')
 
-def doit (input, output):
-    re_RULES_BEGIN = re.compile ('RULES \(BEGIN\)')
-    re_RULES_END = re.compile ('RULES \(END\)')
-    re_RETURN = re.compile ('^\s*return')
-    re_NOT_ID = re.compile ('[^a-zA-Z0-9_]')
+
+def doit(input, output):
+    re_RULES_BEGIN = re.compile('RULES \(BEGIN\)')
+    re_RULES_END = re.compile('RULES \(END\)')
+    re_RETURN = re.compile('^\s*return')
+    re_NOT_ID = re.compile('[^a-zA-Z0-9_]')
     words = {}
 
-    write_header (output)
+    write_header(output)
     for line in input:
-        if re_RULES_BEGIN.search (line):
+        if re_RULES_BEGIN.search(line):
             break
 
     for line in input:
-        if re_RULES_END.search (line):
+        if re_RULES_END.search(line):
             break
-        if not re_RETURN.match (line):
+        if not re_RETURN.match(line):
             continue
-        line = re_NOT_ID.sub (' ', line)
-        line = re.sub (' +', ' ', line)
-        for w in line.split (' '):
+        line = re_NOT_ID.sub(' ', line)
+        line = re.sub(' +', ' ', line)
+        for w in line.split(' '):
             words[w] = 1
 
     for w in ('', 'return', 'void', 'x'):
         del words[w]
 
     wl = words.keys()
-    wl.sort ()
+    wl.sort()
     for w in wl:
-        output.write ('class ' + w + ';\n')
+        output.write('class ' + w + ';\n')
 
-    write_trailer (output)
+    write_trailer(output)
 
 
-def main ():
-    if len (sys.argv) != 3:
-        sys.stderr.write ("usage: %s gnuradio_swig_python.cc gnuradio_swig_bug_workaround.h\n"
-                          % (sys.argv[0],))
-        sys.exit (1)
+def main():
+    if len(sys.argv) != 3:
+        sys.stderr.write("usage: %s gnuradio_swig_python.cc gnuradio_swig_bug_workaround.h\n"
+                         % (sys.argv[0],))
+        sys.exit(1)
     input_filename = sys.argv[1]
     output_filename = sys.argv[2]
-    input = open (input_filename, "r")
-    output = open (output_filename, "w")
-    doit (input, output)
+    input = open(input_filename, "r")
+    output = open(output_filename, "w")
+    doit(input, output)
 
 if __name__ == '__main__':
-    main ()
-
+    main()

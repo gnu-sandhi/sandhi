@@ -27,7 +27,10 @@ from gnuradio import gr
 # subclass this class; rather, the user supplies his own class constructor
 # that gets invoked with needed parameters.
 #
+
+
 class top_panel(wx.Panel):
+
     def __init__(self, frame, top_block, gui, options, args):
         wx.Panel.__init__(self, frame, -1)
         vbox = wx.BoxSizer(wx.VERTICAL)
@@ -45,7 +48,7 @@ class top_panel(wx.Panel):
             # User hasn't made their own GUI, create our default
             # We don't have a default GUI yet either :)
             p = wx.Panel(self)
-            p.SetSize((640,480))
+            p.SetSize((640, 480))
             vbox.Add(p, 1, wx.EXPAND)
 
         self.SetSizer(vbox)
@@ -61,9 +64,12 @@ class top_panel(wx.Panel):
 #
 # Top-level window frame with menu and status bars.
 #
+
+
 class top_frame(wx.Frame):
-    def __init__ (self, top_block, gui, options, args,
-                  title, nstatus, start, realtime):
+
+    def __init__(self, top_block, gui, options, args,
+                 title, nstatus, start, realtime):
 
         wx.Frame.__init__(self, None, -1, title)
         self.top_block = top_block
@@ -74,7 +80,7 @@ class top_frame(wx.Frame):
 
         menu = wx.Menu()
 
-        item = menu.Append(200, 'E&xit', 'Exit Application') # FIXME magic ID
+        item = menu.Append(200, 'E&xit', 'Exit Application')  # FIXME magic ID
         self.Bind(wx.EVT_MENU, self.OnCloseWindow, item)
         mainmenu.Append(menu, "&File")
         self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
@@ -100,7 +106,8 @@ class top_frame(wx.Frame):
         self.panel.shutdown()
 
         # Stop flowgraph as a convenience
-        self.SetStatusText("Ensuring flowgraph has completed before exiting...")
+        self.SetStatusText(
+            "Ensuring flowgraph has completed before exiting...")
         if self.top_block is not None:
             self.top_block.stop()
             self.top_block.wait()
@@ -113,8 +120,9 @@ class top_frame(wx.Frame):
 # in their GUI script.
 #
 class app(wx.App):
-    def __init__ (self, top_block=None, gui=None, options=None, args=None,
-                  title="GNU Radio", nstatus=1, start=False, realtime=False):
+
+    def __init__(self, top_block=None, gui=None, options=None, args=None,
+                 title="GNU Radio", nstatus=1, start=False, realtime=False):
         self.top_block = top_block
         self.gui = gui
         self.options = options
@@ -124,7 +132,7 @@ class app(wx.App):
         self.start = start
         self.realtime = realtime
 
-        wx.App.__init__ (self, redirect=False)
+        wx.App.__init__(self, redirect=False)
 
     def OnInit(self):
         # Pass user parameters to top window frame

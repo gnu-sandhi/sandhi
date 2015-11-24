@@ -23,12 +23,13 @@
 from gnuradio import gr, gr_unittest
 import ctypes
 
+
 class test_float_to_short (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
@@ -48,10 +49,10 @@ class test_float_to_short (gr_unittest.TestCase):
 
     def test_002(self):
 
-        src_data = ( 32766,  32767,  32768,
+        src_data = (32766,  32767,  32768,
                     -32767, -32768, -32769)
-        expected_result = [ 32766,  32767,  32767,
-                           -32767, -32768, -32768 ]
+        expected_result = [32766,  32767,  32767,
+                           -32767, -32768, -32768]
 
         src = gr.vector_source_f(src_data)
         op = gr.float_to_short()
@@ -83,4 +84,3 @@ class test_float_to_short (gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_float_to_short, "test_float_to_short.xml")
-

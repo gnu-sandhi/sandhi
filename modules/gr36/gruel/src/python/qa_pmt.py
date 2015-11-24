@@ -23,16 +23,17 @@
 import unittest
 import pmt_swig as pmt
 
+
 class test_gruel_pmt(unittest.TestCase):
 
-    def test01 (self):
+    def test01(self):
         a = pmt.pmt_intern("a")
         b = pmt.pmt_from_double(123765)
         d1 = pmt.pmt_make_dict()
         d2 = pmt.pmt_dict_add(d1, a, b)
         pmt.pmt_print(d2)
 
-    def test02 (self):
+    def test02(self):
         const = 123765
         x_pmt = pmt.pmt_from_double(const)
         x_int = pmt.pmt_to_double(x_pmt)

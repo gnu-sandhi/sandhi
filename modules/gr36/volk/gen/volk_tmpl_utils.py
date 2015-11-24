@@ -29,20 +29,24 @@ import volk_machine_defs
 import volk_kernel_defs
 from Cheetah import Template
 
+
 def __escape_pre_processor(code):
     out = list()
     for line in code.splitlines():
         m = re.match('^(\s*)#(\s*)(\w+)(.*)$', line)
         if m:
             p0, p1, fcn, stuff = m.groups()
-            conly = fcn in ('include', 'define', 'ifdef', 'ifndef', 'endif', 'elif', 'pragma')
+            conly = fcn in ('include', 'define', 'ifdef',
+                            'ifndef', 'endif', 'elif', 'pragma')
             both = fcn in ('if', 'else')
             istmpl = '$' in stuff
-            if 'defined' in stuff: istmpl = False
+            if 'defined' in stuff:
+                istmpl = False
             if conly or (both and not istmpl):
-                line = '%s\\#%s%s%s'%(p0, p1, fcn, stuff)
+                line = '%s\\#%s%s%s' % (p0, p1, fcn, stuff)
         out.append(line)
     return '\n'.join(out)
+
 
 def __parse_tmpl(_tmpl, **kwargs):
     defs = {
@@ -61,6 +65,7 @@ def __parse_tmpl(_tmpl, **kwargs):
 """ + _tmpl
     return str(Template.Template(_tmpl, defs))
 
+
 def main():
     parser = optparse.OptionParser()
     parser.add_option('--input', type='string')
@@ -68,7 +73,10 @@ def main():
     (opts, args) = parser.parse_args()
 
     output = __parse_tmpl(open(opts.input).read(), args=args)
-    if opts.output: open(opts.output, 'w').write(output)
-    else: print output
+    if opts.output:
+        open(opts.output, 'w').write(output)
+    else:
+        print output
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

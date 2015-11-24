@@ -21,20 +21,22 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 
-_COLORMAP = gtk.gdk.colormap_get_system() #create all of the colors
+_COLORMAP = gtk.gdk.colormap_get_system()  # create all of the colors
+
+
 def get_color(color_code): return _COLORMAP.alloc_color(color_code, True, True)
 
 HIGHLIGHT_COLOR = get_color('#00FFFF')
 BORDER_COLOR = get_color('black')
-#param entry boxes
+# param entry boxes
 PARAM_ENTRY_TEXT_COLOR = get_color('black')
 ENTRYENUM_CUSTOM_COLOR = get_color('#EEEEEE')
-#flow graph color constants
+# flow graph color constants
 FLOWGRAPH_BACKGROUND_COLOR = get_color('#FFF9FF')
-#block color constants
+# block color constants
 BLOCK_ENABLED_COLOR = get_color('#F1ECFF')
 BLOCK_DISABLED_COLOR = get_color('#CCCCCC')
-#connection color constants
+# connection color constants
 CONNECTION_ENABLED_COLOR = get_color('black')
 CONNECTION_DISABLED_COLOR = get_color('#999999')
 CONNECTION_ERROR_COLOR = get_color('red')

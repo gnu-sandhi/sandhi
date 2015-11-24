@@ -22,30 +22,40 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class my_add2_dd(gr.feval_dd):
+
     def eval(self, x):
         return x + 2
+
 
 class my_add2_ll(gr.feval_ll):
+
     def eval(self, x):
         return x + 2
 
+
 class my_add2_cc(gr.feval_cc):
+
     def eval(self, x):
         return x + (2 - 2j)
 
+
 class my_feval(gr.feval):
+
     def __init__(self):
         gr.feval.__init__(self)
         self.fired = False
+
     def eval(self):
         self.fired = True
+
 
 class test_feval(gr_unittest.TestCase):
 
     def test_dd_1(self):
         f = my_add2_dd()
-        src_data =        (0.0, 1.0, 2.0, 3.0, 4.0)
+        src_data = (0.0, 1.0, 2.0, 3.0, 4.0)
         expected_result = (2.0, 3.0, 4.0, 5.0, 6.0)
         # this is all in python...
         actual_result = tuple([f.eval(x) for x in src_data])
@@ -53,16 +63,15 @@ class test_feval(gr_unittest.TestCase):
 
     def test_dd_2(self):
         f = my_add2_dd()
-        src_data =        (0.0, 1.0, 2.0, 3.0, 4.0)
+        src_data = (0.0, 1.0, 2.0, 3.0, 4.0)
         expected_result = (2.0, 3.0, 4.0, 5.0, 6.0)
         # this is python -> C++ -> python and back again...
         actual_result = tuple([gr.feval_dd_example(f, x) for x in src_data])
         self.assertEqual(expected_result, actual_result)
 
-
     def test_ll_1(self):
         f = my_add2_ll()
-        src_data =        (0, 1, 2, 3, 4)
+        src_data = (0, 1, 2, 3, 4)
         expected_result = (2, 3, 4, 5, 6)
         # this is all in python...
         actual_result = tuple([f.eval(x) for x in src_data])
@@ -70,25 +79,24 @@ class test_feval(gr_unittest.TestCase):
 
     def test_ll_2(self):
         f = my_add2_ll()
-        src_data =        (0, 1, 2, 3, 4)
+        src_data = (0, 1, 2, 3, 4)
         expected_result = (2, 3, 4, 5, 6)
         # this is python -> C++ -> python and back again...
         actual_result = tuple([gr.feval_ll_example(f, x) for x in src_data])
         self.assertEqual(expected_result, actual_result)
 
-
     def test_cc_1(self):
         f = my_add2_cc()
-        src_data =        (0+1j, 2+3j, 4+5j, 6+7j)
-        expected_result = (2-1j, 4+1j, 6+3j, 8+5j)
+        src_data = (0 + 1j, 2 + 3j, 4 + 5j, 6 + 7j)
+        expected_result = (2 - 1j, 4 + 1j, 6 + 3j, 8 + 5j)
         # this is all in python...
         actual_result = tuple([f.eval(x) for x in src_data])
         self.assertEqual(expected_result, actual_result)
 
     def test_cc_2(self):
         f = my_add2_cc()
-        src_data =        (0+1j, 2+3j, 4+5j, 6+7j)
-        expected_result = (2-1j, 4+1j, 6+3j, 8+5j)
+        src_data = (0 + 1j, 2 + 3j, 4 + 5j, 6 + 7j)
+        expected_result = (2 - 1j, 4 + 1j, 6 + 3j, 8 + 5j)
         # this is python -> C++ -> python and back again...
         actual_result = tuple([gr.feval_cc_example(f, x) for x in src_data])
         self.assertEqual(expected_result, actual_result)

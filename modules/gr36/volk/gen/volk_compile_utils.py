@@ -20,13 +20,16 @@ import optparse
 import volk_arch_defs
 import volk_machine_defs
 
+
 def do_arch_flags_list(compiler):
     output = list()
     for arch in volk_arch_defs.archs:
-        if not arch.is_supported(compiler): continue
+        if not arch.is_supported(compiler):
+            continue
         fields = [arch.name] + arch.get_flags(compiler)
         output.append(','.join(fields))
     print ';'.join(output)
+
 
 def do_machines_list(arch_names):
     output = list()
@@ -36,12 +39,14 @@ def do_machines_list(arch_names):
             output.append(machine.name)
     print ';'.join(output)
 
+
 def do_machine_flags_list(compiler, machine_name):
     output = list()
     machine = volk_machine_defs.machine_dict[machine_name]
     for arch in machine.archs:
         output.extend(arch.get_flags(compiler))
     print ' '.join(output)
+
 
 def main():
     parser = optparse.OptionParser()
@@ -51,8 +56,12 @@ def main():
     parser.add_option('--machine', type='string')
     (opts, args) = parser.parse_args()
 
-    if opts.mode == 'arch_flags': return do_arch_flags_list(opts.compiler.lower())
-    if opts.mode == 'machines': return do_machines_list(opts.archs.split(';'))
-    if opts.mode == 'machine_flags': return do_machine_flags_list(opts.compiler.lower(), opts.machine)
+    if opts.mode == 'arch_flags':
+        return do_arch_flags_list(opts.compiler.lower())
+    if opts.mode == 'machines':
+        return do_machines_list(opts.archs.split(';'))
+    if opts.mode == 'machine_flags':
+        return do_machine_flags_list(opts.compiler.lower(), opts.machine)
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

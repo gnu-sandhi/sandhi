@@ -26,7 +26,7 @@ processing blocks common to many flowgraphs.
 
 from blocks_swig import *
 
-#alias old gr_add_vXX and gr_multiply_vXX
+# alias old gr_add_vXX and gr_multiply_vXX
 add_vcc = add_cc
 add_vff = add_ff
 add_vii = add_ii

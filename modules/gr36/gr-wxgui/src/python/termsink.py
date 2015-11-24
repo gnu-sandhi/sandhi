@@ -26,7 +26,9 @@ DEFAULT_WIN_SIZE = (600, 300)
 APPEND_EVENT = wx.NewEventType()
 EVT_APPEND_EVENT = wx.PyEventBinder(APPEND_EVENT, 0)
 
+
 class AppendEvent(wx.PyEvent):
+
     def __init__(self, text):
         wx.PyEvent.__init__(self)
         self.SetEventType(APPEND_EVENT)
@@ -35,43 +37,45 @@ class AppendEvent(wx.PyEvent):
     def Clone(self):
         self.__class__(self.GetId())
 
+
 class termsink(wx.Panel):
-	def __init__(self,
-		     parent,
-		     msgq,
-		     size=DEFAULT_WIN_SIZE,
-		     ):
 
-		wx.Panel.__init__(self,
-				  parent,
-				  size=size,
-				  style=wx.SIMPLE_BORDER,
-				  )
+    def __init__(self,
+                 parent,
+                 msgq,
+                 size=DEFAULT_WIN_SIZE,
+                 ):
 
-		self.text_ctrl = wx.TextCtrl(self,
-					     wx.ID_ANY,
-					     value="",
-					     size=size,
-					     style=wx.TE_MULTILINE|wx.TE_READONLY,
-					     )
+        wx.Panel.__init__(self,
+                          parent,
+                          size=size,
+                          style=wx.SIMPLE_BORDER,
+                          )
 
-		main_sizer = wx.BoxSizer(wx.VERTICAL)
-		main_sizer.Add(self.text_ctrl, 1, wx.EXPAND)
-		self.SetSizerAndFit(main_sizer)
+        self.text_ctrl = wx.TextCtrl(self,
+                                     wx.ID_ANY,
+                                     value="",
+                                     size=size,
+                                     style=wx.TE_MULTILINE | wx.TE_READONLY,
+                                     )
 
-                EVT_APPEND_EVENT(self, self.evt_append)
-		self.runner = gru.msgq_runner(msgq, self.handle_msg)
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        main_sizer.Add(self.text_ctrl, 1, wx.EXPAND)
+        self.SetSizerAndFit(main_sizer)
 
-	def handle_msg(self, msg):
-		# This gets called in the queue runner thread context
-		# For now, just add whatever the user sends to the text control
-		text = msg.to_string()
+        EVT_APPEND_EVENT(self, self.evt_append)
+        self.runner = gru.msgq_runner(msgq, self.handle_msg)
 
-		# Create a wxPython event and post it to the event queue
-		evt = AppendEvent(text)
-		wx.PostEvent(self, evt)
-		del evt
+    def handle_msg(self, msg):
+        # This gets called in the queue runner thread context
+        # For now, just add whatever the user sends to the text control
+        text = msg.to_string()
 
-        def evt_append(self, evt):
-		# This gets called by the wxPython event queue runner
-		self.text_ctrl.AppendText(evt.text)
+        # Create a wxPython event and post it to the event queue
+        evt = AppendEvent(text)
+        wx.PostEvent(self, evt)
+        del evt
+
+    def evt_append(self, evt):
+        # This gets called by the wxPython event queue runner
+        self.text_ctrl.AppendText(evt.text)

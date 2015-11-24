@@ -24,6 +24,7 @@ from gnuradio import gr, gr_unittest
 import filter_swig as filter
 import math
 
+
 class test_channel_model(gr_unittest.TestCase):
 
     def setUp(self):
@@ -39,22 +40,22 @@ class test_channel_model(gr_unittest.TestCase):
 
         signal = gr.sig_source_c(fs, gr.GR_SIN_WAVE, freq, 1)
         head = gr.head(gr.sizeof_gr_complex, N)
-        op = filter.channel_model(0.0, 0.0, 1.0, [1,], 0)
+        op = filter.channel_model(0.0, 0.0, 1.0, [1, ], 0)
         snk = gr.vector_sink_c()
         snk1 = gr.vector_sink_c()
 
         op.set_noise_voltage(0.0)
         op.set_frequency_offset(0.0)
-        op.set_taps([1,])
+        op.set_taps([1, ])
         op.set_timing_offset(1.0)
 
         self.tb.connect(signal, head, op, snk)
         self.tb.connect(op, snk1)
-        self.tb.run() 
-        
+        self.tb.run()
+
         dst_data = snk.data()
         exp_data = snk1.data()
         self.assertComplexTuplesAlmostEqual(exp_data, dst_data, 5)
-        
+
 if __name__ == '__main__':
     gr_unittest.run(test_channel_model, "test_channel_model.xml")

@@ -9,7 +9,9 @@
 
 from PyQt4 import QtCore, QtGui
 
+
 class Ui_DigitalWindow(object):
+
     def setupUi(self, DigitalWindow):
         DigitalWindow.setObjectName("DigitalWindow")
         DigitalWindow.resize(1236, 741)
@@ -31,14 +33,17 @@ class Ui_DigitalWindow(object):
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.sysBox = QtGui.QGroupBox(self.centralwidget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.sysBox.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.sysBox.sizePolicy().hasHeightForWidth())
         self.sysBox.setSizePolicy(sizePolicy)
         self.sysBox.setMinimumSize(QtCore.QSize(0, 0))
         self.sysBox.setMaximumSize(QtCore.QSize(16777215, 120))
-        self.sysBox.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.sysBox.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.sysBox.setObjectName("sysBox")
         self.gridLayout_2 = QtGui.QGridLayout(self.sysBox)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -52,7 +57,8 @@ class Ui_DigitalWindow(object):
         self.horizontalLayout.addWidget(self.sysBox)
         self.rxBox = QtGui.QGroupBox(self.centralwidget)
         self.rxBox.setMaximumSize(QtCore.QSize(16777215, 120))
-        self.rxBox.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.rxBox.setAlignment(QtCore.Qt.AlignLeading |
+                                QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.rxBox.setObjectName("rxBox")
         self.gridLayout_3 = QtGui.QGridLayout(self.rxBox)
         self.gridLayout_3.setObjectName("gridLayout_3")
@@ -73,7 +79,8 @@ class Ui_DigitalWindow(object):
         self.horizontalLayout.addWidget(self.rxBox)
         self.channelModeBox = QtGui.QGroupBox(self.centralwidget)
         self.channelModeBox.setMaximumSize(QtCore.QSize(16777215, 120))
-        self.channelModeBox.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.channelModeBox.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.channelModeBox.setObjectName("channelModeBox")
         self.gridLayout = QtGui.QGridLayout(self.channelModeBox)
         self.gridLayout.setSizeConstraint(QtGui.QLayout.SetMinimumSize)
@@ -100,17 +107,21 @@ class Ui_DigitalWindow(object):
         self.timeEdit.setObjectName("timeEdit")
         self.gridLayout.addWidget(self.timeEdit, 2, 2, 1, 1)
         self.horizontalLayout.addWidget(self.channelModeBox)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.verticalLayout_2 = QtGui.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem1 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem1)
         self.pauseButton = QtGui.QPushButton(self.centralwidget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pauseButton.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.pauseButton.sizePolicy().hasHeightForWidth())
         self.pauseButton.setSizePolicy(sizePolicy)
         self.pauseButton.setMaximumSize(QtCore.QSize(80, 16777215))
         self.pauseButton.setObjectName("pauseButton")
@@ -137,25 +148,40 @@ class Ui_DigitalWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(DigitalWindow)
-        QtCore.QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), DigitalWindow.close)
-        QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL("triggered()"), DigitalWindow.close)
+        QtCore.QObject.connect(self.closeButton, QtCore.SIGNAL(
+            "clicked()"), DigitalWindow.close)
+        QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(
+            "triggered()"), DigitalWindow.close)
         QtCore.QMetaObject.connectSlotsByName(DigitalWindow)
         DigitalWindow.setTabOrder(self.snrEdit, self.freqEdit)
         DigitalWindow.setTabOrder(self.freqEdit, self.timeEdit)
 
     def retranslateUi(self, DigitalWindow):
-        DigitalWindow.setWindowTitle(QtGui.QApplication.translate("DigitalWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.sysBox.setTitle(QtGui.QApplication.translate("DigitalWindow", "System Parameters", None, QtGui.QApplication.UnicodeUTF8))
-        self.sampleRateLabel.setText(QtGui.QApplication.translate("DigitalWindow", "Sample Rate (sps)", None, QtGui.QApplication.UnicodeUTF8))
-        self.rxBox.setTitle(QtGui.QApplication.translate("DigitalWindow", "Receiver Parameters", None, QtGui.QApplication.UnicodeUTF8))
-        self.alphaLabel.setText(QtGui.QApplication.translate("DigitalWindow", "Alpha", None, QtGui.QApplication.UnicodeUTF8))
-        self.gainMuLabel.setText(QtGui.QApplication.translate("DigitalWindow", "Gain mu", None, QtGui.QApplication.UnicodeUTF8))
-        self.channelModeBox.setTitle(QtGui.QApplication.translate("DigitalWindow", "Channel Model Parameters", None, QtGui.QApplication.UnicodeUTF8))
-        self.snrLabel.setText(QtGui.QApplication.translate("DigitalWindow", "SNR (dB)", None, QtGui.QApplication.UnicodeUTF8))
-        self.freqLabel.setText(QtGui.QApplication.translate("DigitalWindow", "Frequency Offset (Hz)", None, QtGui.QApplication.UnicodeUTF8))
-        self.timeLabel.setText(QtGui.QApplication.translate("DigitalWindow", "Timing Offset", None, QtGui.QApplication.UnicodeUTF8))
-        self.pauseButton.setText(QtGui.QApplication.translate("DigitalWindow", "Pause", None, QtGui.QApplication.UnicodeUTF8))
-        self.closeButton.setText(QtGui.QApplication.translate("DigitalWindow", "Close", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("DigitalWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionExit.setText(QtGui.QApplication.translate("DigitalWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))
-
+        DigitalWindow.setWindowTitle(QtGui.QApplication.translate(
+            "DigitalWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        self.sysBox.setTitle(QtGui.QApplication.translate(
+            "DigitalWindow", "System Parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.sampleRateLabel.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "Sample Rate (sps)", None, QtGui.QApplication.UnicodeUTF8))
+        self.rxBox.setTitle(QtGui.QApplication.translate(
+            "DigitalWindow", "Receiver Parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.alphaLabel.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "Alpha", None, QtGui.QApplication.UnicodeUTF8))
+        self.gainMuLabel.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "Gain mu", None, QtGui.QApplication.UnicodeUTF8))
+        self.channelModeBox.setTitle(QtGui.QApplication.translate(
+            "DigitalWindow", "Channel Model Parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.snrLabel.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "SNR (dB)", None, QtGui.QApplication.UnicodeUTF8))
+        self.freqLabel.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "Frequency Offset (Hz)", None, QtGui.QApplication.UnicodeUTF8))
+        self.timeLabel.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "Timing Offset", None, QtGui.QApplication.UnicodeUTF8))
+        self.pauseButton.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "Pause", None, QtGui.QApplication.UnicodeUTF8))
+        self.closeButton.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "Close", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuFile.setTitle(QtGui.QApplication.translate(
+            "DigitalWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionExit.setText(QtGui.QApplication.translate(
+            "DigitalWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))

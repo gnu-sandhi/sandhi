@@ -4,7 +4,9 @@ import gras
 import numpy
 from PMC import *
 
+
 class NullSource(gras.Block):
+
     def __init__(self, out_sig):
         gras.Block.__init__(self, 'NullSource', out_sig=[out_sig])
 
@@ -12,14 +14,18 @@ class NullSource(gras.Block):
         outs[0][:] = numpy.zeros(len(outs[0]))
         self.produce(0, len(outs[0]))
 
+
 class NullSink(gras.Block):
+
     def __init__(self, in_sig):
         gras.Block.__init__(self, 'NullSink', in_sig=[in_sig])
 
     def work(self, ins, outs):
         self.consume(0, len(ins[0]))
 
+
 class VectorSource(gras.Block):
+
     def __init__(self, out_sig, vec):
         gras.Block.__init__(self, name='VectorSource', out_sig=[out_sig])
         self._vec = vec
@@ -32,7 +38,9 @@ class VectorSource(gras.Block):
         if not len(self._vec):
             self.mark_done()
 
+
 class VectorSink(gras.Block):
+
     def __init__(self, in_sig):
         gras.Block.__init__(self, name='VectorSink', in_sig=[in_sig])
         self._vec = list()
@@ -44,7 +52,9 @@ class VectorSink(gras.Block):
         self._vec.extend(ins[0].copy())
         self.consume(0, len(ins[0]))
 
+
 class Head(gras.Block):
+
     def __init__(self, sig, num_items):
         gras.Block.__init__(self, name='Head', in_sig=[sig], out_sig=[sig])
         self._num_items = num_items
@@ -58,13 +68,15 @@ class Head(gras.Block):
         if not self._num_items:
             self.mark_done()
 
+
 class Add2X(gras.Block):
+
     def __init__(self, sig):
         gras.Block.__init__(self,
-            name = "Add2X",
-            in_sig = [sig, sig],
-            out_sig = [sig],
-        )
+                            name="Add2X",
+                            in_sig=[sig, sig],
+                            out_sig=[sig],
+                            )
 
     def work(self, ins, outs):
         nitems = min(*map(len, (ins[0], ins[1], outs[0])))
@@ -73,12 +85,14 @@ class Add2X(gras.Block):
         self.consume(1, nitems)
         self.produce(0, nitems)
 
+
 class TagSource(gras.Block):
+
     def __init__(self, values):
         gras.Block.__init__(self,
-            name = "TagSource",
-            out_sig = [numpy.uint8],
-        )
+                            name="TagSource",
+                            out_sig=[numpy.uint8],
+                            )
         self._values = values
 
     def work(self, ins, outs):
@@ -90,12 +104,14 @@ class TagSource(gras.Block):
         if not self._values:
             self.mark_done()
 
+
 class TagSink(gras.Block):
+
     def __init__(self):
         gras.Block.__init__(self,
-            name = "TagSink",
-            in_sig = [numpy.uint8],
-        )
+                            name="TagSink",
+                            in_sig=[numpy.uint8],
+                            )
         self._values = list()
 
     def get_values(self):

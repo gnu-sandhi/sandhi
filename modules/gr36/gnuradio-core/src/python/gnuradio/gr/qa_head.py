@@ -22,25 +22,26 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_head (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_head (self):
+    def test_head(self):
         src_data = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         expected_result = (1, 2, 3, 4)
-        src1 = gr.vector_source_i (src_data)
-        op = gr.head (gr.sizeof_int, 4)
-        dst1 = gr.vector_sink_i ()
-        self.tb.connect (src1, op)
-        self.tb.connect (op, dst1)
-        self.tb.run ()
-        dst_data = dst1.data ()
-        self.assertEqual (expected_result, dst_data)
+        src1 = gr.vector_source_i(src_data)
+        op = gr.head(gr.sizeof_int, 4)
+        dst1 = gr.vector_sink_i()
+        self.tb.connect(src1, op)
+        self.tb.connect(op, dst1)
+        self.tb.run()
+        dst_data = dst1.data()
+        self.assertEqual(expected_result, dst_data)
 
 
 if __name__ == '__main__':

@@ -36,7 +36,7 @@ ss_roots = [
     'gr_sig_source_X',
     'gr_probe_signal_X',
     'gr_probe_signal_vX'
-    ]
+]
 
 # regular blocks
 reg_signatures = ['ss', 'ii', 'ff', 'cc']
@@ -50,57 +50,54 @@ reg_roots = [
     'gr_multiply_const_vXX',
     'gr_integrate_XX',
     'gr_moving_average_XX',
-    ]
+]
 
 # other blocks
 others = (
     ('gr_chunks_to_symbols_XX',     ('bf', 'bc', 'sf', 'sc', 'if', 'ic')),
-    ('gr_unpacked_to_packed_XX',    ('bb','ss','ii')),
-    ('gr_packed_to_unpacked_XX',    ('bb','ss','ii')),
-    ('gr_xor_XX',                   ('bb','ss','ii')),
-    ('gr_and_XX',                   ('bb','ss','ii')),
-    ('gr_and_const_XX',             ('bb','ss','ii')),
-    ('gr_or_XX',                    ('bb','ss','ii')),
-    ('gr_not_XX',                   ('bb','ss','ii')),
-    ('gr_sample_and_hold_XX',       ('bb','ss','ii','ff')),
-    ('gr_argmax_XX',                ('fs','is','ss')),
-    ('gr_max_XX',                   ('ff','ii','ss')),
-    ('gr_peak_detector_XX',         ('fb','ib','sb')),
-    ('gr_multiply_XX',              ('ss','ii')),
-    ('gr_multiply_const_XX',        ('ss','ii')),
-    ('gr_add_XX',                   ('ss','cc','ii'))
-    )
+    ('gr_unpacked_to_packed_XX',    ('bb', 'ss', 'ii')),
+    ('gr_packed_to_unpacked_XX',    ('bb', 'ss', 'ii')),
+    ('gr_xor_XX',                   ('bb', 'ss', 'ii')),
+    ('gr_and_XX',                   ('bb', 'ss', 'ii')),
+    ('gr_and_const_XX',             ('bb', 'ss', 'ii')),
+    ('gr_or_XX',                    ('bb', 'ss', 'ii')),
+    ('gr_not_XX',                   ('bb', 'ss', 'ii')),
+    ('gr_sample_and_hold_XX',       ('bb', 'ss', 'ii', 'ff')),
+    ('gr_argmax_XX',                ('fs', 'is', 'ss')),
+    ('gr_max_XX',                   ('ff', 'ii', 'ss')),
+    ('gr_peak_detector_XX',         ('fb', 'ib', 'sb')),
+    ('gr_multiply_XX',              ('ss', 'ii')),
+    ('gr_multiply_const_XX',        ('ss', 'ii')),
+    ('gr_add_XX',                   ('ss', 'cc', 'ii'))
+)
 
 
-def expand_h_cc_i (root, sig):
+def expand_h_cc_i(root, sig):
     # root looks like 'gr_vector_sink_X'
-    name = re.sub ('X+', sig, root)
-    d = standard_dict (name, sig)
-    expand_template (d, root + '.h.t')
-    expand_template (d, root + '.cc.t')
-    expand_template (d, root + '.i.t')
+    name = re.sub('X+', sig, root)
+    d = standard_dict(name, sig)
+    expand_template(d, root + '.h.t')
+    expand_template(d, root + '.cc.t')
+    expand_template(d, root + '.i.t')
 
 
-def generate ():
-    expand_h_cc_i ('gr_add_const_XX', 'sf')     # for MC4020
-    expand_h_cc_i ('gr_vector_sink_X', 'b')
-    expand_h_cc_i ('gr_vector_source_X', 'b')
-    expand_h_cc_i ('gr_probe_signal_X', 'b')
-    expand_h_cc_i ('gr_probe_signal_vX', 'b')
+def generate():
+    expand_h_cc_i('gr_add_const_XX', 'sf')     # for MC4020
+    expand_h_cc_i('gr_vector_sink_X', 'b')
+    expand_h_cc_i('gr_vector_source_X', 'b')
+    expand_h_cc_i('gr_probe_signal_X', 'b')
+    expand_h_cc_i('gr_probe_signal_vX', 'b')
     for r in ss_roots:
         for s in ss_signatures:
-            expand_h_cc_i (r, s)
-    for r in reg_roots :
+            expand_h_cc_i(r, s)
+    for r in reg_roots:
         for s in reg_signatures:
-            expand_h_cc_i (r, s)
+            expand_h_cc_i(r, s)
 
     for root, sigs in others:
         for s in sigs:
-            expand_h_cc_i (root, s)
-
+            expand_h_cc_i(root, s)
 
 
 if __name__ == '__main__':
-    generate ()
-
-
+    generate()

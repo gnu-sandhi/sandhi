@@ -32,12 +32,14 @@ from templates import Templates
 from code_generator import get_template
 import Cheetah.Template
 
+
 class ModToolAdd(ModTool):
     """ Add block to the out-of-tree module. """
     name = 'add'
     aliases = ('insert',)
     _block_types = ('sink', 'source', 'sync', 'decimator', 'interpolator',
                     'general', 'hier', 'noblock')
+
     def __init__(self):
         ModTool.__init__(self)
         self._add_cc_qa = False
@@ -47,19 +49,19 @@ class ModToolAdd(ModTool):
         parser = ModTool.setup_parser(self)
         ogroup = OptionGroup(parser, "Add module options")
         ogroup.add_option("-t", "--block-type", type="choice",
-                choices=self._block_types, default=None, help="One of %s." % ', '.join(self._block_types))
+                          choices=self._block_types, default=None, help="One of %s." % ', '.join(self._block_types))
         ogroup.add_option("--license-file", type="string", default=None,
-                help="File containing the license header for every source code file.")
+                          help="File containing the license header for every source code file.")
         ogroup.add_option("--argument-list", type="string", default=None,
-                help="The argument list for the constructor and make functions.")
+                          help="The argument list for the constructor and make functions.")
         ogroup.add_option("--add-python-qa", action="store_true", default=None,
-                help="If given, Python QA code is automatically added if possible.")
+                          help="If given, Python QA code is automatically added if possible.")
         ogroup.add_option("--add-cpp-qa", action="store_true", default=None,
-                help="If given, C++ QA code is automatically added if possible.")
+                          help="If given, C++ QA code is automatically added if possible.")
         ogroup.add_option("--skip-cmakefiles", action="store_true", default=False,
-                help="If given, only source files are written, but CMakeLists.txt files are left unchanged.")
+                          help="If given, only source files are written, but CMakeLists.txt files are left unchanged.")
         ogroup.add_option("-l", "--lang", type="choice", choices=('cpp', 'c++', 'python'),
-                default='cpp', help="Language (cpp or python)")
+                          default='cpp', help="Language (cpp or python)")
         parser.add_option_group(ogroup)
         return parser
 
@@ -78,7 +80,7 @@ class ModToolAdd(ModTool):
         print "Language: %s" % {'cpp': 'C++', 'python': 'Python'}[self._info['lang']]
 
         if ((self._skip_subdirs['lib'] and self._info['lang'] == 'cpp')
-             or (self._skip_subdirs['python'] and self._info['lang'] == 'python')):
+                or (self._skip_subdirs['python'] and self._info['lang'] == 'python')):
             print "Missing or skipping relevant subdir."
             exit(1)
 
@@ -86,18 +88,21 @@ class ModToolAdd(ModTool):
             if len(self.args) >= 2:
                 self._info['blockname'] = self.args[1]
             else:
-                self._info['blockname'] = raw_input("Enter name of block/code (without module name prefix): ")
+                self._info['blockname'] = raw_input(
+                    "Enter name of block/code (without module name prefix): ")
         if not re.match('[a-zA-Z0-9_]+', self._info['blockname']):
             print 'Invalid block name.'
             exit(2)
         print "Block/code identifier: " + self._info['blockname']
-        self._info['fullblockname'] = self._info['modname'] + '_' + self._info['blockname']
+        self._info['fullblockname'] = self._info[
+            'modname'] + '_' + self._info['blockname']
         self._info['license'] = self.setup_choose_license()
 
         if options.argument_list is not None:
             self._info['arglist'] = options.argument_list
         else:
-            self._info['arglist'] = raw_input('Enter valid argument list, including default arguments: ')
+            self._info['arglist'] = raw_input(
+                'Enter valid argument list, including default arguments: ')
 
         if not (self._info['blocktype'] in ('noblock') or self._skip_subdirs['python']):
             self._add_py_qa = options.add_python_qa
@@ -106,12 +111,12 @@ class ModToolAdd(ModTool):
         if self._info['lang'] == 'cpp':
             self._add_cc_qa = options.add_cpp_qa
             if self._add_cc_qa is None:
-                self._add_cc_qa = ask_yes_no('Add C++ QA code?', not self._add_py_qa)
+                self._add_cc_qa = ask_yes_no(
+                    'Add C++ QA code?', not self._add_py_qa)
         if self._info['version'] == 'autofoo' and not self.options.skip_cmakefiles:
             print "Warning: Autotools modules are not supported. ",
             print "Files will be created, but Makefiles will not be edited."
             self.options.skip_cmakefiles = True
-
 
     def setup_choose_license(self):
         """ Select a license by the following rules, in this order:
@@ -120,7 +125,7 @@ class ModToolAdd(ModTool):
            top directory
         3) The default license. """
         if self.options.license_file is not None \
-            and os.path.isfile(self.options.license_file):
+                and os.path.isfile(self.options.license_file):
             return open(self.options.license_file).read()
         elif os.path.isfile('LICENSE'):
             return open('LICENSE').read()
@@ -132,19 +137,20 @@ class ModToolAdd(ModTool):
     def _write_tpl(self, tpl, path, fname):
         """ Shorthand for writing a substituted template to a file"""
         print "Adding file '%s'..." % fname
-        open(os.path.join(path, fname), 'w').write(get_template(tpl, **self._info))
+        open(os.path.join(path, fname), 'w').write(
+            get_template(tpl, **self._info))
 
     def run(self):
         """ Go, go, go. """
         has_swig = (
-                self._info['lang'] == 'cpp'
-                and not self._skip_subdirs['swig']
+            self._info['lang'] == 'cpp'
+            and not self._skip_subdirs['swig']
         )
         has_grc = False
         if self._info['lang'] == 'cpp':
             self._run_lib()
             has_grc = has_swig
-        else: # Python
+        else:  # Python
             self._run_python()
             if self._info['blocktype'] != 'noblock':
                 has_grc = True
@@ -164,14 +170,15 @@ class ModToolAdd(ModTool):
         """
         def _add_qa():
             " Add C++ QA files for 3.7 API "
-            fname_qa_h  = 'qa_%s.h'  % self._info['blockname']
+            fname_qa_h = 'qa_%s.h' % self._info['blockname']
             fname_qa_cc = 'qa_%s.cc' % self._info['blockname']
             self._write_tpl('qa_cpp', 'lib', fname_qa_cc)
             self._write_tpl('qa_h',   'lib', fname_qa_h)
             if not self.options.skip_cmakefiles:
                 try:
                     append_re_line_sequence(self._file['cmlib'],
-                                            '\$\{CMAKE_CURRENT_SOURCE_DIR\}/qa_%s.cc.*\n' % self._info['modname'],
+                                            '\$\{CMAKE_CURRENT_SOURCE_DIR\}/qa_%s.cc.*\n' % self._info[
+                                                'modname'],
                                             '    ${CMAKE_CURRENT_SOURCE_DIR}/qa_%s.cc' % self._info['blockname'])
                     append_re_line_sequence(self._file['qalib'],
                                             '#include.*\n',
@@ -183,38 +190,41 @@ class ModToolAdd(ModTool):
                                             )
                 except IOError:
                     print "Can't add C++ QA files."
+
         def _add_qa36():
             " Add C++ QA files for pre-3.7 API (not autotools) "
             fname_qa_cc = 'qa_%s.cc' % self._info['fullblockname']
             self._write_tpl('qa_cpp36', 'lib', fname_qa_cc)
             if not self.options.skip_cmakefiles:
                 open(self._file['cmlib'], 'a').write(
-                        str(
-                            Cheetah.Template.Template(
-                                Templates['qa_cmakeentry36'],
-                                searchList={'basename': os.path.splitext(fname_qa_cc)[0],
-                                            'filename': fname_qa_cc,
-                                            'modname': self._info['modname']
-                                           }
-                            )
-                         )
+                    str(
+                        Cheetah.Template.Template(
+                            Templates['qa_cmakeentry36'],
+                            searchList={'basename': os.path.splitext(fname_qa_cc)[0],
+                                        'filename': fname_qa_cc,
+                                        'modname': self._info['modname']
+                                        }
+                        )
+                    )
                 )
                 ed = CMakeFileEditor(self._file['cmlib'])
                 ed.remove_double_newlines()
                 ed.write()
         fname_cc = None
-        fname_h  = None
-        if self._info['version']  == '37':
-            fname_h  = self._info['blockname'] + '.h'
+        fname_h = None
+        if self._info['version'] == '37':
+            fname_h = self._info['blockname'] + '.h'
             fname_cc = self._info['blockname'] + '.cc'
             if self._info['blocktype'] in ('source', 'sink', 'sync', 'decimator',
                                            'interpolator', 'general', 'hier'):
                 fname_cc = self._info['blockname'] + '_impl.cc'
-                self._write_tpl('block_impl_h',   'lib', self._info['blockname'] + '_impl.h')
+                self._write_tpl('block_impl_h',   'lib', self._info[
+                                'blockname'] + '_impl.h')
             self._write_tpl('block_impl_cpp', 'lib', fname_cc)
-            self._write_tpl('block_def_h',    self._info['includedir'], fname_h)
-        else: # Pre-3.7 or autotools
-            fname_h  = self._info['fullblockname'] + '.h'
+            self._write_tpl('block_def_h',    self._info[
+                            'includedir'], fname_h)
+        else:  # Pre-3.7 or autotools
+            fname_h = self._info['fullblockname'] + '.h'
             fname_cc = self._info['fullblockname'] + '.cc'
             self._write_tpl('block_h36',   self._info['includedir'], fname_h)
             self._write_tpl('block_cpp36', 'lib',                    fname_cc)
@@ -224,7 +234,8 @@ class ModToolAdd(ModTool):
                 ed.append_value('add_library', fname_cc)
             ed.write()
             ed = CMakeFileEditor(self._file['cminclude'])
-            ed.append_value('install', fname_h, to_ignore_end='DESTINATION[^()]+')
+            ed.append_value('install', fname_h,
+                            to_ignore_end='DESTINATION[^()]+')
             ed.write()
         if self._add_cc_qa:
             if self._info['version'] == '37':
@@ -248,12 +259,13 @@ class ModToolAdd(ModTool):
         swig_block_magic_str = get_template('swig_block_magic', **self._info)
         open(self._file['swig'], 'a').write(swig_block_magic_str)
         include_str = '#include "%s%s%s.h"' % (
-                self._info['modname'],
-                mod_block_sep,
-                self._info['blockname'])
+            self._info['modname'],
+            mod_block_sep,
+            self._info['blockname'])
         if re.search('#include', open(self._file['swig'], 'r').read()):
-            append_re_line_sequence(self._file['swig'], '^#include.*\n', include_str)
-        else: # I.e., if the swig file is empty
+            append_re_line_sequence(
+                self._file['swig'], '^#include.*\n', include_str)
+        else:  # I.e., if the swig file is empty
             oldfile = open(self._file['swig'], 'r').read()
             regexp = re.compile('^%\{\n', re.MULTILINE)
             oldfile = regexp.sub('%%{\n%s\n' % include_str, oldfile, count=1)
@@ -272,8 +284,8 @@ class ModToolAdd(ModTool):
             return
         print "Editing python/CMakeLists.txt..."
         open(self._file['cmpython'], 'a').write(
-                'GR_ADD_TEST(qa_%s ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/%s)\n' % \
-                  (self._info['blockname'], fname_py_qa))
+            'GR_ADD_TEST(qa_%s ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/%s)\n' %
+            (self._info['blockname'], fname_py_qa))
 
     def _run_python(self):
         """ Do everything that needs doing in the subdir 'python' to add
@@ -290,7 +302,8 @@ class ModToolAdd(ModTool):
         if self.options.skip_cmakefiles:
             return
         ed = CMakeFileEditor(self._file['cmpython'])
-        ed.append_value('GR_PYTHON_INSTALL', fname_py, to_ignore_end='DESTINATION[^()]+')
+        ed.append_value('GR_PYTHON_INSTALL', fname_py,
+                        to_ignore_end='DESTINATION[^()]+')
         ed.write()
 
     def _run_grc(self):
@@ -305,6 +318,6 @@ class ModToolAdd(ModTool):
         if self.options.skip_cmakefiles or ed.check_for_glob('*.xml'):
             return
         print "Editing grc/CMakeLists.txt..."
-        ed.append_value('install', fname_grc, to_ignore_end='DESTINATION[^()]+')
+        ed.append_value('install', fname_grc,
+                        to_ignore_end='DESTINATION[^()]+')
         ed.write()
-

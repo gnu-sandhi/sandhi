@@ -26,9 +26,12 @@ except ImportError:
     from gnuradio.grc.python.Platform import Platform
 
 from optparse import OptionParser
-import os, sys
+import os
+import sys
+
 
 class grcc:
+
     def __init__(self, grcfile, out_dir):
         self.out_dir = out_dir
         self.platform = Platform()
@@ -44,23 +47,24 @@ class grcc:
     def exec_program(self):
         progname = self.fg.get_option('id')
         os.system("{0}/{1}.py".format(self.out_dir, progname))
-        
+
 if __name__ == "__main__":
-    usage="%prog: [options] filename"
+    usage = "%prog: [options] filename"
     description = "Compiles a GRC file (.grc) into a GNU Radio Python program. The program is stored in ~/.grc_gnuradio by default, but this location can be changed with the -d option."
 
-    parser = OptionParser(conflict_handler="resolve", usage=usage, description=description)
+    parser = OptionParser(conflict_handler="resolve",
+                          usage=usage, description=description)
     parser.add_option("-d", "--directory", type="string", default='{0}/.grc_gnuradio/'.format(os.environ["HOME"]),
                       help="Specify the directory to output the compile program [default=%default]")
     parser.add_option("-e", "--execute", action="store_true", default=False,
                       help="Run the program after compiling [default=%default]")
-    (options, args) = parser.parse_args ()
+    (options, args) = parser.parse_args()
 
     if(len(args) != 1):
         sys.stderr.write("Please specify a GRC file name to compile.\n")
         sys.exit(1)
 
-    g = grcc(args[0], options.directory+"/")
+    g = grcc(args[0], options.directory + "/")
 
     if(options.execute):
         g.exec_program()

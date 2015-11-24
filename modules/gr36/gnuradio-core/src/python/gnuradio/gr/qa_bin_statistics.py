@@ -25,7 +25,7 @@ import random
 import struct
 
 #import os
-#print "pid =", os.getpid()
+# print "pid =", os.getpid()
 #raw_input("Attach gdb and press return...")
 
 """
@@ -33,20 +33,23 @@ Note: The QA tests below have been disabled by renaming them from test_*
 to xtest_*.  See ticket:199 on http://gnuradio.org/trac/ticket/199
 """
 
+
 class counter(gr.feval_dd):
+
     def __init__(self, step_size=1):
         gr.feval_dd.__init__(self)
         self.step_size = step_size
         self.count = 0
 
     def eval(self, input):
-        #print "eval: self.count =", self.count
+        # print "eval: self.count =", self.count
         t = self.count
         self.count = self.count + self.step_size
         return t
 
 
 class counter3(gr.feval_dd):
+
     def __init__(self, f, step_size):
         gr.feval_dd.__init__(self)
         self.f = f
@@ -55,7 +58,7 @@ class counter3(gr.feval_dd):
 
     def eval(self, input):
         try:
-            #print "eval: self.count =", self.count
+            # print "eval: self.count =", self.count
             t = self.count
             self.count = self.count + self.step_size
             self.f(self.count)
@@ -63,12 +66,14 @@ class counter3(gr.feval_dd):
             print "Exception: ", e
         return t
 
+
 def foobar3(new_t):
-    #print "foobar3: new_t =", new_t
+    # print "foobar3: new_t =", new_t
     pass
 
 
 class counter4(gr.feval_dd):
+
     def __init__(self, obj_instance, step_size):
         gr.feval_dd.__init__(self)
         self.obj_instance = obj_instance
@@ -77,7 +82,7 @@ class counter4(gr.feval_dd):
 
     def eval(self, input):
         try:
-            #print "eval: self.count =", self.count
+            # print "eval: self.count =", self.count
             t = self.count
             self.count = self.count + self.step_size
             self.obj_instance.foobar4(self.count)
@@ -87,6 +92,7 @@ class counter4(gr.feval_dd):
 
 
 class parse_msg(object):
+
     def __init__(self, msg):
         self.center_freq = msg.arg1()
         self.vlen = int(msg.arg2())
@@ -94,10 +100,12 @@ class parse_msg(object):
         self.data = struct.unpack('%df' % (self.vlen,), msg.to_string())
 
 # FIXME: see ticket:199
+
+
 class xtest_bin_statistics(gr_unittest.TestCase):
 
     def setUp(self):
-        self.tb = gr.top_block ()
+        self.tb = gr.top_block()
 
     def tearDown(self):
         self.tb = None
@@ -110,18 +118,18 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         msgq = gr.msg_queue()
 
         src_data = tuple([float(x) for x in
-                          ( 1,  2,  3,  4,
-                            5,  6,  7,  8,
-                            9, 10, 11, 12,
-                            13, 14, 15, 16
-                            )])
+                          (1,  2,  3,  4,
+                           5,  6,  7,  8,
+                           9, 10, 11, 12,
+                           13, 14, 15, 16
+                           )])
 
         expected_results = tuple([float(x) for x in
-                                  ( 1,  2,  3,  4,
-                                    5,  6,  7,  8,
-                                    9, 10, 11, 12,
-                                    13, 14, 15, 16
-                                    )])
+                                  (1,  2,  3,  4,
+                                   5,  6,  7,  8,
+                                   9, 10, 11, 12,
+                                   13, 14, 15, 16
+                                   )])
 
         src = gr.vector_source_f(src_data, False)
         s2v = gr.stream_to_vector(gr.sizeof_float, vlen)
@@ -131,8 +139,9 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         self.assertEqual(4, msgq.count())
         for i in range(4):
             m = parse_msg(msgq.delete_head())
-            #print "m =", m.center_freq, m.data
-            self.assertEqual(expected_results[vlen*i:vlen*i + vlen], m.data)
+            # print "m =", m.center_freq, m.data
+            self.assertEqual(expected_results[
+                             vlen * i:vlen * i + vlen], m.data)
 
     def xtest_002(self):
         vlen = 4
@@ -142,14 +151,14 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         msgq = gr.msg_queue()
 
         src_data = tuple([float(x) for x in
-                          ( 1,  2,  3,  4,
-                            9,  6, 11,  8,
-                            5, 10,  7, 12,
-                            13, 14, 15, 16
-                            )])
+                          (1,  2,  3,  4,
+                           9,  6, 11,  8,
+                           5, 10,  7, 12,
+                           13, 14, 15, 16
+                           )])
 
         expected_results = tuple([float(x) for x in
-                                  ( 9, 10, 11, 12)])
+                                  (9, 10, 11, 12)])
 
         src = gr.vector_source_f(src_data, False)
         s2v = gr.stream_to_vector(gr.sizeof_float, vlen)
@@ -159,10 +168,9 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         self.assertEqual(1, msgq.count())
         for i in range(1):
             m = parse_msg(msgq.delete_head())
-            #print "m =", m.center_freq, m.data
-            self.assertEqual(expected_results[vlen*i:vlen*i + vlen], m.data)
-
-
+            # print "m =", m.center_freq, m.data
+            self.assertEqual(expected_results[
+                             vlen * i:vlen * i + vlen], m.data)
 
     def xtest_003(self):
         vlen = 4
@@ -172,14 +180,14 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         msgq = gr.msg_queue()
 
         src_data = tuple([float(x) for x in
-                          ( 1,  2,  3,  4,
-                            9,  6, 11,  8,
-                            5, 10,  7, 12,
-                            13, 14, 15, 16
-                            )])
+                          (1,  2,  3,  4,
+                           9,  6, 11,  8,
+                           5, 10,  7, 12,
+                           13, 14, 15, 16
+                           )])
 
         expected_results = tuple([float(x) for x in
-                                  ( 9, 10, 11, 12)])
+                                  (9, 10, 11, 12)])
 
         src = gr.vector_source_f(src_data, False)
         s2v = gr.stream_to_vector(gr.sizeof_float, vlen)
@@ -189,12 +197,12 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         self.assertEqual(1, msgq.count())
         for i in range(1):
             m = parse_msg(msgq.delete_head())
-            #print "m =", m.center_freq, m.data
-            self.assertEqual(expected_results[vlen*i:vlen*i + vlen], m.data)
-
+            # print "m =", m.center_freq, m.data
+            self.assertEqual(expected_results[
+                             vlen * i:vlen * i + vlen], m.data)
 
     def foobar4(self, new_t):
-        #print "foobar4: new_t =", new_t
+        # print "foobar4: new_t =", new_t
         pass
 
     def xtest_004(self):
@@ -205,14 +213,14 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         msgq = gr.msg_queue()
 
         src_data = tuple([float(x) for x in
-                          ( 1,  2,  3,  4,
-                            9,  6, 11,  8,
-                            5, 10,  7, 12,
-                            13, 14, 15, 16
-                            )])
+                          (1,  2,  3,  4,
+                           9,  6, 11,  8,
+                           5, 10,  7, 12,
+                           13, 14, 15, 16
+                           )])
 
         expected_results = tuple([float(x) for x in
-                                  ( 9, 10, 11, 12)])
+                                  (9, 10, 11, 12)])
 
         src = gr.vector_source_f(src_data, False)
         s2v = gr.stream_to_vector(gr.sizeof_float, vlen)
@@ -222,9 +230,10 @@ class xtest_bin_statistics(gr_unittest.TestCase):
         self.assertEqual(1, msgq.count())
         for i in range(1):
             m = parse_msg(msgq.delete_head())
-            #print "m =", m.center_freq, m.data
-            self.assertEqual(expected_results[vlen*i:vlen*i + vlen], m.data)
+            # print "m =", m.center_freq, m.data
+            self.assertEqual(expected_results[
+                             vlen * i:vlen * i + vlen], m.data)
 
 
 if __name__ == '__main__':
-   gr_unittest.run(xtest_bin_statistics, "test_bin_statistics.xml")
+    gr_unittest.run(xtest_bin_statistics, "test_bin_statistics.xml")

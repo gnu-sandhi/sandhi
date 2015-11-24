@@ -24,7 +24,9 @@
 Generate code for uniform numeric vectors
 """
 
-import re, os, os.path
+import re
+import os
+import os.path
 
 
 unv_types = (
@@ -40,7 +42,7 @@ unv_types = (
     ('f64', 'double'),
     ('c32', 'std::complex<float>'),
     ('c64', 'std::complex<double>')
-    )
+)
 
 header = """\
 /* -*- c++ -*- */
@@ -97,13 +99,14 @@ except KeyError, e:
 srcdir = srcdir + '/'
 
 
-def open_src (name, mode):
+def open_src(name, mode):
     global srcdir
-    return open(os.path.join (srcdir, name), mode)
+    return open(os.path.join(srcdir, name), mode)
 
 
 def guard_name(filename):
     return 'INCLUDED_' + re.sub('\.', '_', filename.upper())
+
 
 def guard_head(filename):
     guard = guard_name(filename)
@@ -113,14 +116,14 @@ def guard_head(filename):
 """ % (guard, guard)
 
 
-def do_substitution (d, input, out_file):
-    def repl (match_obj):
-        key = match_obj.group (1)
+def do_substitution(d, input, out_file):
+    def repl(match_obj):
+        key = match_obj.group(1)
         # print key
         return d[key]
 
-    out = re.sub (r"@([a-zA-Z0-9_]+)@", repl, input)
-    out_file.write (out)
+    out = re.sub(r"@([a-zA-Z0-9_]+)@", repl, input)
+    out_file.write(out)
 
 
 def generate_h():
@@ -130,9 +133,10 @@ def generate_h():
     output.write(header)
     output.write(guard_head(output_filename))
     for tag, typ in unv_types:
-        d = { 'TAG' : tag, 'TYPE' : typ }
+        d = {'TAG': tag, 'TYPE': typ}
         do_substitution(d, template, output)
     output.write(guard_tail)
+
 
 def generate_cc():
     template = open_src('unv_template.cc.t', 'r').read()
@@ -140,7 +144,7 @@ def generate_cc():
     output.write(header)
     output.write(includes)
     for tag, typ in unv_types:
-        d = { 'TAG' : tag, 'TYPE' : typ }
+        d = {'TAG': tag, 'TYPE': typ}
         do_substitution(d, template, output)
 
 
@@ -170,13 +174,14 @@ class qa_pmt_unv : public CppUnit::TestCase {
     output.write('};\n')
     output.write(guard_tail)
 
+
 def generate_qa_cc():
     template = open_src('unv_qa_template.cc.t', 'r').read()
     output = open('qa_pmt_unv.cc', 'w')
     output.write(header)
     output.write(qa_includes)
     for tag, typ in unv_types:
-        d = { 'TAG' : tag, 'TYPE' : typ }
+        d = {'TAG': tag, 'TYPE': typ}
         do_substitution(d, template, output)
 
 

@@ -28,14 +28,17 @@ import sys
 try:
     from gnuradio import audio
 except ImportError:
-    sys.stderr.write("Failed to import gnuradio.audio. Make sure gr-audio component is installed.\n")
+    sys.stderr.write(
+        "Failed to import gnuradio.audio. Make sure gr-audio component is installed.\n")
     sys.exit(1)
 
+
 class audio_source(gr.top_block):
+
     def __init__(self, host, port, pkt_size, sample_rate, eof):
         gr.top_block.__init__(self, "audio_source")
         self.audio = audio.source(sample_rate)
-	self.sink = gr.udp_sink(gr.sizeof_float, host, port, pkt_size, eof=eof)
+        self.sink = gr.udp_sink(gr.sizeof_float, host, port, pkt_size, eof=eof)
         self.connect(self.audio, self.sink)
 
 if __name__ == '__main__':
@@ -46,7 +49,7 @@ if __name__ == '__main__':
                       help="port number to connect to")
     parser.add_option("", "--packet-size", type="int", default=1472,
                       help="packet size.")
-    parser.add_option("-r", "--sample-rate", type="int", default=32000 ,
+    parser.add_option("-r", "--sample-rate", type="int", default=32000,
                       help="audio signal sample rate [default=%default]")
     parser.add_option("", "--no-eof", action="store_true", default=False,
                       help="don't send EOF on disconnect")
@@ -66,4 +69,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         # Ctrl-C exits
         pass
-

@@ -24,6 +24,7 @@ from gnuradio import gr, gr_unittest
 import blocks_swig as blocks
 import math
 
+
 class test_transcendental(gr_unittest.TestCase):
 
     def setUp(self):
@@ -35,8 +36,8 @@ class test_transcendental(gr_unittest.TestCase):
     def test_01(self):
         tb = self.tb
 
-        data = 100*[0,]
-        expected_result = 100*[1,]
+        data = 100 * [0, ]
+        expected_result = 100 * [1, ]
 
         src = gr.vector_source_f(data, False)
         op = blocks.transcendental("cos", "float")
@@ -53,8 +54,8 @@ class test_transcendental(gr_unittest.TestCase):
     def test_02(self):
         tb = self.tb
 
-        data = 100*[3,]
-        expected_result = 100*[math.log10(3),]
+        data = 100 * [3, ]
+        expected_result = 100 * [math.log10(3), ]
 
         src = gr.vector_source_f(data, False)
         op = blocks.transcendental("log10", "float")
@@ -71,8 +72,8 @@ class test_transcendental(gr_unittest.TestCase):
     def test_03(self):
         tb = self.tb
 
-        data = 100*[3,]
-        expected_result = 100*[math.tanh(3),]
+        data = 100 * [3, ]
+        expected_result = 100 * [math.tanh(3), ]
 
         src = gr.vector_source_f(data, False)
         op = blocks.transcendental("tanh", "float")

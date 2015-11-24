@@ -27,10 +27,12 @@ from optparse import OptionGroup
 from gnuradio import gr
 from modtool_base import ModTool
 
+
 class ModToolNewModule(ModTool):
     """ Create a new out-of-tree module """
     name = 'newmod'
     aliases = ('nm', 'create')
+
     def __init__(self):
         ModTool.__init__(self)
 
@@ -40,7 +42,7 @@ class ModToolNewModule(ModTool):
         parser.usage = '%prog nm [options]. \n Call %prog without any options to run it interactively.'
         ogroup = OptionGroup(parser, "New out-of-tree module options")
         ogroup.add_option("--srcdir", type="string",
-                help="Source directory for the module template.")
+                          help="Source directory for the module template.")
         parser.add_option_group(ogroup)
         return parser
 
@@ -61,7 +63,7 @@ class ModToolNewModule(ModTool):
         try:
             os.stat(self._dir)
         except OSError:
-            pass # This is what should happen
+            pass  # This is what should happen
         else:
             print 'The given directory exists.'
             exit(2)
@@ -94,9 +96,10 @@ class ModToolNewModule(ModTool):
                 s = s.replace('HOWTO', self._info['modname'].upper())
                 open(f, 'w').write(s)
                 if filename.find('howto') != -1:
-                    os.rename(f, os.path.join(root, filename.replace('howto', self._info['modname'])))
+                    os.rename(f, os.path.join(root, filename.replace(
+                        'howto', self._info['modname'])))
             if os.path.basename(root) == 'howto':
-                os.rename(root, os.path.join(os.path.dirname(root), self._info['modname']))
+                os.rename(root, os.path.join(
+                    os.path.dirname(root), self._info['modname']))
         print "Done."
         print "Use 'gr_modtool add' to add a new block to this currently empty module."
-

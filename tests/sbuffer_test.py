@@ -5,6 +5,7 @@ import gras
 from PMC import *
 import numpy
 
+
 class SBufferTest(unittest.TestCase):
 
     def test_make_config(self):
@@ -50,7 +51,7 @@ class SBufferTest(unittest.TestCase):
         a1 = s.get()
         self.assertEqual(tuple(a1), (1, 2, 3, 4))
 
-        #now offset the start of buffer
+        # now offset the start of buffer
         s.offset = 2
         s.length = 2
         a2 = s.get()

@@ -31,7 +31,8 @@ if style == 'auto' or style == 'gl':
         from scopesink_gl import scope_sink_f, scope_sink_c
     except ImportError:
         if style == 'gl':
-            raise RuntimeError("Unable to import OpenGL.  Are Python wrappers for OpenGL installed?")
+            raise RuntimeError(
+                "Unable to import OpenGL.  Are Python wrappers for OpenGL installed?")
         else:
             # Fall backto non-gl sinks
             from scopesink_nongl import scope_sink_f, scope_sink_c

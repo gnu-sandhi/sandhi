@@ -22,15 +22,18 @@
 import re
 import sys
 
+
 def dummy_translator(the_type, default_v=None):
     """ Doesn't really translate. """
     return the_type
 
+
 class ParserCCBlock(object):
     """ Class to read blocks written in C++ """
+
     def __init__(self, filename_cc, filename_h, blockname, version, type_trans=dummy_translator):
         self.code_cc = open(filename_cc).read()
-        self.code_h  = open(filename_h).read()
+        self.code_h = open(filename_h).read()
         self.blockname = blockname
         self.type_trans = type_trans
         self.version = version
@@ -45,14 +48,16 @@ class ParserCCBlock(object):
                 print 'tbi'
                 raise ValueError
             return {'type': [_typestr_to_iotype(x) for x in typestr.split(',')],
-                    'vlen': [_typestr_to_vlen(x)   for x in typestr.split(',')]
-                   }
+                    'vlen': [_typestr_to_vlen(x) for x in typestr.split(',')]
+                    }
+
         def _typestr_to_iotype(typestr):
             """ Convert a type string (e.g. sizeof(int) * vlen) to the type (e.g. 'int'). """
             type_match = re.search('sizeof\s*\(([^)]*)\)', typestr)
             if type_match is None:
                 return self.type_trans('char')
             return self.type_trans(type_match.group(1))
+
         def _typestr_to_vlen(typestr):
             """ From a type identifier, returns the vector length of the block's
             input/out. E.g., for 'sizeof(int) * 10', it returns 10. For
@@ -76,7 +81,8 @@ class ParserCCBlock(object):
                       '\s*(?P<intype>(\([^\)]*\)|[^)])+)\),\s*' + \
                       '(?P<outcall>gr_make_io_signature[23v]?)\s*\(\s*(?P<outmin>[^,]+),\s*(?P<outmax>[^,]+),' + \
                       '\s*(?P<outtype>(\([^\)]*\)|[^)])+)\)'
-        iosig_match = re.compile(iosig_regex, re.MULTILINE).search(self.code_cc)
+        iosig_match = re.compile(
+            iosig_regex, re.MULTILINE).search(self.code_cc)
         try:
             iosig['in'] = _figure_out_iotype_and_vlen(iosig_match.group('incall'),
                                                       iosig_match.group('intype'))
@@ -93,7 +99,6 @@ class ParserCCBlock(object):
             print "Error: Can't parse output signature."
         return iosig
 
-
     def read_params(self):
         """ Read the parameters required to initialize the block """
         def _scan_param_list(start_idx):
@@ -109,8 +114,8 @@ class ParserCCBlock(object):
             param_list = []
             read_state = 'type'
             in_string = False
-            parens_count = 0 # Counts ()
-            brackets_count = 0 # Counts <>
+            parens_count = 0  # Counts ()
+            brackets_count = 0  # Counts <>
             end_of_list = False
             this_type = ''
             this_name = ''
@@ -123,18 +128,20 @@ class ParserCCBlock(object):
                         if parens_count == 0:
                             if read_state == 'type' and len(this_type):
                                 raise ValueError(
-                                        'Found closing parentheses before finishing last argument (this is how far I got: %s)'
-                                        % str(param_list)
+                                    'Found closing parentheses before finishing last argument (this is how far I got: %s)'
+                                    % str(param_list)
                                 )
                             if len(this_type):
-                                param_list.append((this_type, this_name, this_defv))
+                                param_list.append(
+                                    (this_type, this_name, this_defv))
                             end_of_list = True
                             break
                         else:
                             parens_count -= 1
                     elif c[i] == '(':
                         parens_count += 1
-                # Parameter type (int, const std::string, std::vector<gr_complex>, unsigned long ...)
+                # Parameter type (int, const std::string,
+                # std::vector<gr_complex>, unsigned long ...)
                 if read_state == 'type':
                     if c[i] == '<':
                         brackets_count += 1
@@ -147,9 +154,9 @@ class ParserCCBlock(object):
                         while c[i] in WHITESPACE:
                             i += 1
                             continue
-                        if this_type == 'const' or this_type == '': # Ignore this
+                        if this_type == 'const' or this_type == '':  # Ignore this
                             this_type = ''
-                        elif this_type == 'unsigned': # Continue
+                        elif this_type == 'unsigned':  # Continue
                             this_type += ' '
                             continue
                         else:
@@ -165,16 +172,16 @@ class ParserCCBlock(object):
                     elif c[i] == '=':
                         if parens_count != 0:
                             raise ValueError(
-                                    'While parsing argument %d (%s): name finished but no closing parentheses.'
-                                    % (len(param_list)+1, this_type + ' ' + this_name)
+                                'While parsing argument %d (%s): name finished but no closing parentheses.'
+                                % (len(param_list) + 1, this_type + ' ' + this_name)
                             )
                         read_state = 'defv'
                         i += 1
                     elif c[i] == ',':
                         if parens_count:
                             raise ValueError(
-                                    'While parsing argument %d (%s): name finished but no closing parentheses.'
-                                    % (len(param_list)+1, this_type + ' ' + this_name)
+                                'While parsing argument %d (%s): name finished but no closing parentheses.'
+                                % (len(param_list) + 1, this_type + ' ' + this_name)
                             )
                         read_state = 'defv'
                     else:
@@ -184,15 +191,15 @@ class ParserCCBlock(object):
                 # Default value
                 if read_state == 'defv':
                     if in_string:
-                        if c[i] == '"' and c[i-1] != '\\':
+                        if c[i] == '"' and c[i - 1] != '\\':
                             in_string = False
                         else:
                             this_defv += c[i]
                     elif c[i] == ',':
                         if parens_count:
                             raise ValueError(
-                                    'While parsing argument %d (%s): default value finished but no closing parentheses.'
-                                    % (len(param_list)+1, this_type + ' ' + this_name)
+                                'While parsing argument %d (%s): default value finished but no closing parentheses.'
+                                % (len(param_list) + 1, this_type + ' ' + this_name)
                             )
                         read_state = 'type'
                         param_list.append((this_type, this_name, this_defv))
@@ -222,4 +229,3 @@ class ParserCCBlock(object):
                            'default': plist[2],
                            'in_constructor': True})
         return params
-

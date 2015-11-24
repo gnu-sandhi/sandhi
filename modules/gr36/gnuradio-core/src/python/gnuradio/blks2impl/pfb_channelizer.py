@@ -22,6 +22,7 @@
 
 from gnuradio import gr, optfir
 
+
 class pfb_channelizer_ccf(gr.hier_block2):
     '''
     Make a Polyphase Filter channelizer (complex in, complex out, floating-point taps)
@@ -29,10 +30,12 @@ class pfb_channelizer_ccf(gr.hier_block2):
     This simplifies the interface by allowing a single input stream to connect to this block.
     It will then output a stream for each channel.
     '''
+
     def __init__(self, numchans, taps=None, oversample_rate=1, atten=100):
-	gr.hier_block2.__init__(self, "pfb_channelizer_ccf",
-				gr.io_signature(1, 1, gr.sizeof_gr_complex), # Input signature
-				gr.io_signature(numchans, numchans, gr.sizeof_gr_complex)) # Output signature
+        gr.hier_block2.__init__(self, "pfb_channelizer_ccf",
+                                # Input signature
+                                gr.io_signature(1, 1, gr.sizeof_gr_complex),
+                                gr.io_signature(numchans, numchans, gr.sizeof_gr_complex))  # Output signature
 
         self._nchans = numchans
         self._oversample_rate = oversample_rate
@@ -40,23 +43,28 @@ class pfb_channelizer_ccf(gr.hier_block2):
         if taps is not None:
             self._taps = taps
         else:
-            # Create a filter that covers the full bandwidth of the input signal
+            # Create a filter that covers the full bandwidth of the input
+            # signal
             bw = 0.4
             tb = 0.2
             ripple = 0.1
             made = False
             while not made:
                 try:
-                    self._taps = optfir.low_pass(1, self._nchans, bw, bw+tb, ripple, atten)
+                    self._taps = optfir.low_pass(
+                        1, self._nchans, bw, bw + tb, ripple, atten)
                     made = True
                 except RuntimeError:
                     ripple += 0.01
                     made = False
-                    print("Warning: set ripple to %.4f dB. If this is a problem, adjust the attenuation or create your own filter taps." % (ripple))
+                    print(
+                        "Warning: set ripple to %.4f dB. If this is a problem, adjust the attenuation or create your own filter taps." % (ripple))
 
-                    # Build in an exit strategy; if we've come this far, it ain't working.
+                    # Build in an exit strategy; if we've come this far, it
+                    # ain't working.
                     if(ripple >= 1.0):
-                        raise RuntimeError("optfir could not generate an appropriate filter.")
+                        raise RuntimeError(
+                            "optfir could not generate an appropriate filter.")
 
         self.s2ss = gr.stream_to_streams(gr.sizeof_gr_complex, self._nchans)
         self.pfb = gr.pfb_channelizer_ccf(self._nchans, self._taps,
@@ -64,10 +72,8 @@ class pfb_channelizer_ccf(gr.hier_block2):
         self.connect(self, self.s2ss)
 
         for i in xrange(self._nchans):
-            self.connect((self.s2ss,i), (self.pfb,i))
-            self.connect((self.pfb,i), (self,i))
+            self.connect((self.s2ss, i), (self.pfb, i))
+            self.connect((self.pfb, i), (self, i))
 
     def set_channel_map(self, newmap):
         self.pfb.set_channel_map(newmap)
-
-

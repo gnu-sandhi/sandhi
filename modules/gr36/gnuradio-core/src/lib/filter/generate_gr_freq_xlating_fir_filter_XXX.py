@@ -26,28 +26,30 @@ from generate_utils import *
 
 # files to generate
 
-fx_signatures = [ 'scf', 'scc', 'fcf', 'fcc', 'ccf', 'ccc' ]
+fx_signatures = ['scf', 'scc', 'fcf', 'fcc', 'ccf', 'ccc']
 
 roots = ['gr_freq_xlating_fir_filter_XXX']
 
-def expand_h_cc_i (root, code3):
-    d = init_dict (root, code3)
-    expand_template (d, root + '.h.t')
-    expand_template (d, root + '.cc.t')
-    expand_template (d, root + '.i.t')
 
-def init_dict (root, code3):
-    name = re.sub ('X+', code3, root)
-    d = standard_dict (name, code3)
-    d['FIR_TYPE'] = 'gr_fir_' + i_code (code3) + 'cc'
+def expand_h_cc_i(root, code3):
+    d = init_dict(root, code3)
+    expand_template(d, root + '.h.t')
+    expand_template(d, root + '.cc.t')
+    expand_template(d, root + '.i.t')
+
+
+def init_dict(root, code3):
+    name = re.sub('X+', code3, root)
+    d = standard_dict(name, code3)
+    d['FIR_TYPE'] = 'gr_fir_' + i_code(code3) + 'cc'
     return d
 
 
-def generate ():
+def generate():
     for r in roots:
         for s in fx_signatures:
-            expand_h_cc_i (r, s)
+            expand_h_cc_i(r, s)
 
 
 if __name__ == '__main__':
-    generate ()
+    generate()

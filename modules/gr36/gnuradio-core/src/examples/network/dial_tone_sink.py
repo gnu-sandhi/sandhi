@@ -24,7 +24,9 @@ from gnuradio import gr, audio
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
 
+
 class dial_tone_sink(gr.top_block):
+
     def __init__(self, host, port, pkt_size, sample_rate, eof, wait):
         gr.top_block.__init__(self, "dial_tone_sink")
         udp = gr.udp_source(gr.sizeof_float, host, port, pkt_size,
@@ -62,4 +64,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         # Ctrl-C exits
         pass
-

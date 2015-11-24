@@ -20,30 +20,33 @@
 
 import wx
 
+
 class Panel(wx.Panel):
-	def __init__(self, parent, orient=wx.VERTICAL):
-		wx.Panel.__init__(self, parent)
-		self._box = wx.BoxSizer(orient)
-		self._grid = wx.GridBagSizer(5, 5)
-		self.Add(self._grid)
-		self.SetSizer(self._box)
 
-	def GetWin(self): return self
+    def __init__(self, parent, orient=wx.VERTICAL):
+        wx.Panel.__init__(self, parent)
+        self._box = wx.BoxSizer(orient)
+        self._grid = wx.GridBagSizer(5, 5)
+        self.Add(self._grid)
+        self.SetSizer(self._box)
 
-	def Add(self, win):
-		"""
-		Add a window to the wx vbox.
-		@param win the wx window
-		"""
-		self._box.Add(win, 0, wx.EXPAND)
+    def GetWin(self): return self
 
-	def GridAdd(self, win, row, col, row_span=1, col_span=1):
-		"""
-		Add a window to the wx grid at the given position.
-		@param win the wx window
-		@param row the row specification (integer >= 0)
-		@param col the column specification (integer >= 0)
-		@param row_span the row span specification (integer >= 1)
-		@param col_span the column span specification (integer >= 1)
-		"""
-		self._grid.Add(win, wx.GBPosition(row, col), wx.GBSpan(row_span, col_span), wx.EXPAND)
+    def Add(self, win):
+        """
+        Add a window to the wx vbox.
+        @param win the wx window
+        """
+        self._box.Add(win, 0, wx.EXPAND)
+
+    def GridAdd(self, win, row, col, row_span=1, col_span=1):
+        """
+        Add a window to the wx grid at the given position.
+        @param win the wx window
+        @param row the row specification (integer >= 0)
+        @param col the column specification (integer >= 0)
+        @param row_span the row span specification (integer >= 1)
+        @param col_span the column span specification (integer >= 1)
+        """
+        self._grid.Add(win, wx.GBPosition(row, col),
+                       wx.GBSpan(row_span, col_span), wx.EXPAND)

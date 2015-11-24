@@ -60,12 +60,12 @@ class _TestInfo(object):
         supplied stream.
 
         """
-        stream.write('  <testcase classname="%(class)s" name="%(method)s" time="%(time).4f">' % \
-            {
-                "class": self._class,
-                "method": self._method,
-                "time": self._time,
-            })
+        stream.write('  <testcase classname="%(class)s" name="%(method)s" time="%(time).4f">' %
+                     {
+                         "class": self._class,
+                         "method": self._method,
+                         "time": self._time,
+                     })
         if self._failure is not None:
             self._print_error(stream, 'failure', self._failure)
         if self._error is not None:
@@ -76,8 +76,8 @@ class _TestInfo(object):
         """Print information from a failure or error to the supplied stream."""
         text = escape(str(error[1]))
         stream.write('\n')
-        stream.write('    <%s type="%s">%s\n' \
-            % (tagname, _clsname(error[0]), text))
+        stream.write('    <%s type="%s">%s\n'
+                     % (tagname, _clsname(error[0]), text))
         tb_stream = StringIO()
         traceback.print_tb(error[2], None, tb_stream)
         stream.write(escape(tb_stream.getvalue()))
@@ -137,14 +137,14 @@ class _XMLTestResult(unittest.TestResult):
         output and standard error streams must be passed in.a
 
         """
-        stream.write('<testsuite errors="%(e)d" failures="%(f)d" ' % \
-            { "e": len(self.errors), "f": len(self.failures) })
-        stream.write('name="%(n)s" tests="%(t)d" time="%(time).3f">\n' % \
-            {
-                "n": self._test_name,
-                "t": self.testsRun,
-                "time": time_taken,
-            })
+        stream.write('<testsuite errors="%(e)d" failures="%(f)d" ' %
+                     {"e": len(self.errors), "f": len(self.failures)})
+        stream.write('name="%(n)s" tests="%(t)d" time="%(time).3f">\n' %
+                     {
+                         "n": self._test_name,
+                         "t": self.testsRun,
+                         "time": time_taken,
+                     })
         for info in self._tests:
             info.print_report(stream)
         stream.write('  <system-out><![CDATA[%s]]></system-out>\n' % out)
@@ -209,7 +209,7 @@ class XMLTestRunner(object):
         self._path = path
 
     path = property(lambda self: self._path, _set_path, None,
-            """The path where the XML files are stored.
+                    """The path where the XML files are stored.
 
             This property is ignored when the XML file is written to a file
             stream.""")
@@ -234,7 +234,6 @@ class XMLTestRunnerTest(unittest.TestCase):
         self._stream = StringIO()
 
     def _try_test_run(self, test_class, expected):
-
         """Run the test suite against the supplied test class and compare the
         XML result against the expected XML string. Fail if the expected
         string doesn't match the actual string. All time attributes in the
@@ -252,8 +251,10 @@ class XMLTestRunnerTest(unittest.TestCase):
         got = re.sub(r'time="\d+\.\d+"', 'time="0.000"', got)
         # Likewise, replace all failure and error messages by a simple "Foobar"
         # string.
-        got = re.sub(r'(?s)<failure (.*?)>.*?</failure>', r'<failure \1>Foobar</failure>', got)
-        got = re.sub(r'(?s)<error (.*?)>.*?</error>', r'<error \1>Foobar</error>', got)
+        got = re.sub(r'(?s)<failure (.*?)>.*?</failure>',
+                     r'<failure \1>Foobar</failure>', got)
+        got = re.sub(r'(?s)<error (.*?)>.*?</error>',
+                     r'<error \1>Foobar</error>', got)
         # And finally Python 3 compatibility.
         got = got.replace('type="builtins.', 'type="exceptions.')
 
@@ -278,6 +279,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
         """
         class TestTest(unittest.TestCase):
+
             def test_foo(self):
                 pass
         self._try_test_run(TestTest, """<testsuite errors="0" failures="0" name="unittest.TestSuite" tests="1" time="0.000">
@@ -293,6 +295,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
         """
         class TestTest(unittest.TestCase):
+
             def test_foo(self):
                 self.assert_(False)
         self._try_test_run(TestTest, """<testsuite errors="0" failures="1" name="unittest.TestSuite" tests="1" time="0.000">
@@ -310,6 +313,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
         """
         class TestTest(unittest.TestCase):
+
             def test_foo(self):
                 raise IndexError()
         self._try_test_run(TestTest, """<testsuite errors="1" failures="0" name="unittest.TestSuite" tests="1" time="0.000">
@@ -327,6 +331,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
         """
         class TestTest(unittest.TestCase):
+
             def test_foo(self):
                 sys.stdout.write("Test\n")
         self._try_test_run(TestTest, """<testsuite errors="0" failures="0" name="unittest.TestSuite" tests="1" time="0.000">
@@ -343,6 +348,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
         """
         class TestTest(unittest.TestCase):
+
             def test_foo(self):
                 sys.stderr.write("Test\n")
         self._try_test_run(TestTest, """<testsuite errors="0" failures="0" name="unittest.TestSuite" tests="1" time="0.000">
@@ -355,6 +361,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
     class NullStream(object):
         """A file-like object that discards everything written to it."""
+
         def write(self, buffer):
             pass
 
@@ -364,6 +371,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
         """
         class TestTest(unittest.TestCase):
+
             def test_foo(self):
                 sys.stdout = XMLTestRunnerTest.NullStream()
 
@@ -376,6 +384,7 @@ class XMLTestRunnerTest(unittest.TestCase):
 
         """
         class TestTest(unittest.TestCase):
+
             def test_foo(self):
                 sys.stderr = XMLTestRunnerTest.NullStream()
 

@@ -27,26 +27,28 @@ creating our textures in trade for about 4MBytes of additional memory usage for
 psyco. If you don't like loosing the memory you have to turn the lines following
 "enable psyco" into a comment while uncommenting the line after "Disable psyco".
 """
-#Try to enable psyco
+# Try to enable psyco
 try:
     import psyco
     psyco_optimized = False
 except ImportError:
     psyco = None
 
-#Disable psyco
+# Disable psyco
 #psyco = None
+
 
 class TextElement(object):
     """
     A simple class for using system Fonts to display
     text in an OpenGL scene
     """
+
     def __init__(self,
-                 text = '',
-                 font = None,
-                 foreground = wx.BLACK,
-                 centered = False):
+                 text='',
+                 font=None,
+                 foreground=wx.BLACK,
+                 centered=False):
         """
         text (String)         - Text
         font (wx.Font)        - Font to draw with (None = System default)
@@ -57,21 +59,20 @@ class TextElement(object):
         Initializes the TextElement
         """
         # save given variables
-        self._text        = text
-        self._lines       = text.split('\n')
-        self._font        = font
-        self._foreground  = foreground
-        self._centered    = centered
+        self._text = text
+        self._lines = text.split('\n')
+        self._font = font
+        self._foreground = foreground
+        self._centered = centered
 
         # init own variables
-        self._owner_cnt   = 0        #refcounter
-        self._texture     = None     #OpenGL texture ID
-        self._text_size   = None     #x/y size tuple of the text
-        self._texture_size= None     #x/y Texture size tuple
+        self._owner_cnt = 0  # refcounter
+        self._texture = None  # OpenGL texture ID
+        self._text_size = None  # x/y size tuple of the text
+        self._texture_size = None  # x/y Texture size tuple
 
         # create Texture
         self.createTexture()
-
 
     #---Internal helpers
 
@@ -87,7 +88,7 @@ class TextElement(object):
 
     #---Functions
 
-    def draw_text(self, position = wx.Point(0,0), scale = 1.0, rotation = 0):
+    def draw_text(self, position=wx.Point(0, 0), scale=1.0, rotation=0):
         """
         position (wx.Point)    - x/y Position to draw in scene
         scale    (float)       - Scale
@@ -95,35 +96,39 @@ class TextElement(object):
 
         Draws the text to the scene
         """
-        #Enable necessary functions
-        glColor(1,1,1,1)
+        # Enable necessary functions
+        glColor(1, 1, 1, 1)
         glEnable(GL_TEXTURE_2D)
-        glEnable(GL_ALPHA_TEST)       #Enable alpha test
+        glEnable(GL_ALPHA_TEST)  # Enable alpha test
         glAlphaFunc(GL_GREATER, 0)
-        glEnable(GL_BLEND)            #Enable blending
+        glEnable(GL_BLEND)  # Enable blending
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        #Bind texture
+        # Bind texture
         glBindTexture(GL_TEXTURE_2D, self._texture)
 
         ow, oh = self._text_size
-        w , h  = self._texture_size
-        #Perform transformations
+        w, h = self._texture_size
+        # Perform transformations
         glPushMatrix()
         glTranslated(position.x, position.y, 0)
         glRotate(-rotation, 0, 0, 1)
         glScaled(scale, scale, scale)
         if self._centered:
-            glTranslate(-w/2, -oh/2, 0)
-        #Draw vertices
+            glTranslate(-w / 2, -oh / 2, 0)
+        # Draw vertices
         glBegin(GL_QUADS)
-        glTexCoord2f(0,0); glVertex2f(0,0)
-        glTexCoord2f(0,1); glVertex2f(0,h)
-        glTexCoord2f(1,1); glVertex2f(w,h)
-        glTexCoord2f(1,0); glVertex2f(w,0)
+        glTexCoord2f(0, 0)
+        glVertex2f(0, 0)
+        glTexCoord2f(0, 1)
+        glVertex2f(0, h)
+        glTexCoord2f(1, 1)
+        glVertex2f(w, h)
+        glTexCoord2f(1, 0)
+        glVertex2f(w, 0)
         glEnd()
         glPopMatrix()
 
-        #Disable features
+        # Disable features
         glDisable(GL_BLEND)
         glDisable(GL_ALPHA_TEST)
         glDisable(GL_TEXTURE_2D)
@@ -160,70 +165,69 @@ class TextElement(object):
         ow, oh = dc.GetMultiLineTextExtent(self._text)[:2]
         w, h = self._getUpper2Base(ow), self._getUpper2Base(oh)
 
-        self._text_size = wx.Size(ow,oh)
-        self._texture_size = wx.Size(w,h)
-        bmp = wx.EmptyBitmap(w,h)
+        self._text_size = wx.Size(ow, oh)
+        self._texture_size = wx.Size(w, h)
+        bmp = wx.EmptyBitmap(w, h)
 
-
-        #Draw in b/w mode to bmp so we can use it as alpha channel
+        # Draw in b/w mode to bmp so we can use it as alpha channel
         dc.SelectObject(bmp)
         dc.SetBackground(wx.BLACK_BRUSH)
         dc.Clear()
         dc.SetTextForeground(wx.WHITE)
-        x,y = 0,0
+        x, y = 0, 0
         centered = self.centered
         for line in self._lines:
-            if not line: line = ' '
+            if not line:
+                line = ' '
             tw, th = dc.GetTextExtent(line)
             if centered:
-                x = int(round((w-tw)/2))
+                x = int(round((w - tw) / 2))
             dc.DrawText(line, x, y)
             x = 0
             y += th
-        #Release the dc
+        # Release the dc
         dc.SelectObject(wx.NullBitmap)
         del dc
 
-        #Generate a correct RGBA data string from our bmp
+        # Generate a correct RGBA data string from our bmp
         """
         NOTE: You could also use wx.AlphaPixelData to access the pixel data
         in 'bmp' directly, but the iterator given by it is much slower than
         first converting to an image and using wx.Image.GetData().
         """
-        img   = wx.ImageFromBitmap(bmp)
+        img = wx.ImageFromBitmap(bmp)
         alpha = img.GetData()
 
         if isinstance(self._foreground, wx.Colour):
             """
             If we have a static color...
             """
-            r,g,b = self._foreground.Get()
+            r, g, b = self._foreground.Get()
             color = "%c%c%c" % (chr(r), chr(g), chr(b))
 
             data = ''
-            for i in xrange(0, len(alpha)-1, 3):
+            for i in xrange(0, len(alpha) - 1, 3):
                 data += color + alpha[i]
 
         elif isinstance(self._foreground, wx.Bitmap):
             """
             If we have a bitmap...
             """
-            bg_img    = wx.ImageFromBitmap(self._foreground)
-            bg        = bg_img.GetData()
-            bg_width  = self._foreground.GetWidth()
+            bg_img = wx.ImageFromBitmap(self._foreground)
+            bg = bg_img.GetData()
+            bg_width = self._foreground.GetWidth()
             bg_height = self._foreground.GetHeight()
 
             data = ''
 
             for y in xrange(0, h):
                 for x in xrange(0, w):
-                    if (y > (bg_height-1)) or (x > (bg_width-1)):
-                        color = "%c%c%c" % (chr(0),chr(0),chr(0))
+                    if (y > (bg_height - 1)) or (x > (bg_width - 1)):
+                        color = "%c%c%c" % (chr(0), chr(0), chr(0))
                     else:
-                        pos = (x+y*bg_width) * 3
-                        color = bg[pos:pos+3]
-                    data += color + alpha[(x+y*w)*3]
-
+                        pos = (x + y * bg_width) * 3
+                        color = bg[pos:pos + 3]
+                    data += color + alpha[(x + y * w) * 3]
 
         # now convert it to ogl texture
         self._texture = glGenTextures(1)
@@ -233,7 +237,8 @@ class TextElement(object):
 
         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0)
         glPixelStorei(GL_UNPACK_ALIGNMENT, 2)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h,
+                     0, GL_RGBA, GL_UNSIGNED_BYTE, data)
 
     def deleteTexture(self):
         """
@@ -272,25 +277,32 @@ class TextElement(object):
     #---Getters/Setters
 
     def getText(self): return self._text
+
     def getFont(self): return self._font
+
     def getForeground(self): return self._foreground
+
     def getCentered(self): return self._centered
+
     def getTexture(self): return self._texture
+
     def getTexture_size(self): return self._texture_size
 
     def getOwner_cnt(self): return self._owner_cnt
+
     def setOwner_cnt(self, value):
         self._owner_cnt = value
 
     #---Properties
 
-    text         = property(getText, None, None, "Text of the object")
-    font         = property(getFont, None, None, "Font of the object")
-    foreground   = property(getForeground, None, None, "Color of the text")
-    centered     = property(getCentered, None, None, "Is text centered")
-    owner_cnt    = property(getOwner_cnt, setOwner_cnt, None, "Owner count")
-    texture      = property(getTexture, None, None, "Used texture")
-    texture_size = property(getTexture_size, None, None, "Size of the used texture")
+    text = property(getText, None, None, "Text of the object")
+    font = property(getFont, None, None, "Font of the object")
+    foreground = property(getForeground, None, None, "Color of the text")
+    centered = property(getCentered, None, None, "Is text centered")
+    owner_cnt = property(getOwner_cnt, setOwner_cnt, None, "Owner count")
+    texture = property(getTexture, None, None, "Used texture")
+    texture_size = property(getTexture_size, None, None,
+                            "Size of the used texture")
 
 
 class Text(object):
@@ -300,15 +312,15 @@ class Text(object):
     created text elements to TextElement's base functionality
     so you can save some memory and increase speed
     """
-    _texts         = []    #Global cache for TextElements
+    _texts = []  # Global cache for TextElements
 
     def __init__(self,
-                 text = 'Text',
-                 font = None,
-                 font_size = 8,
-                 foreground = wx.BLACK,
-                 centered = False,
-                 bold = False):
+                 text='Text',
+                 font=None,
+                 font_size=8,
+                 foreground=wx.BLACK,
+                 centered=False,
+                 bold=False):
         """
             text (string)           - displayed text
             font (wx.Font)          - if None, system default font will be used with font_size
@@ -319,24 +331,25 @@ class Text(object):
 
             Initializes the text object
         """
-        #Init/save variables
+        # Init/save variables
         self._aloc_text = None
-        self._text      = text
+        self._text = text
         self._font_size = font_size
-        self._foreground= foreground
-        self._centered  = centered
+        self._foreground = foreground
+        self._centered = centered
 
-        #Check if we are offered a font
+        # Check if we are offered a font
         if not font:
-            #if not use the system default
+            # if not use the system default
             self._font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         else:
-            #save it
+            # save it
             self._font = font
 
-        if bold: self._font.SetWeight(wx.FONTWEIGHT_BOLD)
+        if bold:
+            self._font.SetWeight(wx.FONTWEIGHT_BOLD)
 
-        #Bind us to our texture
+        # Bind us to our texture
         self._initText()
 
     #---Internal helpers
@@ -346,23 +359,23 @@ class Text(object):
         Initializes/Reinitializes the Text object by binding it
         to a TextElement suitable for its current settings
         """
-        #Check if we already bound to a texture
+        # Check if we already bound to a texture
         if self._aloc_text:
-            #if so release it
+            # if so release it
             self._aloc_text.release()
             if not self._aloc_text.isBound():
                 self._texts.remove(self._aloc_text)
             self._aloc_text = None
 
-        #Adjust our font
+        # Adjust our font
         self._font.SetPointSize(self._font_size)
 
-        #Search for existing element in our global buffer
+        # Search for existing element in our global buffer
         for element in self._texts:
             if element.text == self._text and\
-              element.font == self._font and\
-              element.foreground == self._foreground and\
-              element.centered == self._centered:
+                    element.font == self._font and\
+                    element.foreground == self._foreground and\
+                    element.centered == self._centered:
                 # We already exist in global buffer ;-)
                 element.bind()
                 self._aloc_text = element
@@ -371,9 +384,9 @@ class Text(object):
         if not self._aloc_text:
             # We are not in the global buffer, let's create ourselves
             aloc_text = self._aloc_text = TextElement(self._text,
-                                                       self._font,
-                                                       self._foreground,
-                                                       self._centered)
+                                                      self._font,
+                                                      self._foreground,
+                                                      self._centered)
             aloc_text.bind()
             self._texts.append(aloc_text)
 
@@ -388,7 +401,7 @@ class Text(object):
 
     #---Functions
 
-    def draw_text(self, position = wx.Point(0,0), scale = 1.0, rotation = 0):
+    def draw_text(self, position=wx.Point(0, 0), scale=1.0, rotation=0):
         """
         position (wx.Point)    - x/y Position to draw in scene
         scale    (float)       - Scale
@@ -402,7 +415,8 @@ class Text(object):
     #---Setter/Getter
 
     def getText(self): return self._text
-    def setText(self, value, reinit = True):
+
+    def setText(self, value, reinit=True):
         """
         value (bool)    - New Text
         reinit (bool)   - Create a new texture
@@ -414,7 +428,8 @@ class Text(object):
             self._initText()
 
     def getFont(self): return self._font
-    def setFont(self, value, reinit = True):
+
+    def setFont(self, value, reinit=True):
         """
         value (bool)    - New Font
         reinit (bool)   - Create a new texture
@@ -426,7 +441,8 @@ class Text(object):
             self._initText()
 
     def getFont_size(self): return self._font_size
-    def setFont_size(self, value, reinit = True):
+
+    def setFont_size(self, value, reinit=True):
         """
         value (bool)    - New font size
         reinit (bool)   - Create a new texture
@@ -438,7 +454,8 @@ class Text(object):
             self._initText()
 
     def getForeground(self): return self._foreground
-    def setForeground(self, value, reinit = True):
+
+    def setForeground(self, value, reinit=True):
         """
         value (bool)    - New centered value
         reinit (bool)   - Create a new texture
@@ -450,7 +467,8 @@ class Text(object):
             self._initText()
 
     def getCentered(self): return self._centered
-    def setCentered(self, value, reinit = True):
+
+    def setCentered(self, value, reinit=True):
         """
         value (bool)    - New centered value
         reinit (bool)   - Create a new texture
@@ -485,19 +503,22 @@ class Text(object):
         """
         return self._aloc_text.texture
 
-
     #---Properties
 
-    text         = property(getText, setText, None, "Text of the object")
-    font         = property(getFont, setFont, None, "Font of the object")
-    font_size    = property(getFont_size, setFont_size, None, "Font size")
-    foreground   = property(getForeground, setForeground, None, "Color/Overlay bitmap of the text")
-    centered     = property(getCentered, setCentered, None, "Display the text centered")
-    texture_size = property(getTexture_size, None, None, "Size of the used texture")
-    texture      = property(getTexture, None, None, "Texture of bound TextElement")
-    text_element = property(getTextElement,None , None, "TextElement bound to this class")
+    text = property(getText, setText, None, "Text of the object")
+    font = property(getFont, setFont, None, "Font of the object")
+    font_size = property(getFont_size, setFont_size, None, "Font size")
+    foreground = property(getForeground, setForeground,
+                          None, "Color/Overlay bitmap of the text")
+    centered = property(getCentered, setCentered, None,
+                        "Display the text centered")
+    texture_size = property(getTexture_size, None, None,
+                            "Size of the used texture")
+    texture = property(getTexture, None, None, "Texture of bound TextElement")
+    text_element = property(getTextElement, None, None,
+                            "TextElement bound to this class")
 
-#Optimize critical functions
+# Optimize critical functions
 if psyco and not psyco_optimized:
     psyco.bind(TextElement.createTexture)
     psyco_optimized = True

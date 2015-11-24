@@ -4,6 +4,7 @@ from gnuradio import gr
 import argparse
 from volk_test_funcs import *
 
+
 def multiply_const_cc(N):
     k = 3.3
     op = gr.multiply_const_cc(k)
@@ -11,6 +12,7 @@ def multiply_const_cc(N):
     return tb
 
 ######################################################################
+
 
 def multiply_const_ff(N):
     k = 3.3
@@ -20,12 +22,14 @@ def multiply_const_ff(N):
 
 ######################################################################
 
+
 def multiply_cc(N):
     op = gr.multiply_cc(1)
     tb = helper(N, op, gr.sizeof_gr_complex, gr.sizeof_gr_complex, 2, 1)
     return tb
 
 ######################################################################
+
 
 def multiply_ff(N):
     op = gr.multiply_ff()
@@ -34,6 +38,7 @@ def multiply_ff(N):
 
 ######################################################################
 
+
 def add_ff(N):
     op = gr.add_ff()
     tb = helper(N, op, gr.sizeof_float, gr.sizeof_float, 2, 1)
@@ -41,12 +46,14 @@ def add_ff(N):
 
 ######################################################################
 
+
 def conjugate_cc(N):
     op = gr.conjugate_cc()
     tb = helper(N, op, gr.sizeof_gr_complex, gr.sizeof_gr_complex, 1, 1)
     return tb
 
 ######################################################################
+
 
 def multiply_conjugate_cc(N):
     try:
@@ -56,14 +63,16 @@ def multiply_conjugate_cc(N):
 
     except AttributeError:
         class s(gr.hier_block2):
+
             def __init__(self):
                 gr.hier_block2.__init__(self, "s",
-                                        gr.io_signature(2, 2, gr.sizeof_gr_complex),
+                                        gr.io_signature(
+                                            2, 2, gr.sizeof_gr_complex),
                                         gr.io_signature(1, 1, gr.sizeof_gr_complex))
                 conj = gr.conjugate_cc()
                 mult = gr.multiply_cc()
-                self.connect((self,0), (mult,0))
-                self.connect((self,1), conj, (mult,1))
+                self.connect((self, 0), (mult, 0))
+                self.connect((self, 1), conj, (mult, 1))
                 self.connect(mult, self)
 
         op = s()
@@ -84,6 +93,7 @@ def run_tests(func, N, iters):
         print "\tCould not run test. Skipping."
         return None
 
+
 def main():
     avail_tests = [multiply_const_cc,
                    multiply_const_ff,
@@ -93,7 +103,7 @@ def main():
                    conjugate_cc,
                    multiply_conjugate_cc]
 
-    desc='Time an operation to compare with other implementations. \
+    desc = 'Time an operation to compare with other implementations. \
           This program runs a simple GNU Radio flowgraph to test a \
           particular math function, mostly to compare the  \
           Volk-optimized implementation versus a regular \
@@ -124,7 +134,7 @@ def main():
 
     if(args.list):
         print "Available Tests to Run:"
-        print "\n".join(["\t{0}: {1}".format(i,f.__name__) for i,f in enumerate(avail_tests)])
+        print "\n".join(["\t{0}: {1}".format(i, f.__name__) for i, f in enumerate(avail_tests)])
         sys.exit(0)
 
     N = int(args.nitems)

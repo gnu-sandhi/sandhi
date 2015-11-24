@@ -23,72 +23,83 @@ from gnuradio import gr, gr_unittest
 import pmt
 import numpy
 
+
 class add_2_f32_1_f32(gr.sync_block):
+
     def __init__(self):
         gr.sync_block.__init__(
             self,
-            name = "add 2 f32",
-            in_sig = [numpy.float32, numpy.float32],
-            out_sig = [numpy.float32],
+            name="add 2 f32",
+            in_sig=[numpy.float32, numpy.float32],
+            out_sig=[numpy.float32],
         )
 
     def work(self, input_items, output_items):
         output_items[0][:] = input_items[0] + input_items[1]
         return len(output_items[0])
+
 
 class add_2_fc32_1_fc32(gr.sync_block):
+
     def __init__(self):
         gr.sync_block.__init__(
             self,
-            name = "add 2 fc32",
-            in_sig = [numpy.complex64, numpy.complex64],
-            out_sig = [numpy.complex64],
+            name="add 2 fc32",
+            in_sig=[numpy.complex64, numpy.complex64],
+            out_sig=[numpy.complex64],
         )
 
     def work(self, input_items, output_items):
         output_items[0][:] = input_items[0] + input_items[1]
         return len(output_items[0])
+
 
 class convolve(gr.sync_block):
     """
     A demonstration using block history to properly perform a convolution.
     """
+
     def __init__(self):
         gr.sync_block.__init__(
             self,
-            name = "convolve",
-            in_sig = [numpy.float32],
-            out_sig = [numpy.float32]
+            name="convolve",
+            in_sig=[numpy.float32],
+            out_sig=[numpy.float32]
         )
         self._taps = [1, 0, 0, 0]
         self.set_history(len(self._taps))
 
     def work(self, input_items, output_items):
-        output_items[0][:] = numpy.convolve(input_items[0], self._taps, mode='valid')
+        output_items[0][:] = numpy.convolve(
+            input_items[0], self._taps, mode='valid')
         return len(output_items[0])
 
+
 class decim2x(gr.decim_block):
+
     def __init__(self):
         gr.decim_block.__init__(
             self,
-            name = "decim2x",
-            in_sig = [numpy.float32],
-            out_sig = [numpy.float32],
-            decim = 2
+            name="decim2x",
+            in_sig=[numpy.float32],
+            out_sig=[numpy.float32],
+            decim=2
         )
 
     def work(self, input_items, output_items):
         output_items[0][:] = input_items[0][::2]
         return len(output_items[0])
 
+
 class interp2x(gr.interp_block):
+
     def __init__(self):
         gr.interp_block.__init__(
             self,
-            name = "interp2x",
-            in_sig = [numpy.float32],
-            out_sig = [numpy.float32],
-            interp = 2
+            name="interp2x",
+            in_sig=[numpy.float32],
+            out_sig=[numpy.float32],
+            interp=2
         )
 
     def work(self, input_items, output_items):
@@ -96,67 +107,74 @@ class interp2x(gr.interp_block):
         output_items[0][::2] = input_items[0]
         return len(output_items[0])
 
+
 class tag_source(gr.sync_block):
+
     def __init__(self):
         gr.sync_block.__init__(
             self,
-            name = "tag source",
-            in_sig = None,
-            out_sig = [numpy.float32],
+            name="tag source",
+            in_sig=None,
+            out_sig=[numpy.float32],
         )
 
     def work(self, input_items, output_items):
         num_output_items = len(output_items[0])
 
-        #put code here to fill the output items...
+        # put code here to fill the output items...
 
-        #make a new tag on the middle element every time work is called
-        count = self.nitems_written(0) + num_output_items/2
+        # make a new tag on the middle element every time work is called
+        count = self.nitems_written(0) + num_output_items / 2
         key = pmt.pmt_string_to_symbol("example_key")
         value = pmt.pmt_string_to_symbol("example_value")
         self.add_item_tag(0, count, key, value)
 
         return num_output_items
 
+
 class tag_sink(gr.sync_block):
+
     def __init__(self):
         gr.sync_block.__init__(
             self,
-            name = "tag sink",
-            in_sig = [numpy.float32],
-            out_sig = None,
+            name="tag sink",
+            in_sig=[numpy.float32],
+            out_sig=None,
         )
         self.key = None
 
     def work(self, input_items, output_items):
         num_input_items = len(input_items[0])
 
-        #put code here to process the input items...
+        # put code here to process the input items...
 
-        #print all the tags received in this work call
+        # print all the tags received in this work call
         nread = self.nitems_read(0)
-        tags = self.get_tags_in_range(0, nread, nread+num_input_items)
+        tags = self.get_tags_in_range(0, nread, nread + num_input_items)
         for tag in tags:
-            #print tag.offset
-            #print pmt.pmt_symbol_to_string(tag.key)
-            #print pmt.pmt_symbol_to_string(tag.value)
+            # print tag.offset
+            # print pmt.pmt_symbol_to_string(tag.key)
+            # print pmt.pmt_symbol_to_string(tag.value)
             self.key = pmt.pmt_symbol_to_string(tag.key)
 
         return num_input_items
 
+
 class fc32_to_f32_2(gr.sync_block):
+
     def __init__(self):
         gr.sync_block.__init__(
             self,
-            name = "fc32_to_f32_2",
-            in_sig = [numpy.complex64],
-            out_sig = [(numpy.float32, 2)],
+            name="fc32_to_f32_2",
+            in_sig=[numpy.complex64],
+            out_sig=[(numpy.float32, 2)],
         )
 
     def work(self, input_items, output_items):
-        output_items[0][::,0] = numpy.real(input_items[0])
-        output_items[0][::,1] = numpy.imag(input_items[0])
+        output_items[0][::, 0] = numpy.real(input_items[0])
+        output_items[0][::, 1] = numpy.imag(input_items[0])
         return len(output_items[0])
+
 
 class test_block_gateway(gr_unittest.TestCase):
 
@@ -214,7 +232,8 @@ class test_block_gateway(gr_unittest.TestCase):
     def test_tags(self):
         src = tag_source()
         sink = tag_sink()
-        head = gr.head(gr.sizeof_float, 50000) #should be enough items to get a tag through
+        # should be enough items to get a tag through
+        head = gr.head(gr.sizeof_float, 50000)
         tb = gr.top_block()
         tb.connect(src, head, sink)
         tb.run()
@@ -222,7 +241,8 @@ class test_block_gateway(gr_unittest.TestCase):
 
     def test_fc32_to_f32_2(self):
         tb = gr.top_block()
-        src = gr.vector_source_c([1+2j, 3+4j, 5+6j, 7+8j, 9+10j], False)
+        src = gr.vector_source_c(
+            [1 + 2j, 3 + 4j, 5 + 6j, 7 + 8j, 9 + 10j], False)
         convert = fc32_to_f32_2()
         v2s = gr.vector_to_stream(gr.sizeof_float, 2)
         sink = gr.vector_sink_f()
@@ -232,4 +252,3 @@ class test_block_gateway(gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_block_gateway, "test_block_gateway.xml")
-

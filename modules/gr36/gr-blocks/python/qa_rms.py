@@ -24,16 +24,19 @@ from gnuradio import gr, gr_unittest
 import blocks_swig as blocks
 import math
 
+
 def sig_source_f(samp_rate, freq, amp, N):
-    t = map(lambda x: float(x)/samp_rate, xrange(N))
-    y = map(lambda x: amp*math.cos(2.*math.pi*freq*x), t)
+    t = map(lambda x: float(x) / samp_rate, xrange(N))
+    y = map(lambda x: amp * math.cos(2. * math.pi * freq * x), t)
     return y
 
+
 def sig_source_c(samp_rate, freq, amp, N):
-    t = map(lambda x: float(x)/samp_rate, xrange(N))
-    y = map(lambda x: amp*math.cos(2.*math.pi*freq*x) + \
-                1j*amp*math.sin(2.*math.pi*freq*x), t)
+    t = map(lambda x: float(x) / samp_rate, xrange(N))
+    y = map(lambda x: amp * math.cos(2. * math.pi * freq * x) +
+            1j * amp * math.sin(2. * math.pi * freq * x), t)
     return y
+
 
 class test_rms(gr_unittest.TestCase):
 
@@ -48,7 +51,7 @@ class test_rms(gr_unittest.TestCase):
         src_data = sig_source_f(1, 0.01, amp, 200)
         N = 750000
 
-        expected_data = amp/math.sqrt(2.0)
+        expected_data = amp / math.sqrt(2.0)
 
         src = gr.vector_source_f(src_data, True)
         head = gr.head(gr.sizeof_float, N)

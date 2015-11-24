@@ -23,15 +23,16 @@
 from gnuradio import gr, gr_unittest
 import math
 
+
 class test_regenerate (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_regen1 (self):
+    def test_regen1(self):
         tb = self.tb
 
         data = [0, 0, 0,
@@ -42,48 +43,47 @@ class test_regenerate (gr_unittest.TestCase):
                            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-
         src = gr.vector_source_b(data, False)
         regen = gr.regenerate_bb(5, 2)
         dst = gr.vector_sink_b()
 
-        tb.connect (src, regen)
-        tb.connect (regen, dst)
-        tb.run ()
+        tb.connect(src, regen)
+        tb.connect(regen, dst)
+        tb.run()
 
-        dst_data = dst.data ()
+        dst_data = dst.data()
 
-        self.assertEqual (expected_result, dst_data)
+        self.assertEqual(expected_result, dst_data)
 
-    def test_regen2 (self):
+    def test_regen2(self):
         tb = self.tb
 
-        data = 200*[0,]
+        data = 200 * [0, ]
         data[9] = 1
         data[99] = 1
 
-        expected_result = 200*[0,]
-        expected_result[9]   = 1
-        expected_result[19]  = 1
-        expected_result[29]  = 1
-        expected_result[39]  = 1
+        expected_result = 200 * [0, ]
+        expected_result[9] = 1
+        expected_result[19] = 1
+        expected_result[29] = 1
+        expected_result[39] = 1
 
-        expected_result[99]  = 1
-        expected_result[109]  = 1
-        expected_result[119]  = 1
-        expected_result[129]  = 1
+        expected_result[99] = 1
+        expected_result[109] = 1
+        expected_result[119] = 1
+        expected_result[129] = 1
 
         src = gr.vector_source_b(data, False)
         regen = gr.regenerate_bb(10, 3)
         dst = gr.vector_sink_b()
 
-        tb.connect (src, regen)
-        tb.connect (regen, dst)
-        tb.run ()
+        tb.connect(src, regen)
+        tb.connect(regen, dst)
+        tb.run()
 
-        dst_data = dst.data ()
+        dst_data = dst.data()
 
-        self.assertEqual (tuple(expected_result), dst_data)
+        self.assertEqual(tuple(expected_result), dst_data)
 
 
 if __name__ == '__main__':

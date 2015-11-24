@@ -21,25 +21,29 @@
 #
 
 from gnuradio import gr, gr_unittest
-try: import pmt
-except: from gruel import pmt
+try:
+    import pmt
+except:
+    from gruel import pmt
 import numpy
 import time
 
 # Simple block to generate messages
+
+
 class message_generator(gr.sync_block):
+
     def __init__(self, msg_list, msg_interval):
         gr.sync_block.__init__(
             self,
-            name = "message generator",
-            in_sig = [numpy.float32],
-            out_sig = None
+            name="message generator",
+            in_sig=[numpy.float32],
+            out_sig=None
         )
         self.msg_list = msg_list
         self.msg_interval = msg_interval
         self.msg_ctr = 0
         self.message_port_register_out(pmt.pmt_intern('out_port'))
-
 
     def work(self, input_items, output_items):
         inLen = len(input_items[0])
@@ -52,13 +56,16 @@ class message_generator(gr.sync_block):
         return inLen
 
 # Simple block to consume messages
+
+
 class message_consumer(gr.sync_block):
+
     def __init__(self):
         gr.sync_block.__init__(
             self,
-            name = "message consumer",
-            in_sig = None,
-            out_sig = None
+            name="message consumer",
+            in_sig=None,
+            out_sig=None
         )
         self.msg_list = []
         self.message_port_register_in(pmt.pmt_intern('in_port'))
@@ -69,8 +76,9 @@ class message_consumer(gr.sync_block):
         # Create a new PMT from long value and put in list
         self.msg_list.append(pmt.pmt_from_long(pmt.pmt_to_long(msg)))
 
+
 class test_python_message_passing(gr_unittest.TestCase):
-    
+
     def setUp(self):
         self.tb = gr.top_block()
 
@@ -86,24 +94,24 @@ class test_python_message_passing(gr_unittest.TestCase):
 
         # Create vector source with dummy data to trigger messages
         src_data = []
-        for i in range(num_msgs*msg_interval):
+        for i in range(num_msgs * msg_interval):
             src_data.append(float(i))
         src = gr.vector_source_f(src_data, False)
         msg_gen = message_generator(msg_list, msg_interval)
         msg_cons = message_consumer()
-        
+
         # Connect vector source to message gen
         self.tb.connect(src, msg_gen)
-        
+
         # Connect message generator to message consumer
         self.tb.msg_connect(msg_gen, 'out_port', msg_cons, 'in_port')
 
         # Verify that the messgae port query functions work
         self.assertEqual(pmt.pmt_symbol_to_string(pmt.pmt_vector_ref(
-                    msg_gen.message_ports_out(), 0)), 'out_port')
+            msg_gen.message_ports_out(), 0)), 'out_port')
         self.assertEqual(pmt.pmt_symbol_to_string(pmt.pmt_vector_ref(
-                    msg_cons.message_ports_in(), 0)), 'in_port')
-        
+            msg_cons.message_ports_in(), 0)), 'in_port')
+
         # Run to verify message passing
         self.tb.start()
 
@@ -111,13 +119,13 @@ class test_python_message_passing(gr_unittest.TestCase):
         while msg_gen.msg_ctr < num_msgs:
             time.sleep(0.5)
         self.tb.stop()
-        self.tb.wait()               
-        
+        self.tb.wait()
+
         # Verify that the message consumer got all the messages
         self.assertEqual(num_msgs, len(msg_cons.msg_list))
         for i in range(num_msgs):
             self.assertTrue(pmt.pmt_equal(msg_list[i], msg_cons.msg_list[i]))
-        
+
 if __name__ == '__main__':
-    gr_unittest.run(test_python_message_passing, 
+    gr_unittest.run(test_python_message_passing,
                     'test_python_message_passing.xml')

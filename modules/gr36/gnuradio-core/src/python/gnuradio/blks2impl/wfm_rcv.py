@@ -23,8 +23,10 @@ from gnuradio import gr
 from gnuradio.blks2impl.fm_emph import fm_deemph
 import math
 
+
 class wfm_rcv(gr.hier_block2):
-    def __init__ (self, quad_rate, audio_decimation):
+
+    def __init__(self, quad_rate, audio_decimation):
         """
         Hierarchical block for demodulating a broadcast FM signal.
 
@@ -36,34 +38,34 @@ class wfm_rcv(gr.hier_block2):
         @param audio_decimation: how much to decimate quad_rate to get to audio.
         @type audio_decimation: integer
         """
-	gr.hier_block2.__init__(self, "wfm_rcv",
-				gr.io_signature(1, 1, gr.sizeof_gr_complex), # Input signature
-				gr.io_signature(1, 1, gr.sizeof_float))      # Output signature
+        gr.hier_block2.__init__(self, "wfm_rcv",
+                                # Input signature
+                                gr.io_signature(1, 1, gr.sizeof_gr_complex),
+                                gr.io_signature(1, 1, gr.sizeof_float))      # Output signature
 
         volume = 20.
 
         max_dev = 75e3
-        fm_demod_gain = quad_rate/(2*math.pi*max_dev)
+        fm_demod_gain = quad_rate / (2 * math.pi * max_dev)
         audio_rate = quad_rate / audio_decimation
-
 
         # We assign to self so that outsiders can grab the demodulator
         # if they need to.  E.g., to plot its output.
         #
         # input: complex; output: float
-        self.fm_demod = gr.quadrature_demod_cf (fm_demod_gain)
+        self.fm_demod = gr.quadrature_demod_cf(fm_demod_gain)
 
         # input: float; output: float
-        self.deemph = fm_deemph (audio_rate)
+        self.deemph = fm_deemph(audio_rate)
 
         # compute FIR filter taps for audio filter
         width_of_transition_band = audio_rate / 32
-        audio_coeffs = gr.firdes.low_pass (1.0,         # gain
-                                           quad_rate,      # sampling rate
-                                           audio_rate/2 - width_of_transition_band,
-                                           width_of_transition_band,
-                                           gr.firdes.WIN_HAMMING)
+        audio_coeffs = gr.firdes.low_pass(1.0,         # gain
+                                          quad_rate,      # sampling rate
+                                          audio_rate / 2 - width_of_transition_band,
+                                          width_of_transition_band,
+                                          gr.firdes.WIN_HAMMING)
         # input: float; output: float
-        self.audio_filter = gr.fir_filter_fff (audio_decimation, audio_coeffs)
+        self.audio_filter = gr.fir_filter_fff(audio_decimation, audio_coeffs)
 
-        self.connect (self, self.fm_demod, self.audio_filter, self.deemph, self)
+        self.connect(self, self.fm_demod, self.audio_filter, self.deemph, self)

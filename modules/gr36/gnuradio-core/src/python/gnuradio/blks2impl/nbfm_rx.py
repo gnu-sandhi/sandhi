@@ -24,7 +24,9 @@ from gnuradio import gr, optfir
 from gnuradio.blks2impl.fm_emph import fm_deemph
 #from gnuradio.blks2impl.standard_squelch import standard_squelch
 
+
 class nbfm_rx(gr.hier_block2):
+
     def __init__(self, audio_rate, quad_rate, tau=75e-6, max_dev=5e3):
         """
         Narrow Band FM Receiver.
@@ -50,9 +52,10 @@ class nbfm_rx(gr.hier_block2):
           audio_filter
         """
 
-	gr.hier_block2.__init__(self, "nbfm_rx",
-				gr.io_signature(1, 1, gr.sizeof_gr_complex), # Input signature
-				gr.io_signature(1, 1, gr.sizeof_float))      # Output signature
+        gr.hier_block2.__init__(self, "nbfm_rx",
+                                # Input signature
+                                gr.io_signature(1, 1, gr.sizeof_gr_complex),
+                                gr.io_signature(1, 1, gr.sizeof_float))      # Output signature
 
         # FIXME audio_rate and quad_rate ought to be exact rationals
         audio_rate = int(audio_rate)
@@ -65,19 +68,19 @@ class nbfm_rx(gr.hier_block2):
         #self.squelch = gr.simple_squelch_cc(squelch_threshold, 0.001)
 
         # FM Demodulator  input: complex; output: float
-        k = quad_rate/(2*math.pi*max_dev)
+        k = quad_rate / (2 * math.pi * max_dev)
         self.quad_demod = gr.quadrature_demod_cf(k)
 
         # FM Deemphasis IIR filter
-        self.deemph = fm_deemph (quad_rate, tau=tau)
+        self.deemph = fm_deemph(quad_rate, tau=tau)
 
         # compute FIR taps for audio filter
         audio_decim = quad_rate // audio_rate
-        audio_taps = gr.firdes.low_pass (1.0,            # gain
-                                         quad_rate,      # sampling rate
-                                         2.7e3,          # Audio LPF cutoff
-                                         0.5e3,          # Transition band
-                                         gr.firdes.WIN_HAMMING)  # filter type
+        audio_taps = gr.firdes.low_pass(1.0,            # gain
+                                        quad_rate,      # sampling rate
+                                        2.7e3,          # Audio LPF cutoff
+                                        0.5e3,          # Transition band
+                                        gr.firdes.WIN_HAMMING)  # filter type
 
         print "len(audio_taps) =", len(audio_taps)
 
@@ -85,4 +88,5 @@ class nbfm_rx(gr.hier_block2):
         # input: float; output: float; taps: float
         self.audio_filter = gr.fir_filter_fff(audio_decim, audio_taps)
 
-        self.connect(self, self.quad_demod, self.deemph, self.audio_filter, self)
+        self.connect(self, self.quad_demod, self.deemph,
+                     self.audio_filter, self)

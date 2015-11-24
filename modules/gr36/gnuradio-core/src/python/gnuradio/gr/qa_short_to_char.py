@@ -23,17 +23,18 @@
 from gnuradio import gr, gr_unittest
 import ctypes
 
+
 class test_short_to_char (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
 
-        src_data = range(0, 32767, 32767/127)
+        src_data = range(0, 32767, 32767 / 127)
         src_data = [int(s) for s in src_data]
         expected_result = range(0, 128)
         src = gr.vector_source_s(src_data)
@@ -49,7 +50,7 @@ class test_short_to_char (gr_unittest.TestCase):
     def test_002(self):
 
         vlen = 3
-        src_data = range(0, 32400, 32767/127)
+        src_data = range(0, 32400, 32767 / 127)
         src_data = [int(s) for s in src_data]
         expected_result = range(0, 126)
         src = gr.vector_source_s(src_data)
@@ -66,4 +67,3 @@ class test_short_to_char (gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_short_to_char, "test_short_to_char.xml")
-

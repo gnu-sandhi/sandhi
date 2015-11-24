@@ -23,12 +23,13 @@
 from gnuradio import gr, gr_unittest
 import math
 
+
 class test_vector_sink_source(gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
@@ -58,8 +59,8 @@ class test_vector_sink_source(gr_unittest.TestCase):
     def test_003(self):
         src_data = [float(x) for x in range(16)]
         expected_result = tuple(src_data)
-        self.assertRaises(ValueError, lambda : gr.vector_source_f(src_data, False, 3))
+        self.assertRaises(
+            ValueError, lambda: gr.vector_source_f(src_data, False, 3))
 
 if __name__ == '__main__':
     gr_unittest.run(test_vector_sink_source, "test_vector_sink_source.xml")
-

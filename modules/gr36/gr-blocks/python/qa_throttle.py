@@ -23,6 +23,7 @@
 from gnuradio import gr, gr_unittest
 import blocks_swig as blocks
 
+
 class test_throttle(gr_unittest.TestCase):
 
     def setUp(self):

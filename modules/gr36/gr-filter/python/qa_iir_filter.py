@@ -23,6 +23,7 @@
 from gnuradio import gr, gr_unittest
 import filter_swig as filter
 
+
 class test_iir_filter(gr_unittest.TestCase):
 
     def setUp(self):
@@ -120,12 +121,12 @@ class test_iir_filter(gr_unittest.TestCase):
 
     def test_iir_direct_007(self):
         src_data = (1, 2, 3, 4, 5, 6, 7, 8)
-        expected_result = (2,2,5,5,8,8,11,11)
+        expected_result = (2, 2, 5, 5, 8, 8, 11, 11)
         fftaps = (2, 1)
         fbtaps = (0, -1)
         src = gr.vector_source_f(src_data)
         op = filter.iir_filter_ffd(fftaps, fbtaps)
-        fftaps = (2,0,1)
+        fftaps = (2, 0, 1)
         fbtaps = (0, -1)
         op.set_taps(fftaps, fbtaps)
         dst = gr.vector_sink_f()
@@ -137,21 +138,20 @@ class test_iir_filter(gr_unittest.TestCase):
 
     def test_iir_direct_008(self):
         src_data = (1, 2, 3, 4, 5, 6, 7, 8)
-        expected_result = (2,4,4,10,18,14,26,56)
+        expected_result = (2, 4, 4, 10, 18, 14, 26, 56)
         fftaps = (2,)
         fbtaps = (0, 1)
         src = gr.vector_source_f(src_data)
         op = filter.iir_filter_ffd(fftaps, fbtaps)
         fftaps_data = (1)
-        fbtaps = (0,0, -1,3)
+        fbtaps = (0, 0, -1, 3)
         op.set_taps(fftaps, fbtaps)
         dst = gr.vector_sink_f()
         self.tb.connect(src, op)
         self.tb.connect(op, dst)
         self.tb.run()
         result_data = dst.data()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data)
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
 
 if __name__ == '__main__':
     gr_unittest.run(test_iir_filter, "test_iir_filter.xml")
-

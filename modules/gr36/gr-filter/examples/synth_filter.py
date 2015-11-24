@@ -36,6 +36,7 @@ except ImportError:
     print "Error: Program requires matplotlib (see: matplotlib.sourceforge.net)."
     sys.exit(1)
 
+
 def main():
     N = 1000000
     fs = 8000
@@ -49,9 +50,9 @@ def main():
         sigs.append(s)
 
     taps = filter.firdes.low_pass_2(len(freqs), fs,
-                                    fs/float(nchans)/2, 100, 100)
+                                    fs / float(nchans) / 2, 100, 100)
     print "Num. Taps = %d (taps per filter = %d)" % (len(taps),
-                                                     len(taps)/nchans)
+                                                     len(taps) / nchans)
     filtbank = filter.pfb_synthesizer_ccf(nchans, taps)
 
     head = gr.head(gr.sizeof_gr_complex, N)
@@ -60,24 +61,24 @@ def main():
     tb = gr.top_block()
     tb.connect(filtbank, head, snk)
 
-    for i,si in enumerate(sigs):
+    for i, si in enumerate(sigs):
         tb.connect(si, (filtbank, i))
 
     tb.run()
 
     if 1:
         f1 = pylab.figure(1)
-        s1 = f1.add_subplot(1,1,1)
+        s1 = f1.add_subplot(1, 1, 1)
         s1.plot(snk.data()[1000:])
 
         fftlen = 2048
         f2 = pylab.figure(2)
-        s2 = f2.add_subplot(1,1,1)
+        s2 = f2.add_subplot(1, 1, 1)
         winfunc = scipy.blackman
         s2.psd(snk.data()[10000:], NFFT=fftlen,
-               Fs = nchans*fs,
-               noverlap=fftlen/4,
-               window = lambda d: d*winfunc(fftlen))
+               Fs=nchans * fs,
+               noverlap=fftlen / 4,
+               window=lambda d: d * winfunc(fftlen))
 
         pylab.show()
 

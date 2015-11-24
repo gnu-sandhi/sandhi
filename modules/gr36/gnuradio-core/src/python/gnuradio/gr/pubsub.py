@@ -26,43 +26,47 @@ Abstract GNU Radio publisher/subscriber interface
 This is a proof of concept implementation, will likely change significantly.
 """
 
+
 class pubsub(dict):
+
     def __init__(self):
-	self._publishers = { }
-	self._subscribers = { }
-	self._proxies = { }
+        self._publishers = {}
+        self._subscribers = {}
+        self._proxies = {}
 
     def __missing__(self, key, value=None):
-	dict.__setitem__(self, key, value)
-	self._publishers[key] = None
-	self._subscribers[key] = []
-	self._proxies[key] = None
+        dict.__setitem__(self, key, value)
+        self._publishers[key] = None
+        self._subscribers[key] = []
+        self._proxies[key] = None
 
     def __setitem__(self, key, val):
-	if not self.has_key(key):
-	    self.__missing__(key, val)
-	elif self._proxies[key] is not None:
-	    (p, newkey) = self._proxies[key]
-	    p[newkey] = val
-	else:
-	    dict.__setitem__(self, key, val)
-	for sub in self._subscribers[key]:
-	    # Note this means subscribers will get called in the thread
-	    # context of the 'set' caller.
-	    sub(val)
+        if not self.has_key(key):
+            self.__missing__(key, val)
+        elif self._proxies[key] is not None:
+            (p, newkey) = self._proxies[key]
+            p[newkey] = val
+        else:
+            dict.__setitem__(self, key, val)
+        for sub in self._subscribers[key]:
+            # Note this means subscribers will get called in the thread
+            # context of the 'set' caller.
+            sub(val)
 
     def __getitem__(self, key):
-	if not self.has_key(key): self.__missing__(key)
-	if self._proxies[key] is not None:
-	    (p, newkey) = self._proxies[key]
-	    return p[newkey]
-	elif self._publishers[key] is not None:
-	    return self._publishers[key]()
-	else:
-	    return dict.__getitem__(self, key)
+        if not self.has_key(key):
+            self.__missing__(key)
+        if self._proxies[key] is not None:
+            (p, newkey) = self._proxies[key]
+            return p[newkey]
+        elif self._publishers[key] is not None:
+            return self._publishers[key]()
+        else:
+            return dict.__getitem__(self, key)
 
     def publish(self, key, publisher):
-	if not self.has_key(key): self.__missing__(key)
+        if not self.has_key(key):
+            self.__missing__(key)
         if self._proxies[key] is not None:
             (p, newkey) = self._proxies[key]
             p.publish(newkey, publisher)
@@ -70,7 +74,8 @@ class pubsub(dict):
             self._publishers[key] = publisher
 
     def subscribe(self, key, subscriber):
-	if not self.has_key(key): self.__missing__(key)
+        if not self.has_key(key):
+            self.__missing__(key)
         if self._proxies[key] is not None:
             (p, newkey) = self._proxies[key]
             p.subscribe(newkey, subscriber)
@@ -92,9 +97,11 @@ class pubsub(dict):
             self._subscribers[key].remove(subscriber)
 
     def proxy(self, key, p, newkey=None):
-	if not self.has_key(key): self.__missing__(key)
-	if newkey is None: newkey = key
-	self._proxies[key] = (p, newkey)
+        if not self.has_key(key):
+            self.__missing__(key)
+        if newkey is None:
+            newkey = key
+        self._proxies[key] = (p, newkey)
 
     def unproxy(self, key):
         self._proxies[key] = None
@@ -110,34 +117,36 @@ if __name__ == "__main__":
     # Add some subscribers
     # First is a bare function
     def print_len(x):
-	print "len=%i" % (len(x), )
+        print "len=%i" % (len(x), )
     o.subscribe('foo', print_len)
 
     # The second is a class member function
     class subber(object):
-	def __init__(self, param):
-	    self._param = param
-	def printer(self, x):
-	    print self._param, `x`
+
+        def __init__(self, param):
+            self._param = param
+
+        def printer(self, x):
+            print self._param, `x`
     s = subber('param')
     o.subscribe('foo', s.printer)
 
     # The third is a lambda function
-    o.subscribe('foo', lambda x: sys.stdout.write('val='+`x`+'\n'))
+    o.subscribe('foo', lambda x: sys.stdout.write('val=' + `x`+'\n'))
 
     # Update key 'foo', will notify subscribers
     print "Updating 'foo' with three subscribers:"
-    o['foo'] = 'bar';
+    o['foo'] = 'bar'
 
     # Remove first subscriber
     o.unsubscribe('foo', print_len)
 
     # Update now will only trigger second and third subscriber
     print "Updating 'foo' after removing a subscriber:"
-    o['foo'] = 'bar2';
+    o['foo'] = 'bar2'
 
     # Publish a key as a function, in this case, a lambda function
-    o.publish('baz', lambda : 42)
+    o.publish('baz', lambda: 42)
     print "Published value of 'baz':", o['baz']
 
     # Unpublish the key

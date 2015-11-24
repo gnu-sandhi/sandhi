@@ -26,12 +26,14 @@ from optparse import OptionParser
 from gnuradio import gr
 from gnuradio.eng_option import eng_option
 
+
 def make_random_complex_tuple(L):
     result = []
     for x in range(L):
-        result.append(complex(random.uniform(-1000,1000),
-                              random.uniform(-1000,1000)))
+        result.append(complex(random.uniform(-1000, 1000),
+                              random.uniform(-1000, 1000)))
     return tuple(result)
+
 
 def benchmark(name, creator, dec, ntaps, total_test_size, block_size):
     block_size = 32768
@@ -48,12 +50,14 @@ def benchmark(name, creator, dec, ntaps, total_test_size, block_size):
     stop = time.time()
     delta = stop - start
     print "%16s: taps: %4d  input: %4g, time: %6.3f  taps/sec: %10.4g" % (
-        name, ntaps, total_test_size, delta, ntaps*total_test_size/delta)
+        name, ntaps, total_test_size, delta, ntaps * total_test_size / delta)
+
 
 def main():
     parser = OptionParser(option_class=eng_option)
     parser.add_option("-n", "--ntaps", type="int", default=256)
-    parser.add_option("-t", "--total-input-size", type="eng_float", default=40e6)
+    parser.add_option("-t", "--total-input-size",
+                      type="eng_float", default=40e6)
     parser.add_option("-b", "--block-size", type="intx", default=50000)
     parser.add_option("-d", "--decimation", type="int", default=1)
     (options, args) = parser.parse_args()

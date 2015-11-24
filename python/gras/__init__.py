@@ -1,6 +1,6 @@
 # Copyright (C) by Josh Blum. See LICENSE.txt for licensing information.
 
-#add the current path of this module for installed client apps swig imports
+# add the current path of this module for installed client apps swig imports
 import os
 import sys
 sys.path.append(os.path.dirname(__file__))

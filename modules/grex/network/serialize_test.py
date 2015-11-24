@@ -8,14 +8,17 @@ import time
 from PMC import *
 
 ########################################################################
-## source stuff from a list of msgs/tags/buffs
+# source stuff from a list of msgs/tags/buffs
 ########################################################################
+
+
 class RandomStuffSource(gras.Block):
+
     def __init__(self, tasks):
         gras.Block.__init__(self,
-            name = "RandomStuffSource",
-            out_sig = [numpy.uint32],
-        )
+                            name="RandomStuffSource",
+                            out_sig=[numpy.uint32],
+                            )
         self._tasks = tasks
 
     def work(self, ins, outs):
@@ -36,18 +39,23 @@ class RandomStuffSource(gras.Block):
             self.post_output_msg(port, data)
 
         self._tasks = self._tasks[1:]
-        if not self._tasks: self.mark_done()
+        if not self._tasks:
+            self.mark_done()
 
 ########################################################################
-## sink the received msgs/tags/buffs and store them
+# sink the received msgs/tags/buffs and store them
 ########################################################################
+
+
 class RandomStuffSink(gras.Block):
+
     def __init__(self):
         gras.Block.__init__(self,
-            name = "RandomStuffSink",
-            in_sig = [numpy.uint32],
-        )
-        self._results = {"buff":numpy.array([], numpy.uint32), "tag":[], "msg":[]}
+                            name="RandomStuffSink",
+                            in_sig=[numpy.uint32],
+                            )
+        self._results = {"buff": numpy.array(
+            [], numpy.uint32), "tag": [], "msg": []}
 
     def work(self, ins, outs):
         if len(ins[0]):
@@ -68,40 +76,47 @@ class RandomStuffSink(gras.Block):
         return self._results
 
 ########################################################################
-## print input messages for debug help
+# print input messages for debug help
 ########################################################################
+
+
 class PktMsgSinkPrinter(gras.Block):
+
     def __init__(self):
         gras.Block.__init__(self,
-            name = "PktMsgSinkPrinter",
-            in_sig = [numpy.uint8],
-        )
+                            name="PktMsgSinkPrinter",
+                            in_sig=[numpy.uint8],
+                            )
 
     def work(self, ins, outs):
         assert (len(ins[0]) == 0)
 
         msg = self.pop_input_msg(0)
         pkt_msg = msg()
-        #print 'pop msg', msg, type(pkt_msg)
-        if not isinstance(pkt_msg, gras.PacketMsg): return
+        # print 'pop msg', msg, type(pkt_msg)
+        if not isinstance(pkt_msg, gras.PacketMsg):
+            return
 
         return
-        b = pkt_msg.buff.get().view('>i4') #big endian words32
+        b = pkt_msg.buff.get().view('>i4')  # big endian words32
         print 'buffer - words32', len(b)
         for i in range(len(b)):
-            print 'b[%u] = 0x%08x'%(i, b[i])
+            print 'b[%u] = 0x%08x' % (i, b[i])
         print '\n\n'
 
 ########################################################################
-## Begin unit testing class
+# Begin unit testing class
 ########################################################################
+
+
 class test_serializer_blocks(unittest.TestCase):
 
     def check_equal_helper(self, dst, tasks):
 
         def get_task_list(tn, ts):
             for name, data in ts:
-                if name == tn: yield data
+                if name == tn:
+                    yield data
 
         def check_equal(type_name):
             print 'check_equal', type_name
@@ -141,7 +156,8 @@ class test_serializer_blocks(unittest.TestCase):
 
         src0 = RandomStuffSource(tasks)
         src1 = RandomStuffSource(tasks)
-        ser = gras.make('/grex/serializer', 0, False) #mtu default, async ports
+        # mtu default, async ports
+        ser = gras.make('/grex/serializer', 0, False)
         dst = PktMsgSinkPrinter()
 
         self.tb.connect(src0, (ser, 0))
@@ -150,7 +166,7 @@ class test_serializer_blocks(unittest.TestCase):
         self.tb.run()
 
     def test_simple_loopback(self):
-        #the tasks are different, this tests the async option as well
+        # the tasks are different, this tests the async option as well
         tasks0 = [
             ("tag", "hello"),
             ("buff", numpy.array(numpy.random.randint(-300, +300, 100), numpy.uint32)),
@@ -174,8 +190,9 @@ class test_serializer_blocks(unittest.TestCase):
 
         src0 = RandomStuffSource(tasks0)
         src1 = RandomStuffSource(tasks1)
-        ser = gras.make('/grex/serializer', 0, False) #mtu default, async ports
-        deser = gras.make('/grex/deserializer', True) #true for recovery on
+        # mtu default, async ports
+        ser = gras.make('/grex/serializer', 0, False)
+        deser = gras.make('/grex/deserializer', True)  # true for recovery on
         dst0 = RandomStuffSink()
         dst1 = RandomStuffSink()
 
@@ -204,12 +221,14 @@ class test_serializer_blocks(unittest.TestCase):
         src = RandomStuffSource(tasks)
         ser = gras.make('/grex/serializer', 0, True)
 
-        #these two slice up the datagrams
-        #can we recover from such harsh slicing?
-        d2s = gras.make('/grex/datagram_to_stream', numpy.dtype(numpy.int32).itemsize)
-        s2d = gras.make('/grex/stream_to_datagram', numpy.dtype(numpy.int32).itemsize, 40) #mtu 40 bytes
+        # these two slice up the datagrams
+        # can we recover from such harsh slicing?
+        d2s = gras.make('/grex/datagram_to_stream',
+                        numpy.dtype(numpy.int32).itemsize)
+        s2d = gras.make('/grex/stream_to_datagram',
+                        numpy.dtype(numpy.int32).itemsize, 40)  # mtu 40 bytes
 
-        deser = gras.make('/grex/deserializer', True) #true for recovery on
+        deser = gras.make('/grex/deserializer', True)  # true for recovery on
         dst = RandomStuffSink()
 
         self.tb.connect(src, ser, d2s, s2d, deser, dst)

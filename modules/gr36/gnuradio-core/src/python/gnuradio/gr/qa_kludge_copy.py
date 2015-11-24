@@ -33,15 +33,14 @@ class test_kludge_copy(gr_unittest.TestCase):
         self.rng.seed(0)
 
     def tearDown(self):
-	del self.tb
-	del self.rng
+        del self.tb
+        del self.rng
 
     def make_random_int_tuple(self, L):
         result = []
         for x in range(L):
             result.append(self.rng.randint(int(-1e9), int(+1e9)))
         return tuple(result)
-
 
     def test_001(self):
         # 1 input stream; 1 output stream
@@ -88,4 +87,3 @@ class test_kludge_copy(gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_kludge_copy, "test_kludge_copy.xml")
-

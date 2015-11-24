@@ -24,6 +24,7 @@ from gnuradio import gr, gr_unittest
 import filter_swig as filter
 import math
 
+
 class test_pfb_interpolator(gr_unittest.TestCase):
 
     def setUp(self):
@@ -36,9 +37,9 @@ class test_pfb_interpolator(gr_unittest.TestCase):
         N = 1000         # number of samples to use
         M = 5            # Number of channels
         fs = 1000        # baseband sampling rate
-        ifs = M*fs       # input samp rate to decimator
+        ifs = M * fs       # input samp rate to decimator
 
-        taps = filter.firdes.low_pass_2(M, ifs, fs/2, fs/10,
+        taps = filter.firdes.low_pass_2(M, ifs, fs / 2, fs / 10,
                                         attenuation_dB=80,
                                         window=filter.firdes.WIN_BLACKMAN_hARRIS)
 
@@ -51,21 +52,22 @@ class test_pfb_interpolator(gr_unittest.TestCase):
         self.tb.connect(signal, head, pfb)
         self.tb.connect(pfb, snk)
 
-        self.tb.run() 
+        self.tb.run()
 
         Ntest = 50
         L = len(snk.data())
-        t = map(lambda x: float(x)/ifs, xrange(L))
+        t = map(lambda x: float(x) / ifs, xrange(L))
 
         # Create known data as complex sinusoids at freq
         # of the channel at the interpolated rate.
         phase = 0.62833
-        expected_data = map(lambda x: math.cos(2.*math.pi*freq*x+phase) + \
-                                1j*math.sin(2.*math.pi*freq*x+phase), t)
+        expected_data = map(lambda x: math.cos(2. * math.pi * freq * x + phase) +
+                            1j * math.sin(2. * math.pi * freq * x + phase), t)
 
         dst_data = snk.data()
 
-        self.assertComplexTuplesAlmostEqual(expected_data[-Ntest:], dst_data[-Ntest:], 4)
+        self.assertComplexTuplesAlmostEqual(
+            expected_data[-Ntest:], dst_data[-Ntest:], 4)
 
 if __name__ == '__main__':
     gr_unittest.run(test_pfb_interpolator, "test_pfb_interpolator.xml")

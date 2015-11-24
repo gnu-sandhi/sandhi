@@ -25,6 +25,7 @@ import gras
 from gras import TestUtils
 import numpy
 
+
 class test_noise_source(unittest.TestCase):
 
     def setUp(self):
@@ -45,12 +46,12 @@ class test_noise_source(unittest.TestCase):
         self.tb.run()
 
         # expected results for Gaussian with seed 0, ampl 10
-        expected_result =(-6.8885869979858398, 26.149959564208984,
-                            20.575775146484375, -7.9340143203735352,
-                            5.3359274864196777, -12.552099227905273,
-                            6.333674430847168, -23.830753326416016,
-                            -16.603046417236328, 2.9676761627197266,
-                            1.2176077365875244, 15.100193977355957)
+        expected_result = (-6.8885869979858398, 26.149959564208984,
+                           20.575775146484375, -7.9340143203735352,
+                           5.3359274864196777, -12.552099227905273,
+                           6.333674430847168, -23.830753326416016,
+                           -16.603046417236328, 2.9676761627197266,
+                           1.2176077365875244, 15.100193977355957)
 
         dst_data = dst.data()
         self.assertEqual(len(expected_result), len(dst_data))
@@ -60,4 +61,3 @@ class test_noise_source(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

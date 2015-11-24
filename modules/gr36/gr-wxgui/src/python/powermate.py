@@ -86,16 +86,16 @@ except ImportError:
 # Our ID's for the devices:
 # Not to be confused with anything related to magic hardware numbers.
 
-ID_POWERMATE         = 'powermate'
-ID_SHUTTLE_XPRESS    = 'shuttle xpress'
-ID_SHUTTLE_PRO       = 'shuttle pro'
-ID_SHUTTLE_PRO_V2    = 'shuttle pro v2'
+ID_POWERMATE = 'powermate'
+ID_SHUTTLE_XPRESS = 'shuttle xpress'
+ID_SHUTTLE_PRO = 'shuttle pro'
+ID_SHUTTLE_PRO_V2 = 'shuttle pro v2'
 
 # ------------------------------------------------------------------------
 # format of messages that we read from /dev/input/event*
 # See /usr/include/linux/input.h for more info
 #
-#struct input_event {
+# struct input_event {
 #        struct timeval time; = {long seconds, long microseconds}
 #        unsigned short type;
 #        unsigned short code;
@@ -109,18 +109,18 @@ input_event_size = struct.calcsize(input_event_struct)
 # input_event types
 # ------------------------------------------------------------------------
 
-IET_SYN		  = 0x00   # aka RESET
-IET_KEY		  = 0x01   # key or button press/release
-IET_REL		  = 0x02   # relative movement (knob rotation)
-IET_ABS		  = 0x03   # absolute position (graphics pad, etc)
-IET_MSC		  = 0x04
-IET_LED		  = 0x11
-IET_SND		  = 0x12
-IET_REP		  = 0x14
-IET_FF		  = 0x15
-IET_PWR		  = 0x16
-IET_FF_STATUS	  = 0x17
-IET_MAX		  = 0x1f
+IET_SYN = 0x00   # aka RESET
+IET_KEY = 0x01   # key or button press/release
+IET_REL = 0x02   # relative movement (knob rotation)
+IET_ABS = 0x03   # absolute position (graphics pad, etc)
+IET_MSC = 0x04
+IET_LED = 0x11
+IET_SND = 0x12
+IET_REP = 0x14
+IET_FF = 0x15
+IET_PWR = 0x16
+IET_FF_STATUS = 0x17
+IET_MAX = 0x1f
 
 # ------------------------------------------------------------------------
 # input_event codes (there are a zillion of them, we only define a few)
@@ -128,40 +128,42 @@ IET_MAX		  = 0x1f
 
 # these are valid for IET_KEY
 
-IEC_BTN_0	   = 0x100
-IEC_BTN_1	   = 0x101
-IEC_BTN_2	   = 0x102
-IEC_BTN_3	   = 0x103
-IEC_BTN_4	   = 0x104
-IEC_BTN_5	   = 0x105
-IEC_BTN_6	   = 0x106
-IEC_BTN_7	   = 0x107
-IEC_BTN_8	   = 0x108
-IEC_BTN_9	   = 0x109
-IEC_BTN_10	   = 0x10a
-IEC_BTN_11	   = 0x10b
-IEC_BTN_12	   = 0x10c
-IEC_BTN_13	   = 0x10d
-IEC_BTN_14	   = 0x10e
-IEC_BTN_15	   = 0x10f
+IEC_BTN_0 = 0x100
+IEC_BTN_1 = 0x101
+IEC_BTN_2 = 0x102
+IEC_BTN_3 = 0x103
+IEC_BTN_4 = 0x104
+IEC_BTN_5 = 0x105
+IEC_BTN_6 = 0x106
+IEC_BTN_7 = 0x107
+IEC_BTN_8 = 0x108
+IEC_BTN_9 = 0x109
+IEC_BTN_10 = 0x10a
+IEC_BTN_11 = 0x10b
+IEC_BTN_12 = 0x10c
+IEC_BTN_13 = 0x10d
+IEC_BTN_14 = 0x10e
+IEC_BTN_15 = 0x10f
 
 # these are valid for IET_REL (Relative axes)
 
-IEC_REL_X	   = 0x00
-IEC_REL_Y	   = 0x01
-IEC_REL_Z	   = 0x02
-IEC_REL_HWHEEL	   = 0x06
-IEC_REL_DIAL	   = 0x07   # rotating the knob
-IEC_REL_WHEEL	   = 0x08   # moving the shuttle ring
-IEC_REL_MISC	   = 0x09
-IEC_REL_MAX	   = 0x0f
+IEC_REL_X = 0x00
+IEC_REL_Y = 0x01
+IEC_REL_Z = 0x02
+IEC_REL_HWHEEL = 0x06
+IEC_REL_DIAL = 0x07   # rotating the knob
+IEC_REL_WHEEL = 0x08   # moving the shuttle ring
+IEC_REL_MISC = 0x09
+IEC_REL_MAX = 0x0f
 
 # ------------------------------------------------------------------------
+
 
 class powermate(threading.Thread):
     """
     Interface to Griffin PowerMate and Contour Shuttles
     """
+
     def __init__(self, event_receiver=None, filename=None, **kwargs):
         self.event_receiver = event_receiver
         self.handle = -1
@@ -181,9 +183,9 @@ class powermate(threading.Thread):
                 raise exceptions.RuntimeError, 'Unable to find powermate'
 
         threading.Thread.__init__(self, **kwargs)
-        self.setDaemon (1)
+        self.setDaemon(1)
         self.keep_running = True
-        self.start ()
+        self.start()
 
     def __del__(self):
         self.keep_running = False
@@ -198,7 +200,8 @@ class powermate(threading.Thread):
                 return False
 
             # read event device name
-            name = fcntl.ioctl(self.handle, gru.hexint(0x80ff4506), chr(0) * 256)
+            name = fcntl.ioctl(self.handle, gru.hexint(
+                0x80ff4506), chr(0) * 256)
             name = name.replace(chr(0), '')
 
             # do we see anything we recognize?
@@ -220,17 +223,15 @@ class powermate(threading.Thread):
                 return False
 
             # get exclusive control of the device, using ioctl EVIOCGRAB
-	    # there may be an issue with this on non x86 platforms and if
-	    # the _IOW,_IOC,... macros in <asm/ioctl.h> are changed
-            fcntl.ioctl(self.handle,gru.hexint(0x40044590), 1)
+            # there may be an issue with this on non x86 platforms and if
+            # the _IOW,_IOC,... macros in <asm/ioctl.h> are changed
+            fcntl.ioctl(self.handle, gru.hexint(0x40044590), 1)
             return True
         except exceptions.OSError:
             return False
 
-
     def set_event_receiver(self, obj):
         self.event_receiver = obj
-
 
     def set_led_state(self, static_brightness, pulse_speed=0,
                       pulse_table=0, pulse_on_sleep=0, pulse_on_wake=0):
@@ -240,7 +241,7 @@ class powermate(threading.Thread):
         if self.id != ID_POWERMATE:
             return False
 
-        static_brightness &= 0xff;
+        static_brightness &= 0xff
         if pulse_speed < 0:
             pulse_speed = 0
         if pulse_speed > 510:
@@ -249,8 +250,8 @@ class powermate(threading.Thread):
             pulse_table = 0
         if pulse_table > 2:
             pulse_table = 2
-        pulse_on_sleep = not not pulse_on_sleep # not not = convert to 0/1
-        pulse_on_wake  = not not pulse_on_wake
+        pulse_on_sleep = not not pulse_on_sleep  # not not = convert to 0/1
+        pulse_on_wake = not not pulse_on_wake
         magic = (static_brightness
                  | (pulse_speed << 8)
                  | (pulse_table << 17)
@@ -260,14 +261,14 @@ class powermate(threading.Thread):
         os.write(self.handle, data)
         return True
 
-    def run (self):
+    def run(self):
         while (self.keep_running):
-            s = os.read (self.handle, input_event_size)
+            s = os.read(self.handle, input_event_size)
             if not s:
                 self.keep_running = False
                 break
 
-            raw_input_event = struct.unpack(input_event_struct,s)
+            raw_input_event = struct.unpack(input_event_struct, s)
             sec, usec, type, code, val = self.mapper(raw_input_event)
 
             if self.event_receiver is None:
@@ -275,16 +276,17 @@ class powermate(threading.Thread):
 
             if type == IET_SYN:    # ignore
                 pass
-            elif type == IET_MSC:  # ignore (seems to be PowerMate reporting led brightness)
+            # ignore (seems to be PowerMate reporting led brightness)
+            elif type == IET_MSC:
                 pass
             elif type == IET_REL and code == IEC_REL_DIAL:
-                #print "Dial: %d" % (val,)
+                # print "Dial: %d" % (val,)
                 wx.PostEvent(self.event_receiver, PMRotateEvent(val))
             elif type == IET_REL and code == IEC_REL_WHEEL:
-                #print "Shuttle: %d" % (val,)
+                # print "Shuttle: %d" % (val,)
                 wx.PostEvent(self.event_receiver, PMShuttleEvent(val))
             elif type == IET_KEY:
-                #print "Key: Btn%d %d" % (code - IEC_BTN_0, val)
+                # print "Key: Btn%d %d" % (code - IEC_BTN_0, val)
                 wx.PostEvent(self.event_receiver,
                              PMButtonEvent(code - IEC_BTN_0, val))
             else:
@@ -292,17 +294,22 @@ class powermate(threading.Thread):
 
 
 class _powermate_remapper(object):
+
     def __init__(self):
         pass
+
     def __call__(self, event):
         """
         Notice how nice and simple this is...
         """
         return event
 
+
 class _contour_remapper(object):
+
     def __init__(self):
         self.prev = None
+
     def __call__(self, event):
         """
         ...and how screwed up this is
@@ -359,42 +366,46 @@ class _contour_remapper(object):
 # new wxPython event classes
 # ------------------------------------------------------------------------
 
-grEVT_POWERMATE_BUTTON  = wx.NewEventType()
-grEVT_POWERMATE_ROTATE  = wx.NewEventType()
+grEVT_POWERMATE_BUTTON = wx.NewEventType()
+grEVT_POWERMATE_ROTATE = wx.NewEventType()
 grEVT_POWERMATE_SHUTTLE = wx.NewEventType()
 
 EVT_POWERMATE_BUTTON = wx.PyEventBinder(grEVT_POWERMATE_BUTTON, 0)
 EVT_POWERMATE_ROTATE = wx.PyEventBinder(grEVT_POWERMATE_ROTATE, 0)
 EVT_POWERMATE_SHUTTLE = wx.PyEventBinder(grEVT_POWERMATE_SHUTTLE, 0)
 
+
 class PMButtonEvent(wx.PyEvent):
+
     def __init__(self, button, value):
         wx.PyEvent.__init__(self)
         self.SetEventType(grEVT_POWERMATE_BUTTON)
         self.button = button
         self.value = value
 
-    def Clone (self):
+    def Clone(self):
         self.__class__(self.GetId())
 
 
 class PMRotateEvent(wx.PyEvent):
+
     def __init__(self, delta):
         wx.PyEvent.__init__(self)
-        self.SetEventType (grEVT_POWERMATE_ROTATE)
+        self.SetEventType(grEVT_POWERMATE_ROTATE)
         self.delta = delta
 
-    def Clone (self):
+    def Clone(self):
         self.__class__(self.GetId())
 
 
 class PMShuttleEvent(wx.PyEvent):
+
     def __init__(self, position):
         wx.PyEvent.__init__(self)
-        self.SetEventType (grEVT_POWERMATE_SHUTTLE)
+        self.SetEventType(grEVT_POWERMATE_SHUTTLE)
         self.position = position
 
-    def Clone (self):
+    def Clone(self):
         self.__class__(self.GetId())
 
 # ------------------------------------------------------------------------
@@ -403,9 +414,10 @@ class PMShuttleEvent(wx.PyEvent):
 
 if __name__ == '__main__':
     class Frame(wx.Frame):
-        def __init__(self,parent=None,id=-1,title='Title',
-                     pos=wx.DefaultPosition, size=(400,200)):
-            wx.Frame.__init__(self,parent,id,title,pos,size)
+
+        def __init__(self, parent=None, id=-1, title='Title',
+                     pos=wx.DefaultPosition, size=(400, 200)):
+            wx.Frame.__init__(self, parent, id, title, pos, size)
             EVT_POWERMATE_BUTTON(self, self.on_button)
             EVT_POWERMATE_ROTATE(self, self.on_rotate)
             EVT_POWERMATE_SHUTTLE(self, self.on_shuttle)
@@ -415,11 +427,11 @@ if __name__ == '__main__':
             try:
                 self.pm = powermate(self)
             except:
-                sys.stderr.write("Unable to find PowerMate or Contour Shuttle\n")
+                sys.stderr.write(
+                    "Unable to find PowerMate or Contour Shuttle\n")
                 sys.exit(1)
 
             self.pm.set_led_state(self.brightness, self.pulse_speed)
-
 
         def on_button(self, evt):
             print "Button %d %s" % (evt.button,
@@ -437,12 +449,13 @@ if __name__ == '__main__':
             print "Shuttle %d" % (evt.position,)
 
     class App(wx.App):
+
         def OnInit(self):
-            title='PowerMate Demo'
-            self.frame = Frame(parent=None,id=-1,title=title)
+            title = 'PowerMate Demo'
+            self.frame = Frame(parent=None, id=-1, title=title)
             self.frame.Show()
             self.SetTopWindow(self.frame)
             return True
 
     app = App()
-    app.MainLoop ()
+    app.MainLoop()

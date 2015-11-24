@@ -24,13 +24,16 @@ from gnuradio import gr, gr_unittest
 import parse_file_metadata
 import blocks_swig as blocks
 import pmt
-import os, math
+import os
+import math
+
 
 def sig_source_c(samp_rate, freq, amp, N):
-    t = map(lambda x: float(x)/samp_rate, xrange(N))
-    y = map(lambda x: amp*math.cos(2.*math.pi*freq*x) + \
-                1j*amp*math.sin(2.*math.pi*freq*x), t)
+    t = map(lambda x: float(x) / samp_rate, xrange(N))
+    y = map(lambda x: amp * math.cos(2. * math.pi * freq * x) +
+            1j * amp * math.sin(2. * math.pi * freq * x), t)
     return y
+
 
 class test_file_metadata(gr_unittest.TestCase):
 
@@ -42,7 +45,7 @@ class test_file_metadata(gr_unittest.TestCase):
 
     def test_001(self):
         N = 1000
-	outfile = "test_out.dat"
+        outfile = "test_out.dat"
 
         detached = False
         samp_rate = 200000
@@ -53,15 +56,15 @@ class test_file_metadata(gr_unittest.TestCase):
         extras_str = pmt.pmt_serialize_str(extras)
 
         data = sig_source_c(samp_rate, 1000, 1, N)
-        src  = gr.vector_source_c(data)
+        src = gr.vector_source_c(data)
         fsnk = blocks.file_meta_sink(gr.sizeof_gr_complex, outfile,
-                                     samp_rate, 1, 
+                                     samp_rate, 1,
                                      blocks.GR_FILE_FLOAT, True,
                                      1000000, extras_str, detached)
         fsnk.set_unbuffered(True)
 
-	self.tb.connect(src, fsnk)
-	self.tb.run()
+        self.tb.connect(src, fsnk)
+        self.tb.run()
         fsnk.close()
 
         handle = open(outfile, "rb")
@@ -91,7 +94,6 @@ class test_file_metadata(gr_unittest.TestCase):
         self.assertEqual(info['rx_rate'], samp_rate)
         self.assertEqual(pmt.pmt_to_double(extra_info['samp_rate']), samp_rate)
 
-
         # Test file metadata source
         src.rewind()
         fsrc = blocks.file_meta_source(outfile, False)
@@ -116,12 +118,12 @@ class test_file_metadata(gr_unittest.TestCase):
         # Test that the data portion was extracted and received correctly.
         self.assertComplexTuplesAlmostEqual(vsnk.data(), ssnk.data(), 5)
 
-	os.remove(outfile)
+        os.remove(outfile)
 
     def test_002(self):
         N = 1000
-	outfile = "test_out.dat"
-	outfile_hdr = "test_out.dat.hdr"
+        outfile = "test_out.dat"
+        outfile_hdr = "test_out.dat.hdr"
 
         detached = True
         samp_rate = 200000
@@ -132,15 +134,15 @@ class test_file_metadata(gr_unittest.TestCase):
         extras_str = pmt.pmt_serialize_str(extras)
 
         data = sig_source_c(samp_rate, 1000, 1, N)
-        src  = gr.vector_source_c(data)
+        src = gr.vector_source_c(data)
         fsnk = blocks.file_meta_sink(gr.sizeof_gr_complex, outfile,
-                                     samp_rate, 1, 
+                                     samp_rate, 1,
                                      blocks.GR_FILE_FLOAT, True,
                                      1000000, extras_str, detached)
         fsnk.set_unbuffered(True)
 
-	self.tb.connect(src, fsnk)
-	self.tb.run()
+        self.tb.connect(src, fsnk)
+        self.tb.run()
         fsnk.close()
 
         # Open detached header for reading
@@ -170,7 +172,6 @@ class test_file_metadata(gr_unittest.TestCase):
         self.assertEqual(info['rx_rate'], samp_rate)
         self.assertEqual(pmt.pmt_to_double(extra_info['samp_rate']), samp_rate)
 
-
         # Test file metadata source
         src.rewind()
         fsrc = blocks.file_meta_source(outfile, False, detached, outfile_hdr)
@@ -195,8 +196,8 @@ class test_file_metadata(gr_unittest.TestCase):
         # Test that the data portion was extracted and received correctly.
         self.assertComplexTuplesAlmostEqual(vsnk.data(), ssnk.data(), 5)
 
-	os.remove(outfile)
-	os.remove(outfile_hdr)
+        os.remove(outfile)
+        os.remove(outfile_hdr)
 
 if __name__ == '__main__':
     gr_unittest.run(test_file_metadata, "test_file_metadata.xml")

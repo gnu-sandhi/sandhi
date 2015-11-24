@@ -2,7 +2,9 @@
 
 import gras
 
+
 class MyBlock(gras.Block):
+
     def __init__(self):
         gras.Block.__init__(self, "MyBlock")
         self.foo = 0

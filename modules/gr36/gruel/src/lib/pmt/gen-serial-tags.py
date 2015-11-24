@@ -32,21 +32,24 @@ enum pst_tags {
 #endif /* INCLUDED_PMT_SERIAL_TAGS_H */
 """
 
-import sys, os, re
+import sys
+import os
+import re
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print "Usage %s <input_scm_file> <output_hdr_file>"%__file__
+        print "Usage %s <input_scm_file> <output_hdr_file>" % __file__
         exit()
     input_scm_file, output_hdr_file = sys.argv[1:]
     enums = list()
     for line in open(input_scm_file).readlines():
         match = re.match('^\s*\(define\s+([\w|-]+)\s+#x([0-9a-fA-F]+)\)', line)
-        if not match: continue
+        if not match:
+            continue
         name, value = match.groups()
         name = name.upper().replace('-', '_')
-        enums.append('    %s = 0x%s'%(name, value))
-    open(output_hdr_file, 'w').write(__doc__%(
+        enums.append('    %s = 0x%s' % (name, value))
+    open(output_hdr_file, 'w').write(__doc__ % (
         os.path.basename(__file__),
         os.path.basename(input_scm_file),
         ',\n'.join(enums),

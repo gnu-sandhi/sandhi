@@ -5,12 +5,13 @@ import gras
 import numpy
 from gras import TestUtils
 
+
 class test_delay(unittest.TestCase):
 
     def test_delay_simple(self):
         for delay in (0, 100, 1000, 10000):
             src_data = [1, 2, 3, 4, 5, 6, 7, 8]
-            expected_result = tuple([0]*delay + src_data)
+            expected_result = tuple([0] * delay + src_data)
 
             src = TestUtils.VectorSource(numpy.float32, src_data)
             op = gras.make('/grex/delay', numpy.dtype(numpy.float32).itemsize)
@@ -24,8 +25,8 @@ class test_delay(unittest.TestCase):
             dst_data = dst.data()
             self.assertEqual(expected_result, dst_data)
 
-    #TODO test tag propagation
-    #TODO test live change
+    # TODO test tag propagation
+    # TODO test live change
 
 if __name__ == '__main__':
     unittest.main()

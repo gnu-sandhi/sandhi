@@ -23,6 +23,7 @@ from gnuradio import gr, gru
 
 _plot = None
 
+
 def design_filter(interpolation, decimation, fractional_bw):
     """
     Given the interpolation rate, decimation rate and a fractional bandwidth,
@@ -42,12 +43,12 @@ def design_filter(interpolation, decimation, fractional_bw):
 
     beta = 5.0
     trans_width = 0.5 - fractional_bw
-    mid_transition_band = 0.5 - trans_width/2
+    mid_transition_band = 0.5 - trans_width / 2
 
     taps = gr.firdes.low_pass(interpolation,                     # gain
                               1,                                 # Fs
-                              mid_transition_band/interpolation, # trans mid point
-                              trans_width/interpolation,         # transition width
+                              mid_transition_band / interpolation,  # trans mid point
+                              trans_width / interpolation,         # transition width
                               gr.firdes.WIN_KAISER,
                               beta                               # beta
                               )
@@ -55,11 +56,11 @@ def design_filter(interpolation, decimation, fractional_bw):
     return taps
 
 
-
 class _rational_resampler_base(gr.hier_block2):
     """
     base class for all rational resampler variants.
     """
+
     def __init__(self, resampler_base,
                  interpolation, decimation, taps=None, fractional_bw=None):
         """
@@ -96,23 +97,27 @@ class _rational_resampler_base(gr.hier_block2):
             taps = design_filter(interpolation, decimation, fractional_bw)
 
         resampler = resampler_base(interpolation, decimation, taps)
-	gr.hier_block2.__init__(self, "rational_resampler",
-				gr.io_signature(1, 1, resampler.input_signature().sizeof_stream_item(0)),
-				gr.io_signature(1, 1, resampler.output_signature().sizeof_stream_item(0)))
+        gr.hier_block2.__init__(self, "rational_resampler",
+                                gr.io_signature(
+                                    1, 1, resampler.input_signature().sizeof_stream_item(0)),
+                                gr.io_signature(1, 1, resampler.output_signature().sizeof_stream_item(0)))
 
-	self.connect(self, resampler, self)
+        self.connect(self, resampler, self)
 
 
 class rational_resampler_fff(_rational_resampler_base):
+
     def __init__(self, interpolation, decimation, taps=None, fractional_bw=None):
         """
         Rational resampling polyphase FIR filter with
         float input, float output and float taps.
         """
         _rational_resampler_base.__init__(self, gr.rational_resampler_base_fff,
-				          interpolation, decimation, taps, fractional_bw)
+                                          interpolation, decimation, taps, fractional_bw)
+
 
 class rational_resampler_ccf(_rational_resampler_base):
+
     def __init__(self, interpolation, decimation, taps=None, fractional_bw=None):
         """
         Rational resampling polyphase FIR filter with
@@ -121,7 +126,9 @@ class rational_resampler_ccf(_rational_resampler_base):
         _rational_resampler_base.__init__(self, gr.rational_resampler_base_ccf,
                                           interpolation, decimation, taps, fractional_bw)
 
+
 class rational_resampler_ccc(_rational_resampler_base):
+
     def __init__(self, interpolation, decimation, taps=None, fractional_bw=None):
         """
         Rational resampling polyphase FIR filter with

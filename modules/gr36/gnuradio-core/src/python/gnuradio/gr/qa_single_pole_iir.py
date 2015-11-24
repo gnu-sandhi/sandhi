@@ -22,35 +22,37 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_single_pole_iir(gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
         src_data = (0, 1000, 2000, 3000, 4000, 5000)
         expected_result = src_data
         src = gr.vector_source_f(src_data)
-        op = gr.single_pole_iir_filter_ff (1.0)
+        op = gr.single_pole_iir_filter_ff(1.0)
         dst = gr.vector_sink_f()
-        self.tb.connect (src, op, dst)
+        self.tb.connect(src, op, dst)
         self.tb.run()
         result_data = dst.data()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data)
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
 
     def test_002(self):
         src_data = (0, 1000, 2000, 3000, 4000, 5000)
-        expected_result = (0, 125, 359.375, 689.453125, 1103.271484, 1590.36255)
+        expected_result = (0, 125, 359.375, 689.453125,
+                           1103.271484, 1590.36255)
         src = gr.vector_source_f(src_data)
-        op = gr.single_pole_iir_filter_ff (0.125)
+        op = gr.single_pole_iir_filter_ff(0.125)
         dst = gr.vector_sink_f()
-        self.tb.connect (src, op, dst)
+        self.tb.connect(src, op, dst)
         self.tb.run()
         result_data = dst.data()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data, 3)
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data, 3)
 
     def test_003(self):
         block_size = 2
@@ -58,15 +60,14 @@ class test_single_pole_iir(gr_unittest.TestCase):
         expected_result = (0, 125, 250, 484.375, 718.75, 1048.828125)
         src = gr.vector_source_f(src_data)
         s2p = gr.serial_to_parallel(gr.sizeof_float, block_size)
-        op = gr.single_pole_iir_filter_ff (0.125, block_size)
+        op = gr.single_pole_iir_filter_ff(0.125, block_size)
         p2s = gr.parallel_to_serial(gr.sizeof_float, block_size)
         dst = gr.vector_sink_f()
-        self.tb.connect (src, s2p, op, p2s, dst)
+        self.tb.connect(src, s2p, op, p2s, dst)
         self.tb.run()
         result_data = dst.data()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data, 3)
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data, 3)
 
 
 if __name__ == '__main__':
     gr_unittest.run(test_single_pole_iir, "test_single_pole_iir.xml")
-

@@ -23,18 +23,19 @@
 from gnuradio import gr, gr_unittest
 import ctypes
 
+
 class test_short_to_float (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
 
         src_data = (0, 1, 2, 3, 4, 5, -1, -2, -3, -4, -5)
-        expected_result = [ 0.0,  1.0,  2.0,  3.0,  4.0, 5.0,
+        expected_result = [0.0,  1.0,  2.0,  3.0,  4.0, 5.0,
                            -1.0, -2.0, -3.0, -4.0, -5.0]
 
         src = gr.vector_source_s(src_data)
@@ -67,4 +68,3 @@ class test_short_to_float (gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_short_to_float, "test_short_to_float.xml")
-

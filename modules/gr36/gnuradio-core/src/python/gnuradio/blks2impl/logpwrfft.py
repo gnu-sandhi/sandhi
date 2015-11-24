@@ -23,6 +23,7 @@ from gnuradio import gr, window
 from stream_to_vector_decimator import stream_to_vector_decimator
 import math
 
+
 class _logpwrfft_base(gr.hier_block2):
     """
     Create a log10(abs(fft)) stream chain, with real or complex input.
@@ -41,25 +42,29 @@ class _logpwrfft_base(gr.hier_block2):
         @param win              the window taps generation function
         """
         gr.hier_block2.__init__(self, self._name,
-                                gr.io_signature(1, 1, self._item_size),          # Input signature
-                                gr.io_signature(1, 1, gr.sizeof_float*fft_size)) # Output signature
+                                # Input signature
+                                gr.io_signature(1, 1, self._item_size),
+                                gr.io_signature(1, 1, gr.sizeof_float * fft_size))  # Output signature
 
         self._sd = stream_to_vector_decimator(item_size=self._item_size,
                                               sample_rate=sample_rate,
                                               vec_rate=frame_rate,
                                               vec_len=fft_size)
 
-        if win is None: win = window.blackmanharris
+        if win is None:
+            win = window.blackmanharris
         fft_window = win(fft_size)
         fft = self._fft_block[0](fft_size, True, fft_window)
-        window_power = sum(map(lambda x: x*x, fft_window))
+        window_power = sum(map(lambda x: x * x, fft_window))
 
         c2magsq = gr.complex_to_mag_squared(fft_size)
         self._avg = gr.single_pole_iir_filter_ff(1.0, fft_size)
         self._log = gr.nlog10_ff(10, fft_size,
-                                 -20*math.log10(fft_size)              # Adjust for number of bins
-                                 -10*math.log10(window_power/fft_size) # Adjust for windowing loss
-                                 -20*math.log10(ref_scale/2))      # Adjust for reference scale
+                                 # Adjust for number of bins
+                                 -20 * math.log10(fft_size)
+                                 # Adjust for windowing loss
+                                 - 10 * math.log10(window_power / fft_size)
+                                 - 20 * math.log10(ref_scale / 2))      # Adjust for reference scale
         self.connect(self, self._sd, fft, c2magsq, self._avg, self._log, self)
 
         self._average = average
@@ -137,19 +142,20 @@ class _logpwrfft_base(gr.hier_block2):
         """
         return self._avg_alpha
 
+
 class logpwrfft_f(_logpwrfft_base):
-        """
-        Create an fft block chain, with real input.
-        """
-        _name = "logpwrfft_f"
-        _item_size = gr.sizeof_float
-        _fft_block = (gr.fft_vfc, )
+    """
+    Create an fft block chain, with real input.
+    """
+    _name = "logpwrfft_f"
+    _item_size = gr.sizeof_float
+    _fft_block = (gr.fft_vfc, )
+
 
 class logpwrfft_c(_logpwrfft_base):
-        """
-        Create an fft block chain, with complex input.
-        """
-        _name = "logpwrfft_c"
-        _item_size = gr.sizeof_gr_complex
-        _fft_block = (gr.fft_vcc, )
-
+    """
+    Create an fft block chain, with complex input.
+    """
+    _name = "logpwrfft_c"
+    _item_size = gr.sizeof_gr_complex
+    _fft_block = (gr.fft_vcc, )

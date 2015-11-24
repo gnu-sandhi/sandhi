@@ -28,12 +28,14 @@ from optparse import OptionParser
 import sys
 import math
 
+
 class wfm_rx_block (gr.top_block):
+
     def __init__(self):
         gr.top_block.__init__(self)
 
         usage = "usage: %prog [options] input-samples-320kS.dat output.wav"
-        parser=OptionParser(option_class=eng_option, usage=usage)
+        parser = OptionParser(option_class=eng_option, usage=usage)
         parser.add_option("-V", "--volume", type="eng_float", default=None,
                           help="set volume (default is midpoint)")
 
@@ -59,19 +61,17 @@ class wfm_rx_block (gr.top_block):
         audio_decimation = 10
         audio_rate = demod_rate / audio_decimation  # 32 kHz
 
-
-        chan_filt_coeffs = optfir.low_pass (1,           # gain
-                                            usrp_rate,   # sampling rate
-                                            80e3,        # passband cutoff
-                                            115e3,       # stopband cutoff
-                                            0.1,         # passband ripple
-                                            60)          # stopband attenuation
-        #print len(chan_filt_coeffs)
-        chan_filt = gr.fir_filter_ccf (chanfilt_decim, chan_filt_coeffs)
-
+        chan_filt_coeffs = optfir.low_pass(1,           # gain
+                                           usrp_rate,   # sampling rate
+                                           80e3,        # passband cutoff
+                                           115e3,       # stopband cutoff
+                                           0.1,         # passband ripple
+                                           60)          # stopband attenuation
+        # print len(chan_filt_coeffs)
+        chan_filt = gr.fir_filter_ccf(chanfilt_decim, chan_filt_coeffs)
 
         #self.guts = blks2.wfm_rcv (demod_rate, audio_decimation)
-        self.guts = blks2.wfm_rcv_pll (demod_rate, audio_decimation)
+        self.guts = blks2.wfm_rcv_pll(demod_rate, audio_decimation)
 
         # FIXME rework {add,multiply}_const_* to handle multiple streams
         self.volume_control_l = gr.multiply_const_ff(self.vol)
@@ -81,39 +81,41 @@ class wfm_rx_block (gr.top_block):
         if 1:
             sink = gr.wavfile_sink(output_filename, 2, int(audio_rate), 16)
         else:
-            sink = audio.sink (int (audio_rate),
-                               options.audio_output,
-                               False)   # ok_to_block
+            sink = audio.sink(int(audio_rate),
+                              options.audio_output,
+                              False)   # ok_to_block
 
         # now wire it all together
-        self.connect (self.src, chan_filt, self.guts)
-        self.connect ((self.guts, 0), self.volume_control_l, (sink, 0))
-        self.connect ((self.guts, 1), self.volume_control_r, (sink, 1))
+        self.connect(self.src, chan_filt, self.guts)
+        self.connect((self.guts, 0), self.volume_control_l, (sink, 0))
+        self.connect((self.guts, 1), self.volume_control_r, (sink, 1))
         try:
-          self.guts.stereo_carrier_pll_recovery.squelch_enable(True)
+            self.guts.stereo_carrier_pll_recovery.squelch_enable(True)
         except:
-          pass
-          #print "FYI: This implementation of the stereo_carrier_pll_recovery has no squelch implementation yet"
+            pass
+            # print "FYI: This implementation of the
+            # stereo_carrier_pll_recovery has no squelch implementation yet"
 
         if options.volume is None:
             g = self.volume_range()
-            options.volume = float(g[0]+g[1])/2
+            options.volume = float(g[0] + g[1]) / 2
 
         # set initial values
 
         self.set_vol(options.volume)
         try:
-          self.guts.stereo_carrier_pll_recovery.set_lock_threshold(options.squelch)
+            self.guts.stereo_carrier_pll_recovery.set_lock_threshold(
+                options.squelch)
         except:
-          pass
-          #print "FYI: This implementation of the stereo_carrier_pll_recovery has no squelch implementation yet"
+            pass
+            # print "FYI: This implementation of the
+            # stereo_carrier_pll_recovery has no squelch implementation yet"
 
-
-    def set_vol (self, vol):
+    def set_vol(self, vol):
         g = self.volume_range()
         self.vol = max(g[0], min(g[1], vol))
-        self.volume_control_l.set_k(10**(self.vol/10))
-        self.volume_control_r.set_k(10**(self.vol/10))
+        self.volume_control_l.set_k(10**(self.vol / 10))
+        self.volume_control_r.set_k(10**(self.vol / 10))
 
     def volume_range(self):
         return (-20.0, 0.0, 0.5)

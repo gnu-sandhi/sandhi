@@ -23,21 +23,22 @@
 from gnuradio import gr, gr_unittest
 import qtgui_swig
 
+
 class test_qtgui(gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test01 (self):
+    def test01(self):
         # Test to make sure we can instantiate the sink
         self.qtsnk = qtgui_swig.sink_c(1024, gr.firdes.WIN_BLACKMAN_hARRIS,
                                        0, 1, "Test",
                                        True, True, True, True)
 
-    def test02 (self):
+    def test02(self):
         # Test to make sure we can instantiate the sink
         self.qtsnk = qtgui_swig.sink_f(1024, gr.firdes.WIN_BLACKMAN_hARRIS,
                                        0, 1, "Test",

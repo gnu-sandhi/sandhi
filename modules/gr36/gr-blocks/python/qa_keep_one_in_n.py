@@ -23,18 +23,19 @@
 from gnuradio import gr, gr_unittest
 import blocks_swig
 
+
 class test_keep_one_in_n(gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
         src_data = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         expected_data = (5, 10)
-        src = gr.vector_source_b(src_data);
+        src = gr.vector_source_b(src_data)
         op = blocks_swig.keep_one_in_n(gr.sizeof_char, 5)
         dst = gr.vector_sink_b()
         self.tb.connect(src, op, dst)

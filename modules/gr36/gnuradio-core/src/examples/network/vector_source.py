@@ -24,10 +24,12 @@ from gnuradio import gr
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
 
+
 class vector_source(gr.top_block):
+
     def __init__(self, host, port, pkt_size, eof):
         gr.top_block.__init__(self, "vector_source")
-        data = [i*0.01 for i in range(1000)]
+        data = [i * 0.01 for i in range(1000)]
         vec = gr.vector_source_f(data, True)
         udp = gr.udp_sink(gr.sizeof_float, host, port, pkt_size, eof=eof)
         self.connect(vec, udp)
@@ -57,4 +59,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         # Ctrl-C exits
         pass
-

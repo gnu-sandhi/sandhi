@@ -24,10 +24,11 @@ from build_utils import output_glue
 
 import generate_common
 
-def generate_all ():
-    generate_common.generate ()
-    output_glue ('gengen')
+
+def generate_all():
+    generate_common.generate()
+    output_glue('gengen')
 
 
 if __name__ == '__main__':
-    generate_all ()
+    generate_all()

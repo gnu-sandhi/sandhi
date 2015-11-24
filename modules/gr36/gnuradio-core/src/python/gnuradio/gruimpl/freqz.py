@@ -56,7 +56,8 @@ __all__ = ['freqz']
 
 import numpy
 from numpy import *
-Num=numpy
+Num = numpy
+
 
 def atleast_1d(*arys):
     """ Force a sequence of arrays to each be at least 1D.
@@ -84,7 +85,7 @@ def atleast_1d(*arys):
         return res
 
 
-def polyval(p,x):
+def polyval(p, x):
     """Evaluate the polynomial p at x.  If x is a polynomial then composition.
 
     Description:
@@ -97,14 +98,15 @@ def polyval(p,x):
       returned.
     """
     p = asarray(p)
-    if isinstance(x,poly1d):
+    if isinstance(x, poly1d):
         y = 0
     else:
         x = asarray(x)
-        y = numpy.zeros(x.shape,x.typecode())
+        y = numpy.zeros(x.shape, x.typecode())
     for i in range(len(p)):
         y = x * y + p[i]
     return y
+
 
 class poly1d:
     """A one-dimensional polynomial class.
@@ -123,8 +125,9 @@ class poly1d:
     asarray(p) will also give the coefficient array, so polynomials can
          be used in all functions that accept arrays.
     """
+
     def __init__(self, c_or_r, r=0):
-        if isinstance(c_or_r,poly1d):
+        if isinstance(c_or_r, poly1d):
             for key in c_or_r.__dict__.keys():
                 self.__dict__[key] = c_or_r.__dict__[key]
             return
@@ -139,13 +142,13 @@ class poly1d:
         self.__dict__['coeffs'] = c_or_r
         self.__dict__['order'] = len(c_or_r) - 1
 
-    def __array__(self,t=None):
+    def __array__(self, t=None):
         if t:
-            return asarray(self.coeffs,t)
+            return asarray(self.coeffs, t)
         else:
             return asarray(self.coeffs)
 
-    def __coerce__(self,other):
+    def __coerce__(self, other):
         return None
 
     def __repr__(self):
@@ -160,10 +163,10 @@ class poly1d:
         N = self.order
         thestr = "0"
         for k in range(len(self.coeffs)):
-            coefstr ='%.4g' % abs(self.coeffs[k])
+            coefstr = '%.4g' % abs(self.coeffs[k])
             if coefstr[-4:] == '0000':
                 coefstr = coefstr[:-5]
-            power = (N-k)
+            power = (N - k)
             if power == 0:
                 if coefstr != '0':
                     newstr = '%s' % (coefstr,)
@@ -198,7 +201,6 @@ class poly1d:
             else:
                 thestr = newstr
         return _raise_power(thestr)
-
 
     def __call__(self, val):
         return polyval(self.coeffs, val)
@@ -243,25 +245,25 @@ class poly1d:
 
     def __div__(self, other):
         if isscalar(other):
-            return poly1d(self.coeffs/other)
+            return poly1d(self.coeffs / other)
         else:
             other = poly1d(other)
-            return map(poly1d,polydiv(self.coeffs, other.coeffs))
+            return map(poly1d, polydiv(self.coeffs, other.coeffs))
 
     def __rdiv__(self, other):
         if isscalar(other):
-            return poly1d(other/self.coeffs)
+            return poly1d(other / self.coeffs)
         else:
             other = poly1d(other)
-            return map(poly1d,polydiv(other.coeffs, self.coeffs))
+            return map(poly1d, polydiv(other.coeffs, self.coeffs))
 
     def __setattr__(self, key, val):
         raise ValueError, "Attributes cannot be changed this way."
 
     def __getattr__(self, key):
-        if key in ['r','roots']:
+        if key in ['r', 'roots']:
             return roots(self.coeffs)
-        elif key in ['c','coef','coefficients']:
+        elif key in ['c', 'coef', 'coefficients']:
             return self.coeffs
         elif key in ['o']:
             return self.order
@@ -281,18 +283,19 @@ class poly1d:
         if key < 0:
             raise ValueError, "Does not support negative powers."
         if key > self.order:
-            zr = numpy.zeros(key-self.order,self.coeffs.typecode())
-            self.__dict__['coeffs'] = numpy.concatenate((zr,self.coeffs))
+            zr = numpy.zeros(key - self.order, self.coeffs.typecode())
+            self.__dict__['coeffs'] = numpy.concatenate((zr, self.coeffs))
             self.__dict__['order'] = key
             ind = 0
         self.__dict__['coeffs'][ind] = val
         return
 
     def integ(self, m=1, k=0):
-        return poly1d(polyint(self.coeffs,m=m,k=k))
+        return poly1d(polyint(self.coeffs, m=m, k=k))
 
     def deriv(self, m=1):
-        return poly1d(polyder(self.coeffs,m=m))
+        return poly1d(polyder(self.coeffs, m=m))
+
 
 def freqz(b, a, worN=None, whole=0, plot=None):
     """Compute frequency response of a digital filter.
@@ -323,21 +326,21 @@ def freqz(b, a, worN=None, whole=0, plot=None):
        h -- The frequency response.
        w -- The frequencies at which h was computed.
     """
-    b, a = map(atleast_1d, (b,a))
+    b, a = map(atleast_1d, (b, a))
     if whole:
-        lastpoint = 2*pi
+        lastpoint = 2 * pi
     else:
         lastpoint = pi
     if worN is None:
         N = 512
-        w = Num.arange(0,lastpoint,lastpoint/N)
+        w = Num.arange(0, lastpoint, lastpoint / N)
     elif isinstance(worN, types.IntType):
         N = worN
-        w = Num.arange(0,lastpoint,lastpoint/N)
+        w = Num.arange(0, lastpoint, lastpoint / N)
     else:
         w = worN
     w = atleast_1d(w)
-    zm1 = exp(-1j*w)
+    zm1 = exp(-1j * w)
     h = polyval(b[::-1], zm1) / polyval(a[::-1], zm1)
     # if not plot is None:
     #    plot(w, h)

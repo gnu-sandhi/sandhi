@@ -11,16 +11,19 @@ try:
 except ImportError:
     from gnuradio.digital import gmsk
 
+
 class TagSink(gras.Block):
+
     def __init__(self):
         gras.Block.__init__(self,
-            name = "TagSink",
-            in_sig = [numpy.complex64],
-        )
+                            name="TagSink",
+                            in_sig=[numpy.complex64],
+                            )
         self._results = list()
 
     def work(self, ins, outs):
-        if len(ins[0]): self.consume(0, len(ins[0]))
+        if len(ins[0]):
+            self.consume(0, len(ins[0]))
 
     def propagate_tags(self, index, tag_iter):
         for tag in tag_iter:
@@ -29,6 +32,7 @@ class TagSink(gras.Block):
 
     def data(self):
         return self._results
+
 
 class test_packet(unittest.TestCase):
 
@@ -40,19 +44,22 @@ class test_packet(unittest.TestCase):
 
     def test_simple_loopback(self):
         framer = gras.make('/grex/packet_framer',
-            samples_per_symbol = 2,
-            bits_per_symbol = 1,
-        )
+                           samples_per_symbol=2,
+                           bits_per_symbol=1,
+                           )
         deframer = gras.make('/grex/packet_deframer')
 
-        src_data = tuple(numpy.random.randint(-1024, 1024, 11)) #40 bytes + padding
+        src_data = tuple(numpy.random.randint(-1024, 1024, 11)
+                         )  # 40 bytes + padding
         src = TestUtils.VectorSource(numpy.int32, src_data)
         dst = TestUtils.VectorSink(numpy.int32)
 
         unpack = gras.make('/grex/unpack_bytes')
 
-        s2d = gras.make('/grex/stream_to_datagram', numpy.dtype(numpy.int32).itemsize, 40) #mtu 40 bytes
-        d2s = gras.make('/grex/datagram_to_stream', numpy.dtype(numpy.int32).itemsize)
+        s2d = gras.make('/grex/stream_to_datagram',
+                        numpy.dtype(numpy.int32).itemsize, 40)  # mtu 40 bytes
+        d2s = gras.make('/grex/datagram_to_stream',
+                        numpy.dtype(numpy.int32).itemsize)
 
         self.tb.connect(src, s2d, framer, unpack, deframer, d2s, dst)
 
@@ -93,33 +100,37 @@ class test_packet(unittest.TestCase):
         )
 
         framer = gras.make('/grex/packet_framer',
-            samples_per_symbol = sps,
-            bits_per_symbol = 1,
-        )
+                           samples_per_symbol=sps,
+                           bits_per_symbol=1,
+                           )
 
         burst_tagger = gras.make('/grex/burst_tagger', sps)
 
         deframer = gras.make('/grex/packet_deframer')
 
-        src_data = tuple(numpy.random.randint(-1024, 1024, 11)) #40 bytes + padding
+        src_data = tuple(numpy.random.randint(-1024, 1024, 11)
+                         )  # 40 bytes + padding
         src = TestUtils.VectorSource(numpy.int32, src_data)
         dst = TestUtils.VectorSink(numpy.int32)
 
-        s2d = gras.make('/grex/stream_to_datagram', numpy.dtype(numpy.int32).itemsize, 40) #mtu 40 bytes
-        d2s = gras.make('/grex/datagram_to_stream', numpy.dtype(numpy.int32).itemsize)
+        s2d = gras.make('/grex/stream_to_datagram',
+                        numpy.dtype(numpy.int32).itemsize, 40)  # mtu 40 bytes
+        d2s = gras.make('/grex/datagram_to_stream',
+                        numpy.dtype(numpy.int32).itemsize)
 
         delay = gras.make('/grex/delay', numpy.dtype(numpy.complex64).itemsize)
-        delay.set_delay(73) #sample delay
+        delay.set_delay(73)  # sample delay
 
-        #inject noise into the system
+        # inject noise into the system
         noise = gras.make('/grex/noise_source_fc32', -1)
         noise.set_amplitude(0.05)
         add = gras.make('/grex/add_fc32_fc32')
         self.tb.connect(noise, (add, 1))
 
-        self.tb.connect(src, s2d, framer, mod, burst_tagger, delay, add, demod, deframer, d2s, dst)
+        self.tb.connect(src, s2d, framer, mod, burst_tagger,
+                        delay, add, demod, deframer, d2s, dst)
 
-        #collect tags
+        # collect tags
         tag_sink = TagSink()
         self.tb.connect(add, tag_sink)
 
@@ -140,7 +151,7 @@ class test_packet(unittest.TestCase):
         self.assertEqual(src_data[:n], dst.data()[:n])
 
 if __name__ == '__main__':
-    try: #packet framer has a gnuradio dependency, check import before failing the test
+    try:  # packet framer has a gnuradio dependency, check import before failing the test
         import gnuradio
         unittest.main()
     except ImportError:

@@ -24,6 +24,7 @@
 import sys
 from gnuradio.modtool import *
 
+
 def main():
     """ Here we go. Parse command, choose class and run. """
     cmd_dict = get_class_dict(globals().values())
@@ -40,4 +41,3 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         pass
-

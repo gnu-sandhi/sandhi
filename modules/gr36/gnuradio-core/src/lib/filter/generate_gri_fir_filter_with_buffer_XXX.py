@@ -24,41 +24,45 @@
 import re
 from generate_utils import *
 
-roots = ['gri_fir_filter_with_buffer_XXX',]
+roots = ['gri_fir_filter_with_buffer_XXX', ]
 
-def code3_to_acc_code (code3):
-    if i_code (code3) == 'c' or o_code (code3) == 'c' or tap_code (code3) == 'c':
+
+def code3_to_acc_code(code3):
+    if i_code(code3) == 'c' or o_code(code3) == 'c' or tap_code(code3) == 'c':
         return 'c'
-    if i_code (code3) == 'f' or o_code (code3) == 'f' or tap_code (code3) == 'f':
+    if i_code(code3) == 'f' or o_code(code3) == 'f' or tap_code(code3) == 'f':
         return 'f'
-    if i_code (code3) == 'i' or o_code (code3) == 'i' or tap_code (code3) == 'i':
+    if i_code(code3) == 'i' or o_code(code3) == 'i' or tap_code(code3) == 'i':
         return 'i'
     return 'i'                          # even short short short needs int accumulator
 
-def code3_to_input_cast (code3):
-    if i_code (code3) == 's' and o_code (code3) == 'c':
+
+def code3_to_input_cast(code3):
+    if i_code(code3) == 's' and o_code(code3) == 'c':
         return '(float)'
     return ''
 
-def expand_h_cc (root, code3):
-    d = init_dict (root, code3)
-    expand_template (d, root + '.h.t')
-    expand_template (d, root + '.cc.t')
 
-def init_dict (root, code3):
-    name = re.sub ('X+', code3, root)
-    d = standard_dict (name, code3)
-    d['INPUT_CAST'] = code3_to_input_cast (code3)
-    acc_code = code3_to_acc_code (code3)
+def expand_h_cc(root, code3):
+    d = init_dict(root, code3)
+    expand_template(d, root + '.h.t')
+    expand_template(d, root + '.cc.t')
+
+
+def init_dict(root, code3):
+    name = re.sub('X+', code3, root)
+    d = standard_dict(name, code3)
+    d['INPUT_CAST'] = code3_to_input_cast(code3)
+    acc_code = code3_to_acc_code(code3)
     d['ACC_TYPE'] = char_to_type[acc_code]
     return d
 
 
-def generate ():
+def generate():
     for r in roots:
         for s in fir_signatures:
-            expand_h_cc (r, s)
+            expand_h_cc(r, s)
 
 
 if __name__ == '__main__':
-    generate ()
+    generate()

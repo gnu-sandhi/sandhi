@@ -22,15 +22,16 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_copy(gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_copy (self):
+    def test_copy(self):
         src_data = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         expected_result = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         src = gr.vector_source_b(src_data)
@@ -41,12 +42,12 @@ class test_copy(gr_unittest.TestCase):
         dst_data = dst.data()
         self.assertEqual(expected_result, dst_data)
 
-    def test_copy_drop (self):
+    def test_copy_drop(self):
         src_data = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         expected_result = ()
         src = gr.vector_source_b(src_data)
         op = gr.copy(gr.sizeof_char)
-	op.set_enabled(False)
+        op.set_enabled(False)
         dst = gr.vector_sink_b()
         self.tb.connect(src, op, dst)
         self.tb.run()

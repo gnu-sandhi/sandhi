@@ -20,18 +20,23 @@
 #
 """ Conversion tools between stream tags and Python objects """
 
-try: import pmt
-except: from gruel import pmt
+try:
+    import pmt
+except:
+    from gruel import pmt
 
 from gnuradio_core import gr_tag_t
 
+
 class PythonTag(object):
     " Python container for tags "
+
     def __init__(self):
         self.offset = None
-        self.key    = None
-        self.value  = None
-        self.srcid  = None
+        self.key = None
+        self.value = None
+        self.srcid = None
+
 
 def tag_to_python(tag):
     """ Convert a stream tag to a Python-readable object """
@@ -42,6 +47,7 @@ def tag_to_python(tag):
     newtag.srcid = pmt.to_python(tag.srcid)
     return newtag
 
+
 def tag_to_pmt(tag):
     """ Convert a Python-readable object to a stream tag """
     newtag = gr_tag_t()
@@ -50,5 +56,3 @@ def tag_to_pmt(tag):
     newtag.value = pmt.from_python(tag.value)
     newtag.srcid = pmt.from_python(tag.srcid)
     return newtag
-
-

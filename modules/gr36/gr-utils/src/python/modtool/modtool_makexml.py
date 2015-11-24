@@ -32,10 +32,12 @@ from grc_xml_generator import GRCXMLGenerator
 from cmakefile_editor import CMakeFileEditor
 from util_functions import ask_yes_no
 
+
 class ModToolMakeXML(ModTool):
     """ Make XML file for GRC block bindings """
     name = 'makexml'
     aliases = ('mx',)
+
     def __init__(self):
         ModTool.__init__(self)
 
@@ -47,7 +49,8 @@ class ModToolMakeXML(ModTool):
         elif len(self.args) >= 2:
             self._info['pattern'] = self.args[1]
         else:
-            self._info['pattern'] = raw_input('Which blocks do you want to parse? (Regex): ')
+            self._info['pattern'] = raw_input(
+                'Which blocks do you want to parse? (Regex): ')
         if len(self._info['pattern']) == 0:
             self._info['pattern'] = '.'
 
@@ -67,10 +70,9 @@ class ModToolMakeXML(ModTool):
                 self._make_grc_xml_from_block_data(params, iosig, blockname)
         # 2) Go through python/
 
-
     def _search_files(self, path, path_glob):
         """ Search for files matching pattern in the given path. """
-        files = glob.glob("%s/%s"% (path, path_glob))
+        files = glob.glob("%s/%s" % (path, path_glob))
         files_filt = []
         print "Searching for matching files in %s/:" % path
         for f in files:
@@ -101,17 +103,18 @@ class ModToolMakeXML(ModTool):
             else:
                 print "Warning: Overwriting existing GRC file."
         grc_generator = GRCXMLGenerator(
-                modname=self._info['modname'],
-                blockname=blockname,
-                params=params,
-                iosig=iosig
+            modname=self._info['modname'],
+            blockname=blockname,
+            params=params,
+            iosig=iosig
         )
         grc_generator.save(os.path.join('grc', fname_xml))
         if not self._skip_subdirs['grc']:
             ed = CMakeFileEditor(self._file['cmgrc'])
             if re.search(fname_xml, ed.cfile) is None and not ed.check_for_glob('*.xml'):
                 print "Adding GRC bindings to grc/CMakeLists.txt..."
-                ed.append_value('install', fname_xml, to_ignore_end='DESTINATION[^()]+')
+                ed.append_value('install', fname_xml,
+                                to_ignore_end='DESTINATION[^()]+')
                 ed.write()
 
     def _parse_cc_h(self, fname_cc):
@@ -135,24 +138,26 @@ class ModToolMakeXML(ModTool):
                 return translate_dict[p_type]
             except KeyError:
                 return 'raw'
+
         def _get_blockdata(fname_cc):
             """ Return the block name and the header file name from the .cc file name """
-            blockname = os.path.splitext(os.path.basename(fname_cc.replace('_impl.', '.')))[0]
+            blockname = os.path.splitext(os.path.basename(
+                fname_cc.replace('_impl.', '.')))[0]
             fname_h = (blockname + '.h').replace('_impl.', '.')
-            blockname = blockname.replace(self._info['modname']+'_', '', 1)
+            blockname = blockname.replace(self._info['modname'] + '_', '', 1)
             return (blockname, fname_h)
         # Go, go, go
         print "Making GRC bindings for %s..." % fname_cc
         (blockname, fname_h) = _get_blockdata(fname_cc)
         try:
             parser = ParserCCBlock(fname_cc,
-                                   os.path.join(self._info['includedir'], fname_h),
+                                   os.path.join(
+                                       self._info['includedir'], fname_h),
                                    blockname,
                                    self._info['version'],
                                    _type_translate
-                                  )
+                                   )
         except IOError:
             print "Can't open some of the files necessary to parse %s." % fname_cc
             sys.exit(1)
         return (parser.read_params(), parser.read_io_signature(), blockname)
-

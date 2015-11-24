@@ -23,6 +23,7 @@
 from gnuradio import gr, gr_unittest
 import blocks_swig
 
+
 class test_add_mult_div_sub(gr_unittest.TestCase):
 
     def setUp(self):
@@ -95,9 +96,9 @@ class test_add_mult_div_sub(gr_unittest.TestCase):
         self.help_ff((src1_data, src2_data), expected_result, op)
 
     def test_add_cc(self):
-        src1_data = (1+1j,  2+2j, 3+3j, 4+4j, 5+5j)
-        src2_data = (8+8j, -3-3j, 4+4j, 8+8j, 2+2j)
-        expected_result = (9+9j, -1-1j, 7+7j, 12+12j, 7+7j)
+        src1_data = (1 + 1j,  2 + 2j, 3 + 3j, 4 + 4j, 5 + 5j)
+        src2_data = (8 + 8j, -3 - 3j, 4 + 4j, 8 + 8j, 2 + 2j)
+        expected_result = (9 + 9j, -1 - 1j, 7 + 7j, 12 + 12j, 7 + 7j)
         op = blocks_swig.add_cc()
         self.help_cc((src1_data, src2_data), expected_result, op)
 
@@ -123,7 +124,7 @@ class test_add_mult_div_sub(gr_unittest.TestCase):
 
     def test_add_const_cc(self):
         src_data = (1, 2, 3, 4, 5)
-        expected_result = (1+5j, 2+5j, 3+5j, 4+5j, 5+5j)
+        expected_result = (1 + 5j, 2 + 5j, 3 + 5j, 4 + 5j, 5 + 5j)
         op = blocks_swig.add_const_cc(5j)
         self.help_cc((src_data,), expected_result, op)
 
@@ -135,7 +136,7 @@ class test_add_mult_div_sub(gr_unittest.TestCase):
         expected_result = (8, -6, 12, 32, 10)
         op = blocks_swig.multiply_ss()
         self.help_ss((src1_data, src2_data),
-                      expected_result, op)
+                     expected_result, op)
 
     def test_multiply_ii(self):
         src1_data = (1,  2, 3, 4, 5)
@@ -143,7 +144,7 @@ class test_add_mult_div_sub(gr_unittest.TestCase):
         expected_result = (8, -6, 12, 32, 10)
         op = blocks_swig.multiply_ii()
         self.help_ii((src1_data, src2_data),
-                      expected_result, op)
+                     expected_result, op)
 
     def test_multiply_ff(self):
         src1_data = (1,  2, 3, 4, 5)
@@ -151,15 +152,15 @@ class test_add_mult_div_sub(gr_unittest.TestCase):
         expected_result = (8, -6, 12, 32, 10)
         op = blocks_swig.multiply_ff()
         self.help_ff((src1_data, src2_data),
-                      expected_result, op)
+                     expected_result, op)
 
     def test_multiply_cc(self):
-        src1_data = (1+1j,  2+2j, 3+3j, 4+4j, 5+5j)
+        src1_data = (1 + 1j,  2 + 2j, 3 + 3j, 4 + 4j, 5 + 5j)
         src2_data = (8, -3, 4, 8, 2)
-        expected_result = (8+8j, -6-6j, 12+12j, 32+32j, 10+10j)
+        expected_result = (8 + 8j, -6 - 6j, 12 + 12j, 32 + 32j, 10 + 10j)
         op = blocks_swig.multiply_cc()
         self.help_cc((src1_data, src2_data),
-                      expected_result, op)
+                     expected_result, op)
 
     # multiply_const_XX
 
@@ -182,15 +183,15 @@ class test_add_mult_div_sub(gr_unittest.TestCase):
         self.help_ff((src_data,), expected_result, op)
 
     def test_multiply_const_cc(self):
-        src_data = (-1-1j, 0+0j, 1+1j, 2+2j, 3+3j)
-        expected_result = (-5-5j, 0+0j, 5+5j, 10+10j, 15+15j)
+        src_data = (-1 - 1j, 0 + 0j, 1 + 1j, 2 + 2j, 3 + 3j)
+        expected_result = (-5 - 5j, 0 + 0j, 5 + 5j, 10 + 10j, 15 + 15j)
         op = blocks_swig.multiply_const_cc(5)
         self.help_cc((src_data,), expected_result, op)
 
     def test_multiply_const_cc2(self):
-        src_data = (-1-1j, 0+0j, 1+1j, 2+2j, 3+3j)
-        expected_result = (-3-7j, 0+0j, 3+7j, 6+14j, 9+21j)
-        op = blocks_swig.multiply_const_cc(5+2j)
+        src_data = (-1 - 1j, 0 + 0j, 1 + 1j, 2 + 2j, 3 + 3j)
+        expected_result = (-3 - 7j, 0 + 0j, 3 + 7j, 6 + 14j, 9 + 21j)
+        op = blocks_swig.multiply_const_cc(5 + 2j)
         self.help_cc((src_data,), expected_result, op)
 
     def test_sub_ii(self):
@@ -199,11 +200,11 @@ class test_add_mult_div_sub(gr_unittest.TestCase):
         expected_result = (-7, 5, -1, -4, 3)
         op = blocks_swig.sub_ii()
         self.help_ii((src1_data, src2_data),
-                      expected_result, op)
+                     expected_result, op)
 
     def test_div_ff(self):
-        src1_data       = ( 5,  9, -15, 1024)
-        src2_data       = (10,  3,  -5,   64)
+        src1_data = (5,  9, -15, 1024)
+        src2_data = (10,  3,  -5,   64)
         expected_result = (0.5, 3,   3,   16)
         op = blocks_swig.divide_ff()
         self.help_ff((src1_data, src2_data), expected_result, op)

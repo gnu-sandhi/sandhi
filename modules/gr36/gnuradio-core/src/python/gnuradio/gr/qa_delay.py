@@ -23,43 +23,44 @@
 from gnuradio import gr, gr_unittest
 import math
 
+
 class test_delay (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_000 (self):
+    def test_000(self):
         delta_t = 0
         tb = self.tb
         src_data = [float(x) for x in range(0, 100)]
-        expected_result = tuple(delta_t*[0.0] + src_data)
+        expected_result = tuple(delta_t * [0.0] + src_data)
 
         src = gr.vector_source_f(src_data)
         op = gr.delay(gr.sizeof_float, delta_t)
-        dst = gr.vector_sink_f ()
+        dst = gr.vector_sink_f()
 
-        tb.connect (src, op, dst)
-        tb.run ()
-        dst_data = dst.data ()
-        self.assertEqual (expected_result, dst_data)
+        tb.connect(src, op, dst)
+        tb.run()
+        dst_data = dst.data()
+        self.assertEqual(expected_result, dst_data)
 
-    def test_010 (self):
+    def test_010(self):
         delta_t = 10
         tb = self.tb
         src_data = [float(x) for x in range(0, 100)]
-        expected_result = tuple(delta_t*[0.0] + src_data)
+        expected_result = tuple(delta_t * [0.0] + src_data)
 
         src = gr.vector_source_f(src_data)
         op = gr.delay(gr.sizeof_float, delta_t)
-        dst = gr.vector_sink_f ()
+        dst = gr.vector_sink_f()
 
-        tb.connect (src, op, dst)
-        tb.run ()
-        dst_data = dst.data ()
-        self.assertEqual (expected_result, dst_data)
+        tb.connect(src, op, dst)
+        tb.run()
+        dst_data = dst.data()
+        self.assertEqual(expected_result, dst_data)
 
 if __name__ == '__main__':
     gr_unittest.run(test_delay, "test_delay.xml")

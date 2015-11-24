@@ -8,6 +8,7 @@ from nodes import (Node, Raises, Except, Note, Warning, Returns, Arg,
 
 __author__ = 'Robert Smallshire'
 
+
 def parse_hieroglyph_text(lines):
     '''Parse text in hieroglyph format and return a reStructuredText equivalent
 
@@ -120,13 +121,15 @@ def convert_children(node):
 
 ARG_REGEX = re.compile(r'(\*{0,2}\w+)(\s+\((\w+)\))?\s*:\s*(.*)')
 
+
 def append_child_to_args_group_node(child, group_node, indent):
     arg = None
     non_empty_lines = (line for line in child.lines if line)
     for line in non_empty_lines:
         m = ARG_REGEX.match(line)
         if m is None:
-            raise HieroglyphError("Invalid hieroglyph argument syntax: {0}".format(line))
+            raise HieroglyphError(
+                "Invalid hieroglyph argument syntax: {0}".format(line))
         param_name = m.group(1)
         param_type = m.group(3)
         param_text = m.group(4)
@@ -185,10 +188,12 @@ def convert_raises(node):
 
 RAISE_REGEX = re.compile(r'(\w+)\s*:\s*(.*)')
 
+
 def extract_exception_type_and_text(line):
     m = RAISE_REGEX.match(line)
     if m is None:
-        raise HieroglyphError("Invalid hieroglyph exception syntax: {0}".format(line))
+        raise HieroglyphError(
+            "Invalid hieroglyph exception syntax: {0}".format(line))
     return (m.group(2), m.group(1))
 
 
@@ -199,13 +204,14 @@ def append_child_to_raise_node(child, group_node):
         exception_text, exception_type = extract_exception_type_and_text(line)
 
         exception = Except(child.indent, exception_type)
-        group_node.children.append(exception) # TODO: Could use parent here.
+        group_node.children.append(exception)  # TODO: Could use parent here.
 
         if exception_text is not None:
-            exception.children.append( Node(child.indent,
-                                            [exception_text], exception))
+            exception.children.append(Node(child.indent,
+                                           [exception_text], exception))
     if exception is not None:
-        last_child = exception.children[-1] if len(exception.children) != 0 else exception
+        last_child = exception.children[-1] if len(
+            exception.children) != 0 else exception
         for grandchild in child.children:
             last_child.children.append(grandchild)
 
@@ -265,6 +271,7 @@ def gather_lines(indent_lines):
     '''
     return remove_empty_paragraphs(split_separated_lines(gather_lines_by_indent(indent_lines)))
 
+
 def gather_lines_by_indent(indent_lines):
     result = []
     previous_indent = -1
@@ -277,6 +284,7 @@ def gather_lines_by_indent(indent_lines):
         paragraph[1].append(line)
         previous_indent = indent
     return result
+
 
 def split_separated_lines(indent_paragraphs):
     result = []
@@ -297,8 +305,10 @@ def split_separated_lines(indent_paragraphs):
 
     return result
 
+
 def remove_empty_paragraphs(indent_paragraphs):
     return [(indent, paragraph) for indent, paragraph in indent_paragraphs if len(paragraph)]
+
 
 def first_paragraph_indent(indent_texts):
     '''Fix the indentation on the first paragraph.
@@ -353,7 +363,7 @@ def determine_opening_indent(indent_texts):
 
     assert num_lines >= 1
 
-    first_line_indent  = indent_texts[0][0]
+    first_line_indent = indent_texts[0][0]
 
     if num_lines == 1:
         return first_line_indent
@@ -361,13 +371,12 @@ def determine_opening_indent(indent_texts):
     assert num_lines >= 2
 
     second_line_indent = indent_texts[1][0]
-    second_line_text   = indent_texts[1][1]
+    second_line_text = indent_texts[1][1]
 
     if len(second_line_text) == 0:
         return first_line_indent
 
     return second_line_indent
-
 
 
 def rewrite_autodoc(app, what, name, obj, options, lines):
@@ -400,5 +409,3 @@ def rewrite_autodoc(app, what, name, obj, options, lines):
 
 def setup(app):
     app.connect('autodoc-process-docstring', rewrite_autodoc)
-
-

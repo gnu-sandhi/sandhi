@@ -5,9 +5,12 @@ import gras
 import numpy
 from gras import TestUtils
 
+
 class MyBlock(gras.Block):
+
     def __init__(self):
-        gras.Block.__init__(self, "MyBlock", out_sig=[numpy.uint32], in_sig=[numpy.uint32])
+        gras.Block.__init__(self, "MyBlock", out_sig=[
+                            numpy.uint32], in_sig=[numpy.uint32])
         self.numeric_value = 0
         self.register_call("get_numeric_value", self.get_numeric_value)
         self.register_call("set_numeric_value", self.set_numeric_value)
@@ -35,6 +38,7 @@ class MyBlock(gras.Block):
         print "new_vector_value", new_vector_value
         self.vector_value = numpy.copy(new_vector_value)
 
+
 class QueryTest(unittest.TestCase):
 
     def setUp(self):
@@ -52,14 +56,14 @@ class QueryTest(unittest.TestCase):
 
         self.assertEqual(vec_sink.data(), (0, 9, 8, 7, 6))
 
-        #query the block list
+        # query the block list
         blocks_result = self.tb.query(dict(path="/blocks.json"))
         self.assertEqual(len(blocks_result['blocks']), 2)
 
-        #pick a block to query below:
+        # pick a block to query below:
         block_id = blocks_result['blocks'].keys()[0]
 
-        #query the stats
+        # query the stats
         stats_result = self.tb.query(dict(
             path="/stats.json",
             blocks=[block_id],
@@ -67,7 +71,7 @@ class QueryTest(unittest.TestCase):
         self.assertTrue('tps' in stats_result)
         self.assertTrue('now' in stats_result)
 
-        #found the block we asked for
+        # found the block we asked for
         self.assertTrue(block_id in stats_result['blocks'])
 
     def test_numeric_query(self):
@@ -78,12 +82,12 @@ class QueryTest(unittest.TestCase):
         self.tb.connect(vec_source, block, vec_sink)
         self.tb.run()
 
-        #query the block list
+        # query the block list
         blocks_result = self.tb.query(dict(path="/blocks.json"))
         self.assertEqual(len(blocks_result['blocks']), 3)
         self.assertTrue('test_numeric_query' in blocks_result['blocks'])
 
-        #set the integer property
+        # set the integer property
         self.tb.query(dict(
             path="/calls.json",
             block='test_numeric_query',
@@ -92,7 +96,7 @@ class QueryTest(unittest.TestCase):
         ))
         self.assertEqual(block.numeric_value, 42)
 
-        #get the integer property
+        # get the integer property
         block.set_numeric_value(21)
         result = self.tb.query(dict(
             path="/calls.json",
@@ -101,7 +105,7 @@ class QueryTest(unittest.TestCase):
         ))
         self.assertEqual(result['value'], 21)
 
-        #set the complex property
+        # set the complex property
         self.tb.query(dict(
             path="/calls.json",
             block='test_numeric_query',
@@ -110,7 +114,7 @@ class QueryTest(unittest.TestCase):
         ))
         self.assertEqual(block.numeric_value, 42j)
 
-        #get the complex property
+        # get the complex property
         block.set_numeric_value(21j)
         result = self.tb.query(dict(
             path="/calls.json",
@@ -127,7 +131,7 @@ class QueryTest(unittest.TestCase):
         self.tb.connect(vec_source, block, vec_sink)
         self.tb.run()
 
-        #set the vector property
+        # set the vector property
         self.tb.query(dict(
             path="/calls.json",
             block='test_vector_query',
@@ -136,7 +140,7 @@ class QueryTest(unittest.TestCase):
         ))
         self.assertEqual(list(block.vector_value), [1, 2, 3, 4, 5])
 
-        #get the vector property
+        # get the vector property
         block.set_vector_value([6, 7, 8, 9])
         result = self.tb.query(dict(
             path="/calls.json",

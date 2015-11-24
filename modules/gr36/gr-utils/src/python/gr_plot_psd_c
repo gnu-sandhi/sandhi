@@ -25,11 +25,12 @@ from gnuradio.plot_psd_base import plot_psd_base
 
 # This is a wrapper program for plot_psd_base specifically for complex data
 
+
 def main():
     parser = plot_psd_base.setup_options()
     parser.remove_option("--data-type")
 
-    (options, args) = parser.parse_args ()
+    (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
         raise SystemExit, 1
@@ -42,6 +43,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         pass
-
-
-

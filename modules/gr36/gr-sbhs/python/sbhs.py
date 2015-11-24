@@ -5,13 +5,14 @@ from time import localtime, strftime, sleep
 MAP_FILE = './map_machine_ids.txt'
 LOG_FILE = '/var/sbhspylog/sbhserr.log'
 
-OUTGOING_MACHINE_ID  = 252
-INCOMING_FAN  = 253
+OUTGOING_MACHINE_ID = 252
+INCOMING_FAN = 253
 INCOMING_HEAT = 254
 OUTGOING_TEMP = 255
 
 MAX_HEAT = 100
 MAX_FAN = 100
+
 
 class Sbhs:
     """ This is the Single Board Heater System class """
@@ -40,34 +41,41 @@ class Sbhs:
             usb_device_file = False
             for mapping_str in map_file.readlines():
                 mapping = mapping_str.split('=')
-                # if mapping for the machine id found set the usb device file and break out of loop
+                # if mapping for the machine id found set the usb device file
+                # and break out of loop
                 if mapping[0] == str(self.machine_id):
                     usb_device_file = mapping[1].strip()
                     break
-            # reached end of file and check if machine id entry is present in the machine map file
+            # reached end of file and check if machine id entry is present in
+            # the machine map file
             map_file.close()
             if not usb_device_file:
                 print 'Error: cannot locate the USB device in the map table for machine id %d' % self.machine_id
-                self.log('cannot locate the USB device in the map table for machine id %d' % self.machine_id, 'ERROR')
+                self.log('cannot locate the USB device in the map table for machine id %d' %
+                         self.machine_id, 'ERROR')
                 return False
         except:
             map_file.close()
             print 'Error: cannot get the USB device path for the machine id %d' % self.machine_id
-            self.log('cannot get the USB device path for the machine id %d' % self.machine_id, 'ERROR')
+            self.log('cannot get the USB device path for the machine id %d' %
+                     self.machine_id, 'ERROR')
             return False
 
         # check if SBHS device is connected
         if not os.path.exists(usb_device_file):
             print 'SBHS device file ' + usb_device_file + ' does not exists'
-            self.log('SBHS device file ' + usb_device_file + ' does not exists', 'ERROR')
+            self.log('SBHS device file ' + usb_device_file +
+                     ' does not exists', 'ERROR')
             return False
         try:
-            self.boardcon = serial.Serial(port=usb_device_file, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
+            self.boardcon = serial.Serial(
+                port=usb_device_file, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
             self.status = 1
             return True
         except:
             print 'Error: cannot connect to machine id %d' % self.machine_id
-            self.log('cannot connect to machine id %d' % self.machine_id, 'ERROR')
+            self.log('cannot connect to machine id %d' %
+                     self.machine_id, 'ERROR')
             self.machine_id = -1
             self.device_num = -1
             self.boardcon = False
@@ -87,10 +95,12 @@ class Sbhs:
         # check if SBHS device is connected
         if not os.path.exists(usb_device_file):
             print 'SBHS device file ' + usb_device_file + ' does not exists'
-            self.log('SBHS device file ' + usb_device_file + ' does not exists', 'ERROR')
+            self.log('SBHS device file ' + usb_device_file +
+                     ' does not exists', 'ERROR')
             return False
         try:
-            self.boardcon = serial.Serial(port=usb_device_file, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
+            self.boardcon = serial.Serial(
+                port=usb_device_file, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2)
             self.machine_id = self.getMachineId()
             return True
         except:
@@ -110,7 +120,8 @@ class Sbhs:
             return True
         except:
             print 'Error: cannot set heat for machine id %d' % self.machine_id
-            self.log('cannot set heat for machine id %d' % self.machine_id, 'ERROR')
+            self.log('cannot set heat for machine id %d' %
+                     self.machine_id, 'ERROR')
             return False
 
     def setFan(self, val):
@@ -124,7 +135,8 @@ class Sbhs:
             return True
         except:
             print 'Error: cannot set fan for machine id %d' % self.machine_id
-            self.log('cannot set fan for machine id %d' % self.machine_id, 'ERROR')
+            self.log('cannot set fan for machine id %d' %
+                     self.machine_id, 'ERROR')
             return False
 
     def getTemp(self):
@@ -136,20 +148,22 @@ class Sbhs:
             return temp
         except:
             print 'Error: cannot read temperature from machine id %d' % self.machine_id
-            self.log('cannot read temperature from machine id %d' % self.machine_id, 'ERROR')
-        return  0.0
+            self.log('cannot read temperature from machine id %d' %
+                     self.machine_id, 'ERROR')
+        return 0.0
 
     def getMachineId(self):
         """ Get machine id from the device """
         try:
             self.boardcon.flushInput()
             self._write(chr(OUTGOING_MACHINE_ID))
-            sleep(0.5) # sleep before reading machine id
+            sleep(0.5)  # sleep before reading machine id
             machine_id = ord(self._read(1))
             return machine_id
         except:
             print 'Error: cannot read machine id from %s' % self.boardcon.port
-            self.log('cannot read machine id from %s' % self.boardcon.port, 'ERROR')
+            self.log('cannot read machine id from %s' %
+                     self.boardcon.port, 'ERROR')
         return -1
 
     def disconnect(self):
@@ -174,7 +188,8 @@ class Sbhs:
             return data
         except:
             print 'Error: cannot read from machine id %d' % self.machine_id
-            self.log('cannot read from machine id %d' % self.machine_id, 'ERROR')
+            self.log('cannot read from machine id %d' %
+                     self.machine_id, 'ERROR')
             raise Exception
 
     def _write(self, data):
@@ -183,18 +198,19 @@ class Sbhs:
             return True
         except:
             print 'Error: cannot write to machine id %d' % self.machine_id
-            self.log('cannot write to machine id %d' % self.machine_id, 'ERROR')
+            self.log('cannot write to machine id %d' %
+                     self.machine_id, 'ERROR')
             raise Exception
 
     def log(self, msg, level):
         try:
-            errfile = open(LOG_FILE, 'a') # open error log file in append mode
+            errfile = open(LOG_FILE, 'a')  # open error log file in append mode
             if not errfile:
                 return
-            log_msg = '%s %s %s\n' %(level, strftime('%d:%m:%Y %H:%M:%S', localtime()), msg)
+            log_msg = '%s %s %s\n' % (level, strftime(
+                '%d:%m:%Y %H:%M:%S', localtime()), msg)
             errfile.write(log_msg)
             errfile.close()
             return
         except:
             return
-

@@ -26,10 +26,12 @@ from optparse import OptionGroup
 from modtool_base import ModTool
 from util_functions import get_modname
 
+
 class ModToolInfo(ModTool):
     """ Return information about a given module """
     name = 'info'
     aliases = ('getinfo', 'inf')
+
     def __init__(self):
         ModTool.__init__(self)
 
@@ -39,9 +41,9 @@ class ModToolInfo(ModTool):
         parser.usage = '%prog info [options]. \n Call %prog without any options to run it interactively.'
         ogroup = OptionGroup(parser, "Info options")
         ogroup.add_option("--python-readable", action="store_true", default=None,
-                help="Return the output in a format that's easier to read for Python scripts.")
+                          help="Return the output in a format that's easier to read for Python scripts.")
         ogroup.add_option("--suggested-dirs", default=None, type="string",
-                help="Suggest typical include dirs if nothing better can be detected.")
+                          help="Suggest typical include dirs if nothing better can be detected.")
         parser.add_option_group(ogroup)
         return parser
 
@@ -75,7 +77,8 @@ class ModToolInfo(ModTool):
         mod_info['incdirs'] = []
         mod_incl_dir = os.path.join(mod_info['base_dir'], 'include')
         if os.path.isdir(os.path.join(mod_incl_dir, mod_info['modname'])):
-            mod_info['incdirs'].append(os.path.join(mod_incl_dir, mod_info['modname']))
+            mod_info['incdirs'].append(os.path.join(
+                mod_incl_dir, mod_info['modname']))
         else:
             mod_info['incdirs'].append(mod_incl_dir)
         build_dir = self._get_build_dir(mod_info)
@@ -108,7 +111,7 @@ class ModToolInfo(ModTool):
         base_build_dir = mod_info['base_dir']
         if 'is_component' in mod_info.keys():
             (base_build_dir, rest_dir) = os.path.split(base_build_dir)
-        has_build_dir = os.path.isdir(os.path.join(base_build_dir , 'build'))
+        has_build_dir = os.path.isdir(os.path.join(base_build_dir, 'build'))
         if (has_build_dir and os.path.isfile(os.path.join(base_build_dir, 'CMakeCache.txt'))):
             return os.path.join(base_build_dir, 'build')
         else:
@@ -125,16 +128,20 @@ class ModToolInfo(ModTool):
         path_or_internal = {True: 'INTERNAL',
                             False: 'PATH'}['is_component' in mod_info.keys()]
         try:
-            cmakecache_fid = open(os.path.join(mod_info['build_dir'], 'CMakeCache.txt'))
+            cmakecache_fid = open(os.path.join(
+                mod_info['build_dir'], 'CMakeCache.txt'))
             for line in cmakecache_fid:
                 if line.find('GNURADIO_CORE_INCLUDE_DIRS:%s' % path_or_internal) != -1:
-                    inc_dirs += line.replace('GNURADIO_CORE_INCLUDE_DIRS:%s=' % path_or_internal, '').strip().split(';')
+                    inc_dirs += line.replace('GNURADIO_CORE_INCLUDE_DIRS:%s=' %
+                                             path_or_internal, '').strip().split(';')
                 if line.find('GRUEL_INCLUDE_DIRS:%s' % path_or_internal) != -1:
-                    inc_dirs += line.replace('GRUEL_INCLUDE_DIRS:%s=' % path_or_internal, '').strip().split(';')
+                    inc_dirs += line.replace('GRUEL_INCLUDE_DIRS:%s=' %
+                                             path_or_internal, '').strip().split(';')
         except IOError:
             pass
         if len(inc_dirs) == 0 and self.options.suggested_dirs is not None:
-            inc_dirs = [os.path.normpath(path) for path in self.options.suggested_dirs.split(':') if os.path.isdir(path)]
+            inc_dirs = [os.path.normpath(path) for path in self.options.suggested_dirs.split(
+                ':') if os.path.isdir(path)]
         return inc_dirs
 
     def _pretty_print(self, mod_info):
@@ -147,10 +154,9 @@ class ModToolInfo(ModTool):
         for key in mod_info.keys():
             if key == 'version':
                 print "        API version: %s" % {
-                        '36': 'pre-3.7',
-                        '37': 'post-3.7',
-                        'autofoo': 'Autotools (pre-3.5)'
-                        }[mod_info['version']]
+                    '36': 'pre-3.7',
+                    '37': 'post-3.7',
+                    'autofoo': 'Autotools (pre-3.5)'
+                }[mod_info['version']]
             else:
                 print '%19s: %s' % (index_names[key], mod_info[key])
-

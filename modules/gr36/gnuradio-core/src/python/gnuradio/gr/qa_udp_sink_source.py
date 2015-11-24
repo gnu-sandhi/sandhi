@@ -23,6 +23,7 @@
 from gnuradio import gr, gr_unittest
 from threading import Timer
 
+
 class test_udp_sink_source(gr_unittest.TestCase):
 
     def setUp(self):
@@ -40,18 +41,18 @@ class test_udp_sink_source(gr_unittest.TestCase):
         src_data = [float(x) for x in range(n_data)]
         expected_result = tuple(src_data)
         src = gr.vector_source_f(src_data)
-        udp_snd = gr.udp_sink( gr.sizeof_float, 'localhost', port )
-        self.tb_snd.connect( src, udp_snd )
+        udp_snd = gr.udp_sink(gr.sizeof_float, 'localhost', port)
+        self.tb_snd.connect(src, udp_snd)
 
-        udp_rcv = gr.udp_source( gr.sizeof_float, 'localhost', port )
+        udp_rcv = gr.udp_source(gr.sizeof_float, 'localhost', port)
         dst = gr.vector_sink_f()
-        self.tb_rcv.connect( udp_rcv, dst )
+        self.tb_rcv.connect(udp_rcv, dst)
 
         self.tb_rcv.start()
         self.tb_snd.run()
         udp_snd.disconnect()
         self.timeout = False
-        q = Timer(3.0,self.stop_rcv)
+        q = Timer(3.0, self.stop_rcv)
         q.start()
         self.tb_rcv.wait()
         q.cancel()
@@ -61,11 +62,11 @@ class test_udp_sink_source(gr_unittest.TestCase):
         self.assert_(not self.timeout)
 
     def test_002(self):
-        udp_rcv = gr.udp_source( gr.sizeof_float, '0.0.0.0', 0, eof=False )
+        udp_rcv = gr.udp_source(gr.sizeof_float, '0.0.0.0', 0, eof=False)
         rcv_port = udp_rcv.get_port()
 
-        udp_snd = gr.udp_sink( gr.sizeof_float, '127.0.0.1', 65500 )
-        udp_snd.connect( 'localhost', rcv_port )
+        udp_snd = gr.udp_sink(gr.sizeof_float, '127.0.0.1', 65500)
+        udp_snd.connect('localhost', rcv_port)
 
         n_data = 16
         src_data = [float(x) for x in range(n_data)]
@@ -73,14 +74,14 @@ class test_udp_sink_source(gr_unittest.TestCase):
         src = gr.vector_source_f(src_data)
         dst = gr.vector_sink_f()
 
-        self.tb_snd.connect( src, udp_snd )
-        self.tb_rcv.connect( udp_rcv, dst )
+        self.tb_snd.connect(src, udp_snd)
+        self.tb_rcv.connect(udp_rcv, dst)
 
         self.tb_rcv.start()
         self.tb_snd.run()
         udp_snd.disconnect()
         self.timeout = False
-        q = Timer(3.0,self.stop_rcv)
+        q = Timer(3.0, self.stop_rcv)
         q.start()
         self.tb_rcv.wait()
         q.cancel()
@@ -92,8 +93,7 @@ class test_udp_sink_source(gr_unittest.TestCase):
     def stop_rcv(self):
         self.timeout = True
         self.tb_rcv.stop()
-        #print "tb_rcv stopped by Timer"
+        # print "tb_rcv stopped by Timer"
 
 if __name__ == '__main__':
     gr_unittest.run(test_udp_sink_source, "test_udp_sink_source.xml")
-

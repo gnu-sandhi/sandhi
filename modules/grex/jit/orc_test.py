@@ -18,6 +18,7 @@ addf dst, src1, src2
 sqrtf dst, src
 """
 
+
 class test_orc_block(unittest.TestCase):
 
     def setUp(self):
@@ -30,8 +31,10 @@ class test_orc_block(unittest.TestCase):
         op = gras.make('/grex/orc_block')
         op.set_program("volk_32f_x2_add_32f_a_orc_impl", SOURCE)
 
-        vec0 = numpy.array(numpy.random.randint(-150, +150, 10000), numpy.float32)
-        vec1 = numpy.array(numpy.random.randint(-150, +150, 10000), numpy.float32)
+        vec0 = numpy.array(
+            numpy.random.randint(-150, +150, 10000), numpy.float32)
+        vec1 = numpy.array(
+            numpy.random.randint(-150, +150, 10000), numpy.float32)
 
         src0 = TestUtils.VectorSource(numpy.float32, vec0)
         src1 = TestUtils.VectorSource(numpy.float32, vec1)
@@ -66,4 +69,3 @@ class test_orc_block(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

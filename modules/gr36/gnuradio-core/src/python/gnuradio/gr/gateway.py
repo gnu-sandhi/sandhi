@@ -29,96 +29,112 @@ import numpy
 # Magic to turn pointers into numpy arrays
 # http://docs.scipy.org/doc/numpy/reference/arrays.interface.html
 ########################################################################
+
+
 def pointer_to_ndarray(addr, dtype, nitems):
     class array_like:
         __array_interface__ = {
-            'data' : (int(addr), False),
-            'typestr' : dtype.base.str,
-            'descr' : dtype.base.descr,
-            'shape' : (nitems,) + dtype.shape,
-            'strides' : None,
-            'version' : 3
+            'data': (int(addr), False),
+            'typestr': dtype.base.str,
+            'descr': dtype.base.descr,
+            'shape': (nitems,) + dtype.shape,
+            'strides': None,
+            'version': 3
         }
     return numpy.asarray(array_like()).view(dtype.base)
 
 ########################################################################
 # Handler that does callbacks from C++
 ########################################################################
+
+
 class gateway_handler(gr_core.feval_ll):
 
-    #dont put a constructor, it wont work
+    # dont put a constructor, it wont work
 
     def init(self, callback):
         self._callback = callback
 
     def eval(self, arg):
-        try: self._callback()
+        try:
+            self._callback()
         except Exception as ex:
-            print("handler caught exception: %s"%ex)
-            import traceback; traceback.print_exc()
+            print("handler caught exception: %s" % ex)
+            import traceback
+            traceback.print_exc()
             raise ex
         return 0
 
 ########################################################################
 # Handler that does callbacks from C++
 ########################################################################
+
+
 class msg_handler(gr_core.feval_p):
 
-    #dont put a constructor, it wont work
+    # dont put a constructor, it wont work
 
     def init(self, callback):
         self._callback = callback
 
     def eval(self, arg):
-        try: self._callback(arg)
+        try:
+            self._callback(arg)
         except Exception as ex:
-            print("handler caught exception: %s"%ex)
-            import traceback; traceback.print_exc()
+            print("handler caught exception: %s" % ex)
+            import traceback
+            traceback.print_exc()
             raise ex
         return 0
 
 ########################################################################
 # The guts that make this into a gr block
 ########################################################################
+
+
 class gateway_block(object):
 
     def __init__(self, name, in_sig, out_sig, work_type, factor):
 
-        #ensure that the sigs are iterable dtypes
+        # ensure that the sigs are iterable dtypes
         def sig_to_dtype_sig(sig):
-            if sig is None: sig = ()
+            if sig is None:
+                sig = ()
             return map(numpy.dtype, sig)
         self.__in_sig = sig_to_dtype_sig(in_sig)
         self.__out_sig = sig_to_dtype_sig(out_sig)
 
-        #cache the ranges to iterate when dispatching work
+        # cache the ranges to iterate when dispatching work
         self.__in_indexes = range(len(self.__in_sig))
         self.__out_indexes = range(len(self.__out_sig))
 
-        #convert the signatures into gr.io_signatures
+        # convert the signatures into gr.io_signatures
         def sig_to_gr_io_sigv(sig):
-            if not len(sig): return io_signature(0, 0, 0)
+            if not len(sig):
+                return io_signature(0, 0, 0)
             return io_signaturev(len(sig), len(sig), [s.itemsize for s in sig])
         gr_in_sig = sig_to_gr_io_sigv(self.__in_sig)
         gr_out_sig = sig_to_gr_io_sigv(self.__out_sig)
 
-        #create internal gateway block
+        # create internal gateway block
         self.__handler = gateway_handler()
         self.__handler.init(self.__gr_block_handle)
         self.__gateway = block_gateway(
             self.__handler, name, gr_in_sig, gr_out_sig, work_type, factor)
         self.__message = self.__gateway.gr_block_message()
 
-        #dict to keep references to all message handlers
+        # dict to keep references to all message handlers
         self.__msg_handlers = {}
 
-        #register gr_block functions
+        # register gr_block functions
         prefix = 'gr_block__'
         for attr in [x for x in dir(self.__gateway) if x.startswith(prefix)]:
-            setattr(self, attr.replace(prefix, ''), getattr(self.__gateway, attr))
-        self.pop_msg_queue = lambda: gr_core.gr_block_gw_pop_msg_queue_safe(self.__gateway)
+            setattr(self, attr.replace(prefix, ''),
+                    getattr(self.__gateway, attr))
+        self.pop_msg_queue = lambda: gr_core.gr_block_gw_pop_msg_queue_safe(
+            self.__gateway)
 
-    #gras version of the to_basic_block()
+    # gras version of the to_basic_block()
     def to_element(self): return self.__gateway.to_element()
 
     def to_basic_block(self):
@@ -181,7 +197,7 @@ class gateway_block(object):
         this is the default implementation
         """
         for ninput_item in ninput_items_required:
-            ninput_item = noutput_items + self.history() - 1;
+            ninput_item = noutput_items + self.history() - 1
         return
 
     def general_work(self, *args, **kwargs):
@@ -193,6 +209,7 @@ class gateway_block(object):
         raise NotImplementedError("work not implemented")
 
     def start(self): return True
+
     def stop(self): return True
 
     def set_msg_handler(self, which_port, handler_func):
@@ -205,42 +222,51 @@ class gateway_block(object):
 ########################################################################
 # Wrappers for the user to inherit from
 ########################################################################
+
+
 class basic_block(gateway_block):
+
     def __init__(self, name, in_sig, out_sig):
         gateway_block.__init__(self,
-            name=name,
-            in_sig=in_sig,
-            out_sig=out_sig,
-            work_type=gr_core.GR_BLOCK_GW_WORK_GENERAL,
-            factor=1, #not relevant factor
-        )
+                               name=name,
+                               in_sig=in_sig,
+                               out_sig=out_sig,
+                               work_type=gr_core.GR_BLOCK_GW_WORK_GENERAL,
+                               factor=1,  # not relevant factor
+                               )
+
 
 class sync_block(gateway_block):
+
     def __init__(self, name, in_sig, out_sig):
         gateway_block.__init__(self,
-            name=name,
-            in_sig=in_sig,
-            out_sig=out_sig,
-            work_type=gr_core.GR_BLOCK_GW_WORK_SYNC,
-            factor=1,
-        )
+                               name=name,
+                               in_sig=in_sig,
+                               out_sig=out_sig,
+                               work_type=gr_core.GR_BLOCK_GW_WORK_SYNC,
+                               factor=1,
+                               )
+
 
 class decim_block(gateway_block):
+
     def __init__(self, name, in_sig, out_sig, decim):
         gateway_block.__init__(self,
-            name=name,
-            in_sig=in_sig,
-            out_sig=out_sig,
-            work_type=gr_core.GR_BLOCK_GW_WORK_DECIM,
-            factor=decim,
-        )
+                               name=name,
+                               in_sig=in_sig,
+                               out_sig=out_sig,
+                               work_type=gr_core.GR_BLOCK_GW_WORK_DECIM,
+                               factor=decim,
+                               )
+
 
 class interp_block(gateway_block):
+
     def __init__(self, name, in_sig, out_sig, interp):
         gateway_block.__init__(self,
-            name=name,
-            in_sig=in_sig,
-            out_sig=out_sig,
-            work_type=gr_core.GR_BLOCK_GW_WORK_INTERP,
-            factor=interp,
-        )
+                               name=name,
+                               in_sig=in_sig,
+                               out_sig=out_sig,
+                               work_type=gr_core.GR_BLOCK_GW_WORK_INTERP,
+                               factor=interp,
+                               )

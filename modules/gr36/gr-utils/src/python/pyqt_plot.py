@@ -9,7 +9,9 @@
 
 from PyQt4 import QtCore, QtGui
 
+
 class Ui_MainWindow(object):
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(927, 696)
@@ -39,16 +41,19 @@ class Ui_MainWindow(object):
         self.fftPropBox.setMinimumSize(QtCore.QSize(160, 0))
         self.fftPropBox.setObjectName("fftPropBox")
         self.formLayout_4 = QtGui.QFormLayout(self.fftPropBox)
-        self.formLayout_4.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
+        self.formLayout_4.setFieldGrowthPolicy(
+            QtGui.QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout_4.setObjectName("formLayout_4")
         self.psdFFTComboBox = QtGui.QComboBox(self.fftPropBox)
         self.psdFFTComboBox.setMinimumSize(QtCore.QSize(96, 0))
         self.psdFFTComboBox.setMaximumSize(QtCore.QSize(96, 16777215))
         self.psdFFTComboBox.setObjectName("psdFFTComboBox")
-        self.formLayout_4.setWidget(0, QtGui.QFormLayout.FieldRole, self.psdFFTComboBox)
+        self.formLayout_4.setWidget(
+            0, QtGui.QFormLayout.FieldRole, self.psdFFTComboBox)
         self.psdFFTSizeLabel = QtGui.QLabel(self.fftPropBox)
         self.psdFFTSizeLabel.setObjectName("psdFFTSizeLabel")
-        self.formLayout_4.setWidget(0, QtGui.QFormLayout.LabelRole, self.psdFFTSizeLabel)
+        self.formLayout_4.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.psdFFTSizeLabel)
         self.horizontalLayout_2.addWidget(self.fftPropBox)
         self.freqPlot = Qwt5.QwtPlot(self.freqTab)
         self.freqPlot.setObjectName("freqPlot")
@@ -64,12 +69,14 @@ class Ui_MainWindow(object):
         self.formLayout_3.setObjectName("formLayout_3")
         self.specFFTLabel = QtGui.QLabel(self.groupBox)
         self.specFFTLabel.setObjectName("specFFTLabel")
-        self.formLayout_3.setWidget(1, QtGui.QFormLayout.LabelRole, self.specFFTLabel)
+        self.formLayout_3.setWidget(
+            1, QtGui.QFormLayout.LabelRole, self.specFFTLabel)
         self.specFFTComboBox = QtGui.QComboBox(self.groupBox)
         self.specFFTComboBox.setMinimumSize(QtCore.QSize(96, 0))
         self.specFFTComboBox.setMaximumSize(QtCore.QSize(96, 16777215))
         self.specFFTComboBox.setObjectName("specFFTComboBox")
-        self.formLayout_3.setWidget(1, QtGui.QFormLayout.FieldRole, self.specFFTComboBox)
+        self.formLayout_3.setWidget(
+            1, QtGui.QFormLayout.FieldRole, self.specFFTComboBox)
         self.horizontalLayout_3.addWidget(self.groupBox)
         self.specPlot = Qwt5.QwtPlot(self.specTab)
         self.specPlot.setObjectName("specPlot")
@@ -86,22 +93,28 @@ class Ui_MainWindow(object):
         self.filePosLayout.setObjectName("filePosLayout")
         self.filePosStartLabel = QtGui.QLabel(self.formLayoutWidget_2)
         self.filePosStartLabel.setObjectName("filePosStartLabel")
-        self.filePosLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.filePosStartLabel)
+        self.filePosLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.filePosStartLabel)
         self.filePosStartLineEdit = QtGui.QLineEdit(self.formLayoutWidget_2)
         self.filePosStartLineEdit.setObjectName("filePosStartLineEdit")
-        self.filePosLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.filePosStartLineEdit)
+        self.filePosLayout.setWidget(
+            0, QtGui.QFormLayout.FieldRole, self.filePosStartLineEdit)
         self.filePosStopLabel = QtGui.QLabel(self.formLayoutWidget_2)
         self.filePosStopLabel.setObjectName("filePosStopLabel")
-        self.filePosLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.filePosStopLabel)
+        self.filePosLayout.setWidget(
+            1, QtGui.QFormLayout.LabelRole, self.filePosStopLabel)
         self.filePosStopLineEdit = QtGui.QLineEdit(self.formLayoutWidget_2)
         self.filePosStopLineEdit.setObjectName("filePosStopLineEdit")
-        self.filePosLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.filePosStopLineEdit)
+        self.filePosLayout.setWidget(
+            1, QtGui.QFormLayout.FieldRole, self.filePosStopLineEdit)
         self.filePosLengthLabel = QtGui.QLabel(self.formLayoutWidget_2)
         self.filePosLengthLabel.setObjectName("filePosLengthLabel")
-        self.filePosLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.filePosLengthLabel)
+        self.filePosLayout.setWidget(
+            2, QtGui.QFormLayout.LabelRole, self.filePosLengthLabel)
         self.filePosLengthLineEdit = QtGui.QLineEdit(self.formLayoutWidget_2)
         self.filePosLengthLineEdit.setObjectName("filePosLengthLineEdit")
-        self.filePosLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.filePosLengthLineEdit)
+        self.filePosLayout.setWidget(
+            2, QtGui.QFormLayout.FieldRole, self.filePosLengthLineEdit)
         self.formLayoutWidget_4 = QtGui.QWidget(self.filePosBox)
         self.formLayoutWidget_4.setGeometry(QtCore.QRect(180, 20, 231, 92))
         self.formLayoutWidget_4.setObjectName("formLayoutWidget_4")
@@ -109,22 +122,28 @@ class Ui_MainWindow(object):
         self.fileTimeLayout.setObjectName("fileTimeLayout")
         self.fileTimeStartLabel = QtGui.QLabel(self.formLayoutWidget_4)
         self.fileTimeStartLabel.setObjectName("fileTimeStartLabel")
-        self.fileTimeLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.fileTimeStartLabel)
+        self.fileTimeLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.fileTimeStartLabel)
         self.fileTimeStartLineEdit = QtGui.QLineEdit(self.formLayoutWidget_4)
         self.fileTimeStartLineEdit.setObjectName("fileTimeStartLineEdit")
-        self.fileTimeLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.fileTimeStartLineEdit)
+        self.fileTimeLayout.setWidget(
+            0, QtGui.QFormLayout.FieldRole, self.fileTimeStartLineEdit)
         self.fileTimeStopLabel = QtGui.QLabel(self.formLayoutWidget_4)
         self.fileTimeStopLabel.setObjectName("fileTimeStopLabel")
-        self.fileTimeLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.fileTimeStopLabel)
+        self.fileTimeLayout.setWidget(
+            1, QtGui.QFormLayout.LabelRole, self.fileTimeStopLabel)
         self.fileTimeStopLineEdit = QtGui.QLineEdit(self.formLayoutWidget_4)
         self.fileTimeStopLineEdit.setObjectName("fileTimeStopLineEdit")
-        self.fileTimeLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.fileTimeStopLineEdit)
+        self.fileTimeLayout.setWidget(
+            1, QtGui.QFormLayout.FieldRole, self.fileTimeStopLineEdit)
         self.fileTimeLengthLabel = QtGui.QLabel(self.formLayoutWidget_4)
         self.fileTimeLengthLabel.setObjectName("fileTimeLengthLabel")
-        self.fileTimeLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.fileTimeLengthLabel)
+        self.fileTimeLayout.setWidget(
+            2, QtGui.QFormLayout.LabelRole, self.fileTimeLengthLabel)
         self.fileTimeLengthLineEdit = QtGui.QLineEdit(self.formLayoutWidget_4)
         self.fileTimeLengthLineEdit.setObjectName("fileTimeLengthLineEdit")
-        self.fileTimeLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.fileTimeLengthLineEdit)
+        self.fileTimeLayout.setWidget(
+            2, QtGui.QFormLayout.FieldRole, self.fileTimeLengthLineEdit)
         self.sysGroupBox = QtGui.QGroupBox(self.filePosBox)
         self.sysGroupBox.setGeometry(QtCore.QRect(530, 0, 200, 120))
         self.sysGroupBox.setMinimumSize(QtCore.QSize(200, 0))
@@ -136,11 +155,13 @@ class Ui_MainWindow(object):
         self.formLayout_2.setObjectName("formLayout_2")
         self.sampleRateLabel = QtGui.QLabel(self.formLayoutWidget_3)
         self.sampleRateLabel.setObjectName("sampleRateLabel")
-        self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.sampleRateLabel)
+        self.formLayout_2.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.sampleRateLabel)
         self.sampleRateLineEdit = QtGui.QLineEdit(self.formLayoutWidget_3)
         self.sampleRateLineEdit.setMinimumSize(QtCore.QSize(0, 0))
         self.sampleRateLineEdit.setObjectName("sampleRateLineEdit")
-        self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.sampleRateLineEdit)
+        self.formLayout_2.setWidget(
+            0, QtGui.QFormLayout.FieldRole, self.sampleRateLineEdit)
         self.displayGroupBox = QtGui.QGroupBox(self.filePosBox)
         self.displayGroupBox.setGeometry(QtCore.QRect(730, 0, 170, 120))
         self.displayGroupBox.setMinimumSize(QtCore.QSize(170, 0))
@@ -153,7 +174,8 @@ class Ui_MainWindow(object):
         self.colorComboBox = QtGui.QComboBox(self.verticalLayoutWidget)
         self.colorComboBox.setObjectName("colorComboBox")
         self.verticalLayout.addWidget(self.colorComboBox)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.gridLayout.addWidget(self.filePosBox, 3, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -179,33 +201,58 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabGroup.setCurrentIndex(0)
-        QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL("activated()"), MainWindow.close)
+        QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL(
+            "activated()"), MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabGroup.setTabText(self.tabGroup.indexOf(self.timeTab), QtGui.QApplication.translate("MainWindow", "Time Domain", None, QtGui.QApplication.UnicodeUTF8))
-        self.fftPropBox.setTitle(QtGui.QApplication.translate("MainWindow", "FFT Properties", None, QtGui.QApplication.UnicodeUTF8))
-        self.psdFFTSizeLabel.setText(QtGui.QApplication.translate("MainWindow", "FFT Size", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabGroup.setTabText(self.tabGroup.indexOf(self.freqTab), QtGui.QApplication.translate("MainWindow", "Frequency Domain", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Spectrogram Properties", None, QtGui.QApplication.UnicodeUTF8))
-        self.specFFTLabel.setText(QtGui.QApplication.translate("MainWindow", "FFT Size", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabGroup.setTabText(self.tabGroup.indexOf(self.specTab), QtGui.QApplication.translate("MainWindow", "Spectrogram", None, QtGui.QApplication.UnicodeUTF8))
-        self.filePosBox.setTitle(QtGui.QApplication.translate("MainWindow", "File Position", None, QtGui.QApplication.UnicodeUTF8))
-        self.filePosStartLabel.setText(QtGui.QApplication.translate("MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))
-        self.filePosStopLabel.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
-        self.filePosLengthLabel.setText(QtGui.QApplication.translate("MainWindow", "Length", None, QtGui.QApplication.UnicodeUTF8))
-        self.fileTimeStartLabel.setText(QtGui.QApplication.translate("MainWindow", "time start (sec)", None, QtGui.QApplication.UnicodeUTF8))
-        self.fileTimeStopLabel.setText(QtGui.QApplication.translate("MainWindow", "time stop (sec)", None, QtGui.QApplication.UnicodeUTF8))
-        self.fileTimeLengthLabel.setText(QtGui.QApplication.translate("MainWindow", "time length (sec)", None, QtGui.QApplication.UnicodeUTF8))
-        self.sysGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "System Properties", None, QtGui.QApplication.UnicodeUTF8))
-        self.sampleRateLabel.setText(QtGui.QApplication.translate("MainWindow", "Sample Rate", None, QtGui.QApplication.UnicodeUTF8))
-        self.displayGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Display Properties", None, QtGui.QApplication.UnicodeUTF8))
-        self.menu_File.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_open.setText(QtGui.QApplication.translate("MainWindow", "&Open", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_open.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_exit.setText(QtGui.QApplication.translate("MainWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_reload.setText(QtGui.QApplication.translate("MainWindow", "&Reload", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_reload.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+R", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(QtGui.QApplication.translate(
+            "MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabGroup.setTabText(self.tabGroup.indexOf(self.timeTab), QtGui.QApplication.translate(
+            "MainWindow", "Time Domain", None, QtGui.QApplication.UnicodeUTF8))
+        self.fftPropBox.setTitle(QtGui.QApplication.translate(
+            "MainWindow", "FFT Properties", None, QtGui.QApplication.UnicodeUTF8))
+        self.psdFFTSizeLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "FFT Size", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabGroup.setTabText(self.tabGroup.indexOf(self.freqTab), QtGui.QApplication.translate(
+            "MainWindow", "Frequency Domain", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate(
+            "MainWindow", "Spectrogram Properties", None, QtGui.QApplication.UnicodeUTF8))
+        self.specFFTLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "FFT Size", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabGroup.setTabText(self.tabGroup.indexOf(self.specTab), QtGui.QApplication.translate(
+            "MainWindow", "Spectrogram", None, QtGui.QApplication.UnicodeUTF8))
+        self.filePosBox.setTitle(QtGui.QApplication.translate(
+            "MainWindow", "File Position", None, QtGui.QApplication.UnicodeUTF8))
+        self.filePosStartLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))
+        self.filePosStopLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
+        self.filePosLengthLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "Length", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileTimeStartLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "time start (sec)", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileTimeStopLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "time stop (sec)", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileTimeLengthLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "time length (sec)", None, QtGui.QApplication.UnicodeUTF8))
+        self.sysGroupBox.setTitle(QtGui.QApplication.translate(
+            "MainWindow", "System Properties", None, QtGui.QApplication.UnicodeUTF8))
+        self.sampleRateLabel.setText(QtGui.QApplication.translate(
+            "MainWindow", "Sample Rate", None, QtGui.QApplication.UnicodeUTF8))
+        self.displayGroupBox.setTitle(QtGui.QApplication.translate(
+            "MainWindow", "Display Properties", None, QtGui.QApplication.UnicodeUTF8))
+        self.menu_File.setTitle(QtGui.QApplication.translate(
+            "MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_open.setText(QtGui.QApplication.translate(
+            "MainWindow", "&Open", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_open.setShortcut(QtGui.QApplication.translate(
+            "MainWindow", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_exit.setText(QtGui.QApplication.translate(
+            "MainWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_reload.setText(QtGui.QApplication.translate(
+            "MainWindow", "&Reload", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_reload.setShortcut(QtGui.QApplication.translate(
+            "MainWindow", "Ctrl+R", None, QtGui.QApplication.UnicodeUTF8))
 
 from PyQt4 import Qwt5

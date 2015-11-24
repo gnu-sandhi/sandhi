@@ -22,6 +22,7 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_affinity(gr_unittest.TestCase):
 
     def setUp(self):
@@ -37,7 +38,7 @@ class test_affinity(gr_unittest.TestCase):
         src = gr.vector_source_f(src_data)
         snk = gr.vector_sink_f()
 
-        src.set_processor_affinity([0,])
+        src.set_processor_affinity([0, ])
         self.tb.connect(src, snk)
         self.tb.run()
 

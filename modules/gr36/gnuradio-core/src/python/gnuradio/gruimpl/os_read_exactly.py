@@ -21,6 +21,7 @@
 
 import os
 
+
 def os_read_exactly(file_descriptor, nbytes):
     """
     Replacement for os.read that blocks until it reads exactly nbytes.

@@ -27,7 +27,7 @@ import os.path
 # to manually update this file.
 
 for p in __path__:
-    filenames = glob.glob (os.path.join (p, "..", "blks2impl", "*.py"))
+    filenames = glob.glob(os.path.join(p, "..", "blks2impl", "*.py"))
     for f in filenames:
         f = os.path.basename(f).lower()
         f = f[:-3]

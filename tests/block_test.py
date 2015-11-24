@@ -5,6 +5,7 @@ import gras
 import numpy
 from gras import TestUtils
 
+
 class BlockTest(unittest.TestCase):
 
     def setUp(self):
@@ -51,7 +52,8 @@ class BlockTest(unittest.TestCase):
         """
         src0 = TestUtils.VectorSource(numpy.float32, [1, 3, 5, 7, 9])
         adder = TestUtils.Add2X(numpy.float32)
-        adder.input_config(1).preload_items = 1 #make this a feedback delay of 1
+        # make this a feedback delay of 1
+        adder.input_config(1).preload_items = 1
         sink = TestUtils.VectorSink(numpy.float32)
         self.tb.connect((src0, 0), (adder, 0))
         self.tb.connect((adder, 0), (adder, 1))
@@ -60,7 +62,8 @@ class BlockTest(unittest.TestCase):
         self.assertEqual(sink.data(), (1, 4, 9, 16, 25))
 
     def test_tag_source_sink(self):
-        values = (0, 'hello', 4.2, True, None, [2, 3, 4], (9, 8, 7), 1j, {2:'d'})
+        values = (0, 'hello', 4.2, True, None, [
+                  2, 3, 4], (9, 8, 7), 1j, {2: 'd'})
         src = TestUtils.TagSource(values)
         sink = TestUtils.TagSink()
         self.tb.connect(src, sink)
@@ -69,14 +72,16 @@ class BlockTest(unittest.TestCase):
 
     def test_ro_buffers(self):
         class BadTouch(gras.Block):
+
             def __init__(self, in_sig):
                 gras.Block.__init__(self, 'BadTouch', in_sig=[in_sig])
 
             def work(self, ins, outs):
                 try:
-                    ins[0][0] = 0 #assign to ro buffer should fail
+                    ins[0][0] = 0  # assign to ro buffer should fail
                     raise Exception, 'ins should not be writeable!'
-                except: pass
+                except:
+                    pass
                 self.consume(0, len(ins[0]))
 
         source = TestUtils.VectorSource(numpy.uint32, [0, 9, 8, 7, 6])

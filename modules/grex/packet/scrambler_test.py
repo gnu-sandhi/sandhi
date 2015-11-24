@@ -9,6 +9,7 @@ import random
 import ctypes
 from PMC import *
 
+
 class LengthTagSource(gras.Block):
 
     def __init__(self, src_data):
@@ -36,6 +37,7 @@ class LengthTagSource(gras.Block):
             self._do_len_tag = True
         if not self._src_data:
             self.mark_done()
+
 
 class test_scramblers(unittest.TestCase):
 
@@ -96,7 +98,7 @@ class test_scramblers(unittest.TestCase):
 
             self.tb.run()
             self.tb.disconnect_all()
-            #lengths wont equal, sync word does history thing
+            # lengths wont equal, sync word does history thing
             n = min(len(src_data), len(dst.data()))
             self.assertTrue(src_data[:n], dst.data()[:n])
 
@@ -117,7 +119,8 @@ class test_scramblers(unittest.TestCase):
 
             src_bursts = list()
             for it in range(7):
-                src_bursts.append(numpy.random.randint(0, 2, random.randint(128, 4096)))
+                src_bursts.append(numpy.random.randint(
+                    0, 2, random.randint(128, 4096)))
             src_data = tuple(numpy.concatenate(src_bursts))
 
             src = LengthTagSource(src_bursts)
@@ -126,10 +129,9 @@ class test_scramblers(unittest.TestCase):
 
             self.tb.run()
             self.tb.disconnect_all()
-            #lengths wont equal, sync word does history thing
+            # lengths wont equal, sync word does history thing
             n = min(len(src_data), len(dst.data()))
             self.assertTrue(src_data[:n] == dst.data()[:n])
 
 if __name__ == '__main__':
     unittest.main()
-

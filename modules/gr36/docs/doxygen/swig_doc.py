@@ -1,23 +1,23 @@
 #
 # Copyright 2010-2012 Free Software Foundation, Inc.
-# 
+#
 # This file is part of GNU Radio
-# 
+#
 # GNU Radio is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3, or (at your option)
 # any later version.
-# 
+#
 # GNU Radio is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with GNU Radio; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
-# 
+#
 """
 Creates the swig_doc.i SWIG interface file.
 Execute using: python swig_doc.py xml_path outputfilename
@@ -27,14 +27,17 @@ python docstrings.
 
 """
 
-import sys, time
+import sys
+import time
 
 from doxyxml import DoxyIndex, DoxyClass, DoxyFriend, DoxyFunction, DoxyFile
 from doxyxml import DoxyOther, base
 
+
 def py_name(name):
     bits = name.split('_')
     return '_'.join(bits[1:])
+
 
 def make_name(name):
     bits = name.split('_')
@@ -60,12 +63,13 @@ class Block(object):
             is_a_block = di.has_member(friendname, DoxyFunction)
         return is_a_block
 
+
 class Block2(object):
     """
     Checks if doxyxml produced objects correspond to a new style
     gnuradio block.
     """
-    
+
     @classmethod
     def includes(cls, item):
         if not isinstance(item, DoxyClass):
@@ -73,9 +77,10 @@ class Block2(object):
         # Check for a parsing error.
         if item.error():
             return False
-        is_a_block2 = item.has_member('make', DoxyFunction) and item.has_member('sptr', DoxyOther)
+        is_a_block2 = item.has_member(
+            'make', DoxyFunction) and item.has_member('sptr', DoxyOther)
         return is_a_block2
-        
+
 
 def utoascii(text):
     """
@@ -100,7 +105,8 @@ def combine_descriptions(obj):
     if dd:
         description.append(dd)
     return utoascii('\n\n'.join(description)).strip()
-    
+
+
 def format_params(parameteritems):
     output = ['Args:']
     template = '    {0} : {1}'
@@ -109,10 +115,12 @@ def format_params(parameteritems):
     return '\n'.join(output)
 
 entry_templ = '%feature("docstring") {name} "{docstring}"'
+
+
 def make_entry(obj, name=None, templ="{description}", description=None, params=[]):
     """
     Create a docstring entry for a swig interface file.
-    
+
     obj - a doxyxml object from which documentation will be extracted.
     name - the name of the C object (defaults to obj.name())
     templ - an optional template for the docstring containing only one
@@ -121,7 +129,7 @@ def make_entry(obj, name=None, templ="{description}", description=None, params=[
             used as the description instead of extracting it from obj.
     """
     if name is None:
-        name=obj.name()
+        name = obj.name()
     if "operator " in name:
         return ''
     if description is None:
@@ -135,7 +143,7 @@ def make_entry(obj, name=None, templ="{description}", description=None, params=[
     return entry_templ.format(
         name=name,
         docstring=docstring,
-        )
+    )
 
 
 def make_func_entry(func, name=None, description=None, params=None):
@@ -148,15 +156,15 @@ def make_func_entry(func, name=None, description=None, params=None):
             used as the description instead of extracting it from func.
     params - a parameter list that overrides using func.params.
     """
-    #if params is None:
+    # if params is None:
     #    params = func.params
     #params = [prm.declname for prm in params]
-    #if params:
+    # if params:
     #    sig = "Params: (%s)" % ", ".join(params)
-    #else:
+    # else:
     #    sig = "Params: (NONE)"
     #templ = "{description}\n\n" + sig
-    #return make_entry(func, name=name, templ=utoascii(templ),
+    # return make_entry(func, name=name, templ=utoascii(templ),
     #                  description=description)
     return make_entry(func, name=name, description=description, params=params)
 
@@ -210,6 +218,7 @@ def make_block_entry(di, block):
                                   params=block.params))
     return "\n\n".join(output)
 
+
 def make_block2_entry(di, block):
     """
     Create class and function docstrings of a new style gnuradio block for a
@@ -223,17 +232,18 @@ def make_block2_entry(di, block):
     # Associate the combined description with the class and
     # the make function.
     output = []
-    #output.append(make_class_entry(
+    # output.append(make_class_entry(
     #        block, description=description,
     #        ignored_methods=['make'], params=make_func.params))
     makename = block.name() + '::make'
     output.append(make_func_entry(
-            make_func, name=makename, description=description,
-            params=make_func.params))
+        make_func, name=makename, description=description,
+        params=make_func.params))
     return "\n\n".join(output)
 
+
 def make_swig_interface_file(di, swigdocfilename, custom_output=None):
-    
+
     output = ["""
 /*
  * This file was automatically generated using swig_doc.py.
@@ -258,30 +268,33 @@ def make_swig_interface_file(di, swigdocfilename, custom_output=None):
                 make_funcs.add(make_func.name())
                 output.append(make_block_entry(di, block))
         except block.ParsingError:
-            sys.stderr.write('Parsing error for block {0}\n'.format(block.name()))
+            sys.stderr.write(
+                'Parsing error for block {0}\n'.format(block.name()))
             raise
 
     for block in blocks2:
         try:
             make_func = block.get_member('make', DoxyFunction)
-            make_func_name = block.name() +'::make'
+            make_func_name = block.name() + '::make'
             # Don't want to risk writing to output twice.
             if make_func_name not in make_funcs:
                 make_funcs.add(make_func_name)
                 output.append(make_block2_entry(di, block))
         except block.ParsingError:
-            sys.stderr.write('Parsing error for block {0}\n'.format(block.name()))
+            sys.stderr.write(
+                'Parsing error for block {0}\n'.format(block.name()))
             raise
 
     # Create docstrings for functions
     # Don't include the make functions since they have already been dealt with.
-    funcs = [f for f in di.in_category(DoxyFunction) 
+    funcs = [f for f in di.in_category(DoxyFunction)
              if f.name() not in make_funcs and not f.name().startswith('std::')]
     for f in funcs:
         try:
             output.append(make_func_entry(f))
         except f.ParsingError:
-            sys.stderr.write('Parsing error for function {0}\n'.format(f.name()))
+            sys.stderr.write(
+                'Parsing error for function {0}\n'.format(f.name()))
 
     # Create docstrings for classes
     block_names = [block.name() for block in blocks]

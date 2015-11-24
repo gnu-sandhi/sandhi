@@ -52,6 +52,7 @@ import gr_threading as _threading
 # the interruptable wait.
 #
 class _top_block_waiter(_threading.Thread):
+
     def __init__(self, tb):
         _threading.Thread.__init__(self)
         self.setDaemon(1)
@@ -85,19 +86,21 @@ class _top_block_waiter(_threading.Thread):
 # method in gr_top_block
 #
 class top_block(object):
+
     def __init__(self, name="top_block"):
-	self._tb = top_block_swig(name)
+        self._tb = top_block_swig(name)
 
     def __getattr__(self, name):
         if not hasattr(self, "_tb"):
-            raise RuntimeError("top_block: invalid state--did you forget to call gr.top_block.__init__ in a derived class?")
-	return getattr(self._tb, name)
+            raise RuntimeError(
+                "top_block: invalid state--did you forget to call gr.top_block.__init__ in a derived class?")
+        return getattr(self._tb, name)
 
     def start(self, max_noutput_items=100000):
-    	self._tb.start(max_noutput_items)
+        self._tb.start(max_noutput_items)
 
     def stop(self):
-    	self._tb.stop()
+        self._tb.stop()
 
     def run(self, max_noutput_items=100000):
         self.start(max_noutput_items)
@@ -106,28 +109,31 @@ class top_block(object):
     def wait(self):
         _top_block_waiter(self._tb).wait()
 
-
     # FIXME: these are duplicated from hier_block2.py; they should really be implemented
-    # in the original C++ class (gr_hier_block2), then they would all be inherited here
+    # in the original C++ class (gr_hier_block2), then they would all be
+    # inherited here
 
     def connect(self, *points):
         '''connect requires one or more arguments that can be coerced to endpoints.
         If more than two arguments are provided, they are connected together successively.
         '''
-        if len (points) < 1:
-            raise ValueError, ("connect requires at least one endpoint; %d provided." % (len (points),))
-	else:
-	    if len(points) == 1:
-		self._tb.primitive_connect(points[0].to_basic_block())
-	    else:
-		for i in range (1, len (points)):
-        	    self._connect(points[i-1], points[i])
+        if len(points) < 1:
+            raise ValueError, ("connect requires at least one endpoint; %d provided." % (
+                len(points),))
+        else:
+            if len(points) == 1:
+                self._tb.primitive_connect(points[0].to_basic_block())
+            else:
+                for i in range(1, len(points)):
+                    self._connect(points[i - 1], points[i])
 
     def msg_connect(self, src, srcport, dst, dstport):
-        self.primitive_msg_connect(src.to_basic_block(), srcport, dst.to_basic_block(), dstport);
-    
+        self.primitive_msg_connect(
+            src.to_basic_block(), srcport, dst.to_basic_block(), dstport)
+
     def msg_disconnect(self, src, srcport, dst, dstport):
-        self.primitive_msg_disconnect(src.to_basic_block(), srcport, dst.to_basic_block(), dstport);
+        self.primitive_msg_disconnect(
+            src.to_basic_block(), srcport, dst.to_basic_block(), dstport)
 
     def _connect(self, src, dst):
         (src_block, src_port) = self._coerce_endpoint(src)
@@ -140,7 +146,7 @@ class top_block(object):
             return (endp, 0)
         else:
             if hasattr(endp, "__getitem__") and len(endp) == 2:
-                return endp # Assume user put (block, port)
+                return endp  # Assume user put (block, port)
             else:
                 raise ValueError("unable to coerce endpoint")
 
@@ -148,18 +154,18 @@ class top_block(object):
         '''disconnect requires one or more arguments that can be coerced to endpoints.
         If more than two arguments are provided, they are disconnected successively.
         '''
-        if len (points) < 1:
-            raise ValueError, ("disconnect requires at least one endpoint; %d provided." % (len (points),))
+        if len(points) < 1:
+            raise ValueError, ("disconnect requires at least one endpoint; %d provided." % (
+                len(points),))
         else:
             if len(points) == 1:
                 self._tb.primitive_disconnect(points[0].to_basic_block())
             else:
-                for i in range (1, len (points)):
-                    self._disconnect(points[i-1], points[i])
+                for i in range(1, len(points)):
+                    self._disconnect(points[i - 1], points[i])
 
     def _disconnect(self, src, dst):
         (src_block, src_port) = self._coerce_endpoint(src)
         (dst_block, dst_port) = self._coerce_endpoint(dst)
         self._tb.primitive_disconnect(src_block.to_basic_block(), src_port,
                                       dst_block.to_basic_block(), dst_port)
-

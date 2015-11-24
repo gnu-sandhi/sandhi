@@ -24,36 +24,36 @@ import blocks_swig
 import sys
 import random
 
+
 class test_keep_m_in_n(gr_unittest.TestCase):
 
     def setUp(self):
-	pass
+        pass
 
     def tearDown(self):
-	pass
+        pass
 
     def test_001(self):
-        self.maxDiff = None;
+        self.maxDiff = None
         tb = gr.top_block()
-        src = gr.vector_source_b( range(0,100) )
+        src = gr.vector_source_b(range(0, 100))
 
         # itemsize, M, N, offset
-        km2 = blocks_swig.keep_m_in_n( 1, 1, 2, 0 );
-        km3 = blocks_swig.keep_m_in_n( 1, 1, 3, 1 );
-        km7 = blocks_swig.keep_m_in_n( 1, 1, 7, 2 );
-        snk2 = gr.vector_sink_b();
-        snk3 = gr.vector_sink_b();
-        snk7 = gr.vector_sink_b();
-        tb.connect(src,km2,snk2);
-        tb.connect(src,km3,snk3);
-        tb.connect(src,km7,snk7);
-        tb.run();
+        km2 = blocks_swig.keep_m_in_n(1, 1, 2, 0)
+        km3 = blocks_swig.keep_m_in_n(1, 1, 3, 1)
+        km7 = blocks_swig.keep_m_in_n(1, 1, 7, 2)
+        snk2 = gr.vector_sink_b()
+        snk3 = gr.vector_sink_b()
+        snk7 = gr.vector_sink_b()
+        tb.connect(src, km2, snk2)
+        tb.connect(src, km3, snk3)
+        tb.connect(src, km7, snk7)
+        tb.run()
 
-        self.assertEqual(range(0,100,2), list(snk2.data()));
-        self.assertEqual(range(1,100,3), list(snk3.data()));
-        self.assertEqual(range(2,100,7), list(snk7.data()));
+        self.assertEqual(range(0, 100, 2), list(snk2.data()))
+        self.assertEqual(range(1, 100, 3), list(snk3.data()))
+        self.assertEqual(range(2, 100, 7), list(snk7.data()))
 
 
 if __name__ == '__main__':
     gr_unittest.run(test_keep_m_in_n, "test_keep_m_in_n.xml")
-

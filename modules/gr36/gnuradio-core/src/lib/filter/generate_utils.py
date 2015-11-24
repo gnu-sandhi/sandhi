@@ -19,13 +19,13 @@
 # Boston, MA 02110-1301, USA.
 #
 
-## -----------------------------------------------------------------------
-## signatures defines which variations to generate (input, output, taps)
+# -----------------------------------------------------------------------
+# signatures defines which variations to generate (input, output, taps)
 
-fir_signatures = [ 'ccf', 'fcc', 'ccc', 'fff', 'scc', 'fsf' ]
+fir_signatures = ['ccf', 'fcc', 'ccc', 'fff', 'scc', 'fsf']
 
 
-## -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 from build_utils import expand_template, copyright, open_and_log_name, standard_dict
 from build_utils_codes import *

@@ -22,12 +22,13 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_int_to_float (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_001(self):
@@ -47,10 +48,10 @@ class test_int_to_float (gr_unittest.TestCase):
     def test_002(self):
 
         vlen = 3
-        src_data = ( 65000, 65001, 65002, 65003, 65004, 65005,
+        src_data = (65000, 65001, 65002, 65003, 65004, 65005,
                     -65001, -65002, -65003)
-        expected_result = [ 65000.0,  65001.0,  65002.0,
-                            65003.0,  65004.0,  65005.0,
+        expected_result = [65000.0,  65001.0,  65002.0,
+                           65003.0,  65004.0,  65005.0,
                            -65001.0, -65002.0, -65003.0]
         src = gr.vector_source_i(src_data)
         s2v = gr.stream_to_vector(gr.sizeof_int, vlen)
@@ -66,4 +67,3 @@ class test_int_to_float (gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_int_to_float, "test_int_to_float.xml")
-

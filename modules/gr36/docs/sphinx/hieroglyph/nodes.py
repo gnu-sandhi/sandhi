@@ -1,5 +1,6 @@
 __author__ = 'Robert Smallshire'
 
+
 class Node(object):
 
     def __init__(self, indent=None, lines=None, parent=None):
@@ -23,10 +24,8 @@ class Node(object):
         assert(child.parent is self)
         self.children.append(child)
 
-
     def __repr__(self):
         return "Node(" + repr(self.indent) + ", " + repr(self.lines) + ", children=" + repr(self.children) + ")"
-
 
     def render_rst(self, *args, **kwargs):
         result = []
@@ -37,7 +36,6 @@ class Node(object):
         return result
 
 
-
 class Arg(Node):
 
     def __init__(self, indent, child_indent, name):
@@ -46,10 +44,8 @@ class Arg(Node):
         self.name = name
         self.type = None
 
-
     def __repr__(self):
         return "Arg(" + repr(self.name) + ", " + repr(self.type) + ", children=" + repr(self.children) + ")"
-
 
     def render_rst(self, *args, **kwargs):
         result = []
@@ -71,7 +67,7 @@ class Arg(Node):
             pass
 
         result.append("{indent}:param {name}: {first_description}".format(indent=indent, name=name,
-                        first_description=first_description))
+                                                                          first_description=first_description))
 
         dedented_body = [line[dedent:] for line in description[1:]]
 
@@ -79,13 +75,13 @@ class Arg(Node):
 
         # If a type was specified render the type
         if self.type is not None:
-            result.append("{indent}:type {name}: {type}".format(indent=indent, name=self.name, type=self.type))
+            result.append("{indent}:type {name}: {type}".format(
+                indent=indent, name=self.name, type=self.type))
             result.append('')
 
         ensure_terminal_blank(result)
 
         return result
-
 
 
 class Raises(Node):
@@ -95,7 +91,6 @@ class Raises(Node):
 
     def __repr__(self):
         return "Raises(" + repr(self.indent) + ", children=" + repr(self.children) + ")"
-
 
     def render_rst(self, *args, **kwargs):
         result = []
@@ -116,10 +111,8 @@ class Except(Node):
         #self.child_indent = child_indent
         self.type = type
 
-
     def __repr__(self):
         return "Except(" + repr(self.type) + ", children=" + repr(self.children) + ")"
-
 
     def render_rst(self, only_child=False, *args, **kwargs):
         result = []
@@ -136,16 +129,15 @@ class Except(Node):
 
         first_description = description[0].lstrip() if len(description) else ''
         result.append("{indent}{bullet}{type} - {first_description}".format(indent=indent,
-                        bullet=bullet, type=self.type,
-                        first_description=first_description))
+                                                                            bullet=bullet, type=self.type,
+                                                                            first_description=first_description))
 
         #dedented_body = [' ' * len(bullet) + line[dedent:] for line in description[1:]]
-        #result.extend(dedented_body)
+        # result.extend(dedented_body)
         result.extend(description[1:])
         ensure_terminal_blank(result)
 
         return result
-
 
 
 class Returns(Node):
@@ -155,10 +147,8 @@ class Returns(Node):
         self.title = 'Returns'
         self.line = ''
 
-
     def __repr__(self):
         return "Returns(" + str(self.indent) + ", children=" + str(self.children) + ")"
-
 
     def render_rst(self, *args, **kwargs):
         result = []
@@ -177,12 +167,10 @@ class Returns(Node):
         ensure_terminal_blank(result)
         return result
 
-
     def render_title(self, description, indent, result):
         result.append(
             "{indent}:returns: {first_description}".format(indent=indent,
-               first_description=description[0].lstrip()))
-
+                                                           first_description=description[0].lstrip()))
 
 
 class Warning(Node):
@@ -227,10 +215,8 @@ class Note(Node):
         super(Note, self).__init__(indent=indent)
         self.line = ''
 
-
     def __repr__(self):
         return "Note(" + repr(self.indent) + ", children=" + str(self.children) + ")"
-
 
     def render_rst(self, *args, **kwargs):
         # TODO: Factor out the commonality between this and Warning above

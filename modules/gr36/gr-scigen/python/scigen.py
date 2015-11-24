@@ -15,6 +15,7 @@ import numpy
 
 from scilab import Scilab
 
+
 class Generic(gras.Block):
     '''
     Scilab Generic class
@@ -22,14 +23,15 @@ class Generic(gras.Block):
         - used to call scilab functions
         window_size is size of inputs the function will be called
     '''
+
     def __init__(self, func_name, window_size):
         gras.Block.__init__(self,
-            name="generic",
-            in_sig=[numpy.float32],
-            out_sig=[numpy.float32])
+                            name="generic",
+                            in_sig=[numpy.float32],
+                            out_sig=[numpy.float32])
 
-        self.window_size     = window_size
-        self.func_name       = func_name
+        self.window_size = window_size
+        self.func_name = func_name
         self.scilab_instance = Scilab()
 
     def is_window_integral(self, input_item, window):
@@ -37,8 +39,9 @@ class Generic(gras.Block):
         Check if value of window is integral of length of input source vector
         For cases like -> input = [3 , 4, 5 ,6] & window = 3
         """
-        if (len(input_item) % window ):
-            raise Exception("Value of Window should be an integral value of length of input items")
+        if (len(input_item) % window):
+            raise Exception(
+                "Value of Window should be an integral value of length of input items")
 
     def work(self, input_items, output_items):
 
@@ -49,7 +52,7 @@ class Generic(gras.Block):
         n_input_items = len(input_items)
 
         # Create output string instance which will be evaluated
-        out_eval_string = 'eval("self.scilab_instance.'+self.func_name+'('
+        out_eval_string = 'eval("self.scilab_instance.' + self.func_name + '('
 
         # Iterate for n_input_items
         for i in range(n_input_items):
@@ -57,19 +60,23 @@ class Generic(gras.Block):
             # Check window condition
             self.is_window_integral(input_items[i][:], self.window_size)
 
-            # If the window is greater than 1, 
-            # input_items[i][:self.window_size] looks like [1   2   3   4   5] which is err for python since it requires comma as delimiters 
+            # If the window is greater than 1,
+            # input_items[i][:self.window_size] looks like [1   2   3   4   5]
+            # which is err for python since it requires comma as delimiters
             if self.window_size == 1:
                 """
                 The hell is going on here?
                 """
-                out_eval_string = out_eval_string + str(input_items[i][:self.window_size]) + ","
+                out_eval_string = out_eval_string + \
+                    str(input_items[i][:self.window_size]) + ","
             else:
-                print 'IN',str(input_items[i][:self.window_size])
-                out_eval_string = out_eval_string + (str(input_items[i][:self.window_size].tolist()))  + ","  # Replace 10spaces with a singe comma
+                print 'IN', str(input_items[i][:self.window_size])
+                # Replace 10spaces with a singe comma
+                out_eval_string = out_eval_string + \
+                    (str(input_items[i][:self.window_size].tolist())) + ","
 
         out_eval_string = out_eval_string.rstrip(",") + ')")'
-        print "From Scilab",str(out_eval_string)
+        print "From Scilab", str(out_eval_string)
 
         # for functions like sin
         if n_input_items == 1 and self.window_size == 1:
@@ -77,11 +84,11 @@ class Generic(gras.Block):
         else:
             output_items[0] = eval(out_eval_string)
 
-        print "OUT ",output_items[0]
+        print "OUT ", output_items[0]
 
-        #Write a for loop for n_inputs
+        # Write a for loop for n_inputs
         for i in range(n_input_items):
-            self.consume(i,self.window_size) # Consume from port 0 input_items
+            # Consume from port 0 input_items
+            self.consume(i, self.window_size)
 
-        self.produce(0,self.window_size) # Produce from port 0 output_items
-
+        self.produce(0, self.window_size)  # Produce from port 0 output_items

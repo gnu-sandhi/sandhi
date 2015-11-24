@@ -30,7 +30,8 @@ if __name__ == '__main__':
     import time
     tb.start()
     time.sleep(duration)
-    print '##RESULT##', sink.nitems_read(0)/duration
-    import sys; sys.stdout.flush()
+    print '##RESULT##', sink.nitems_read(0) / duration
+    import sys
+    sys.stdout.flush()
     tb.stop()
     tb.wait()

@@ -25,20 +25,22 @@ import socket
 import os
 import sys
 
+
 def tcp_connect_or_die(sock_addr):
     """
     @param sock_addr: (host, port) to connect to
     @type sock_addr: tuple
     @returns: socket or exits
     """
-    s = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.connect(sock_addr)
     except socket.error, err:
         sys.stderr.write('Failed to connect to %s: %s\n' %
-                         (sock_addr, os.strerror (err.args[0]),))
+                         (sock_addr, os.strerror(err.args[0]),))
         sys.exit(1)
     return s
+
 
 def udp_connect_or_die(sock_addr):
     """
@@ -46,11 +48,11 @@ def udp_connect_or_die(sock_addr):
     @type sock_addr: tuple
     @returns: socket or exits
     """
-    s = socket.socket (socket.AF_INET, socket.SOCK_DGRAM)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         s.connect(sock_addr)
     except socket.error, err:
         sys.stderr.write('Failed to connect to %s: %s\n' %
-                         (sock_addr, os.strerror (err.args[0]),))
+                         (sock_addr, os.strerror(err.args[0]),))
         sys.exit(1)
     return s

@@ -30,10 +30,12 @@ from util_functions import remove_pattern_from_file
 from modtool_base import ModTool
 from cmakefile_editor import CMakeFileEditor
 
+
 class ModToolRemove(ModTool):
     """ Remove block (delete files and remove Makefile entries) """
     name = 'remove'
     aliases = ('rm', 'del')
+
     def __init__(self):
         ModTool.__init__(self)
 
@@ -45,7 +47,8 @@ class ModToolRemove(ModTool):
         elif len(self.args) >= 2:
             self._info['pattern'] = self.args[1]
         else:
-            self._info['pattern'] = raw_input('Which blocks do you want to delete? (Regex): ')
+            self._info['pattern'] = raw_input(
+                'Which blocks do you want to delete? (Regex): ')
         if len(self._info['pattern']) == 0:
             self._info['pattern'] = '.'
 
@@ -63,8 +66,8 @@ class ModToolRemove(ModTool):
                                              '^#include "%s"\s*$' % filename)
                     remove_pattern_from_file(self._file['qalib'],
                                              '^\s*s->addTest\(gr::%s::%s::suite\(\)\);\s*$' % (
-                                                    self._info['modname'], base)
-                                            )
+                        self._info['modname'], base)
+                    )
                 elif ext == '.cc':
                     ed.remove_value('list',
                                     '\$\{CMAKE_CURRENT_SOURCE_DIR\}/%s' % filename,
@@ -89,28 +92,33 @@ class ModToolRemove(ModTool):
             filebase = os.path.splitext(filename)[0]
             pyblockname = filebase.replace(self._info['modname'] + '_', '')
             regexp = r'(^\s*GR_SWIG_BLOCK_MAGIC2?\(%s,\s*%s\);|^\s*.include\s*"(%s/)?%s"\s*)' % \
-                    (self._info['modname'], pyblockname, self._info['modname'], filename)
+                (self._info['modname'], pyblockname,
+                 self._info['modname'], filename)
             return regexp
         # Go, go, go!
         if not self._skip_subdirs['lib']:
             self._run_subdir('lib', ('*.cc', '*.h'), ('add_library', 'list'),
                              cmakeedit_func=_remove_cc_test_case)
         if not self._skip_subdirs['include']:
-            incl_files_deleted = self._run_subdir(self._info['includedir'], ('*.h',), ('install',))
+            incl_files_deleted = self._run_subdir(
+                self._info['includedir'], ('*.h',), ('install',))
         if not self._skip_subdirs['swig']:
-            swig_files_deleted = self._run_subdir('swig', ('*.i',), ('install',))
+            swig_files_deleted = self._run_subdir(
+                'swig', ('*.i',), ('install',))
             for f in incl_files_deleted + swig_files_deleted:
                 # TODO do this on all *.i files
-                remove_pattern_from_file(self._file['swig'], _make_swig_regex(f))
+                remove_pattern_from_file(
+                    self._file['swig'], _make_swig_regex(f))
         if not self._skip_subdirs['python']:
             py_files_deleted = self._run_subdir('python', ('*.py',), ('GR_PYTHON_INSTALL',),
                                                 cmakeedit_func=_remove_py_test_case)
             for f in py_files_deleted:
-                remove_pattern_from_file(self._file['pyinit'], '.*import\s+%s.*' % f[:-3])
-                remove_pattern_from_file(self._file['pyinit'], '.*from\s+%s\s+import.*\n' % f[:-3])
+                remove_pattern_from_file(
+                    self._file['pyinit'], '.*import\s+%s.*' % f[:-3])
+                remove_pattern_from_file(
+                    self._file['pyinit'], '.*from\s+%s\s+import.*\n' % f[:-3])
         if not self._skip_subdirs['grc']:
             self._run_subdir('grc', ('*.xml',), ('install',))
-
 
     def _run_subdir(self, path, globs, makefile_vars, cmakeedit_func=None):
         """ Delete all files that match a certain pattern in path.
@@ -123,7 +131,7 @@ class ModToolRemove(ModTool):
         # 1. Create a filtered list
         files = []
         for g in globs:
-            files = files + glob.glob("%s/%s"% (path, g))
+            files = files + glob.glob("%s/%s" % (path, g))
         files_filt = []
         print "Searching for matching files in %s/:" % path
         for f in files:
@@ -139,7 +147,8 @@ class ModToolRemove(ModTool):
         for f in files_filt:
             b = os.path.basename(f)
             if not yes:
-                ans = raw_input("Really delete %s? [Y/n/a/q]: " % f).lower().strip()
+                ans = raw_input(
+                    "Really delete %s? [Y/n/a/q]: " % f).lower().strip()
                 if ans == 'a':
                     yes = True
                 if ans == 'q':
@@ -156,4 +165,3 @@ class ModToolRemove(ModTool):
                 cmakeedit_func(b, ed)
         ed.write()
         return files_deleted
-

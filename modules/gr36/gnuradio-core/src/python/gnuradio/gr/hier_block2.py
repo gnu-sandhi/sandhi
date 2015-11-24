@@ -33,6 +33,8 @@ except ImportError:
 #
 # It also allows us to intercept method calls if needed
 #
+
+
 class hier_block2(object):
     """
     Python wrapper around the C++ hierarchical block implementation.
@@ -43,15 +45,16 @@ class hier_block2(object):
         """
         Create a hierarchical block with a given name and I/O signatures.
         """
-	self._hb = hier_block2_swig(name, input_signature, output_signature)
+        self._hb = hier_block2_swig(name, input_signature, output_signature)
 
     def __getattr__(self, name):
         """
         Pass-through member requests to the C++ object.
         """
         if not hasattr(self, "_hb"):
-            raise RuntimeError("hier_block2: invalid state--did you forget to call gr.hier_block2.__init__ in a derived class?")
-	return getattr(self._hb, name)
+            raise RuntimeError(
+                "hier_block2: invalid state--did you forget to call gr.hier_block2.__init__ in a derived class?")
+        return getattr(self._hb, name)
 
     def connect(self, *points):
         """
@@ -66,14 +69,15 @@ class hier_block2(object):
         interpreting the endpoints as inputs or outputs as appropriate.
         """
 
-        if len (points) < 1:
-            raise ValueError, ("connect requires at least one endpoint; %d provided." % (len (points),))
-	else:
-	    if len(points) == 1:
-		self._hb.primitive_connect(points[0].to_basic_block())
-	    else:
-		for i in range (1, len (points)):
-        	    self._connect(points[i-1], points[i])
+        if len(points) < 1:
+            raise ValueError, ("connect requires at least one endpoint; %d provided." % (
+                len(points),))
+        else:
+            if len(points) == 1:
+                self._hb.primitive_connect(points[0].to_basic_block())
+            else:
+                for i in range(1, len(points)):
+                    self._connect(points[i - 1], points[i])
 
     def _connect(self, src, dst):
         (src_block, src_port) = self._coerce_endpoint(src)
@@ -86,7 +90,7 @@ class hier_block2(object):
             return (endp, 0)
         else:
             if hasattr(endp, "__getitem__") and len(endp) == 2:
-                return endp # Assume user put (block, port)
+                return endp  # Assume user put (block, port)
             else:
                 raise ValueError("unable to coerce endpoint")
 
@@ -100,14 +104,15 @@ class hier_block2(object):
         If more than two arguments are provided, they are disconnected successively.
         """
 
-        if len (points) < 1:
-            raise ValueError, ("disconnect requires at least one endpoint; %d provided." % (len (points),))
+        if len(points) < 1:
+            raise ValueError, ("disconnect requires at least one endpoint; %d provided." % (
+                len(points),))
         else:
-            if len (points) == 1:
+            if len(points) == 1:
                 self._hb.primitive_disconnect(points[0].to_basic_block())
             else:
-                for i in range (1, len (points)):
-                    self._disconnect(points[i-1], points[i])
+                for i in range(1, len(points)):
+                    self._disconnect(points[i - 1], points[i])
 
     def _disconnect(self, src, dst):
         (src_block, src_port) = self._coerce_endpoint(src)
@@ -116,14 +121,15 @@ class hier_block2(object):
                                       dst_block.to_basic_block(), dst_port)
 
     def msg_connect(self, src, srcport, dst, dstport):
-        self.primitive_msg_connect(src.to_basic_block(), srcport, dst.to_basic_block(), dstport);
+        self.primitive_msg_connect(
+            src.to_basic_block(), srcport, dst.to_basic_block(), dstport)
 
     def msg_disconnect(self, src, srcport, dst, dstport):
-        self.primitive_msg_disconnect(src.to_basic_block(), srcport, dst.to_basic_block(), dstport);
+        self.primitive_msg_disconnect(
+            src.to_basic_block(), srcport, dst.to_basic_block(), dstport)
 
     def message_port_register_hier_in(self, portname):
-        self.primitive_message_port_register_hier_in(pmt.pmt_intern(portname));
+        self.primitive_message_port_register_hier_in(pmt.pmt_intern(portname))
 
     def message_port_register_hier_out(self, portname):
-        self.primitive_message_port_register_hier_out(pmt.pmt_intern(portname));
-
+        self.primitive_message_port_register_hier_out(pmt.pmt_intern(portname))

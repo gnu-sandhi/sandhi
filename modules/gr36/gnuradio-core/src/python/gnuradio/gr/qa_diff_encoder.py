@@ -24,6 +24,7 @@ from gnuradio import gr, gr_unittest
 import math
 import random
 
+
 def make_random_int_tuple(L, min, max):
     result = []
     for x in range(L):
@@ -33,16 +34,16 @@ def make_random_int_tuple(L, min, max):
 
 class test_diff_encoder (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_diff_encdec_000(self):
         random.seed(0)
         modulus = 2
-        src_data = make_random_int_tuple(1000, 0, modulus-1)
+        src_data = make_random_int_tuple(1000, 0, modulus - 1)
         expected_result = src_data
         src = gr.vector_source_b(src_data)
         enc = gr.diff_encoder_bb(modulus)
@@ -56,7 +57,7 @@ class test_diff_encoder (gr_unittest.TestCase):
     def test_diff_encdec_001(self):
         random.seed(0)
         modulus = 4
-        src_data = make_random_int_tuple(1000, 0, modulus-1)
+        src_data = make_random_int_tuple(1000, 0, modulus - 1)
         expected_result = src_data
         src = gr.vector_source_b(src_data)
         enc = gr.diff_encoder_bb(modulus)
@@ -70,7 +71,7 @@ class test_diff_encoder (gr_unittest.TestCase):
     def test_diff_encdec_002(self):
         random.seed(0)
         modulus = 8
-        src_data = make_random_int_tuple(40000, 0, modulus-1)
+        src_data = make_random_int_tuple(40000, 0, modulus - 1)
         expected_result = src_data
         src = gr.vector_source_b(src_data)
         enc = gr.diff_encoder_bb(modulus)
@@ -83,4 +84,3 @@ class test_diff_encoder (gr_unittest.TestCase):
 
 if __name__ == '__main__':
     gr_unittest.run(test_diff_encoder, "test_diff_encoder.xml")
-

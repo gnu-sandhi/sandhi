@@ -5,6 +5,7 @@ import gras
 from gras import TestUtils
 import numpy
 
+
 class ThreadPoolTest(unittest.TestCase):
 
     def test_make_config(self):
@@ -22,7 +23,7 @@ class ThreadPoolTest(unittest.TestCase):
         tp.set_active()
 
     def test_thread_priority(self):
-        #here we assume prio 0.0 (default) can always be set
+        # here we assume prio 0.0 (default) can always be set
         self.assertTrue(gras.ThreadPool.test_thread_priority(0.0))
 
     def test_migrate_to_thread_pool(self):

@@ -19,6 +19,7 @@
 # Boston, MA 02110-1301, USA.
 #
 
+
 def list_reverse(x):
     """
     Return a copy of x that is reverse order.
@@ -26,4 +27,3 @@ def list_reverse(x):
     r = list(x)
     r.reverse()
     return r
-

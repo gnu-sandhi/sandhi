@@ -4,7 +4,9 @@ import unittest
 import gras
 import numpy
 
+
 class MyBlock(gras.Block):
+
     def __init__(self):
         gras.Block.__init__(self, "MyBlock")
         self.foo = 0
@@ -18,8 +20,9 @@ class MyBlock(gras.Block):
 
     def set_foo(self, new_foo):
         print "new_foo", new_foo
-        new_foo + 0 #throws if its not a number
+        new_foo + 0  # throws if its not a number
         self.foo = new_foo
+
 
 class BlockCallsTest(unittest.TestCase):
 
@@ -36,16 +39,20 @@ class BlockCallsTest(unittest.TestCase):
     def test_calls_errors(self):
         my_block = MyBlock()
 
-        #call does not exist
+        # call does not exist
         threw = False
-        try: my_block.get_bar()
-        except: threw = True
+        try:
+            my_block.get_bar()
+        except:
+            threw = True
         self.assertTrue(threw)
 
-        #wrong type for call
+        # wrong type for call
         threw = False
-        try: my_block.set_foo(None)
-        except: threw = True
+        try:
+            my_block.set_foo(None)
+        except:
+            threw = True
         self.assertTrue(threw)
 
     def test_element_tree_paths(self):
@@ -69,18 +76,24 @@ class BlockCallsTest(unittest.TestCase):
         self.assertEqual(my_block2.get_foo(), 42)
 
         threw = False
-        try: hb.locate_element('../../my_hier/my_block')
-        except: threw = True
+        try:
+            hb.locate_element('../../my_hier/my_block')
+        except:
+            threw = True
         self.assertTrue(threw)
 
         threw = False
-        try: hb.locate_element('../../my_hier/my_block0')
-        except: threw = True
+        try:
+            hb.locate_element('../../my_hier/my_block0')
+        except:
+            threw = True
         self.assertTrue(threw)
 
         threw = False
-        try: hb.locate_element('../../my_hier/my_block/test')
-        except: threw = True
+        try:
+            hb.locate_element('../../my_hier/my_block/test')
+        except:
+            threw = True
         self.assertTrue(threw)
 
 if __name__ == '__main__':

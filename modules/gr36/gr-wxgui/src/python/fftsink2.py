@@ -31,7 +31,8 @@ if style == 'auto' or style == 'gl':
         from fftsink_gl import fft_sink_f, fft_sink_c
     except ImportError:
         if style == 'gl':
-            raise RuntimeError("Unable to import OpenGL.  Are Python wrappers for OpenGL installed?")
+            raise RuntimeError(
+                "Unable to import OpenGL.  Are Python wrappers for OpenGL installed?")
         else:
             # Fall backto non-gl sinks
             from fftsink_nongl import fft_sink_f, fft_sink_c

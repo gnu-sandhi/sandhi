@@ -33,7 +33,8 @@ scale_factor['p'] = 1e-12
 scale_factor['f'] = 1e-15
 scale_factor['a'] = 1e-18
 
-def num_to_str (n):
+
+def num_to_str(n):
     '''Convert a number to a string in engineering notation.  E.g., 5e-9 -> 5n'''
     m = abs(n)
     if m >= 1e9:
@@ -47,7 +48,8 @@ def num_to_str (n):
     elif m >= 1e-3:
         return "%gm" % (n * 1e3)
     elif m >= 1e-6:
-        return "%gu" % (n * 1e6)        # where's that mu when you need it (unicode?)
+        # where's that mu when you need it (unicode?)
+        return "%gu" % (n * 1e6)
     elif m >= 1e-9:
         return "%gn" % (n * 1e9)
     elif m >= 1e-12:
@@ -58,14 +60,14 @@ def num_to_str (n):
         return "%g" % (n)
 
 
-def str_to_num (value):
+def str_to_num(value):
     '''Convert a string in engineering notation to a number.  E.g., '15m' -> 15e-3'''
     try:
         scale = 1.0
         suffix = value[-1]
-        if scale_factor.has_key (suffix):
-            return float (value[0:-1]) * scale_factor[suffix]
-        return float (value)
+        if scale_factor.has_key(suffix):
+            return float(value[0:-1]) * scale_factor[suffix]
+        return float(value)
     except:
-        raise RuntimeError (
+        raise RuntimeError(
             "Invalid engineering notation value: %r" % (value,))

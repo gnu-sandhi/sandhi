@@ -55,8 +55,10 @@ if __debug__:
 else:
     # Disable this when using "python -O"
     class _Verbose(object):
+
         def __init__(self, verbose=None):
             pass
+
         def _note(self, *args):
             pass
 
@@ -65,9 +67,11 @@ else:
 _profile_hook = None
 _trace_hook = None
 
+
 def setprofile(func):
     global _profile_hook
     _profile_hook = func
+
 
 def settrace(func):
     global _trace_hook
@@ -77,8 +81,10 @@ def settrace(func):
 
 Lock = _allocate_lock
 
+
 def RLock(*args, **kwargs):
     return _RLock(*args, **kwargs)
+
 
 class _RLock(_Verbose):
 
@@ -90,9 +96,9 @@ class _RLock(_Verbose):
 
     def __repr__(self):
         return "<%s(%s, %d)>" % (
-                self.__class__.__name__,
-                self.__owner and self.__owner.getName(),
-                self.__count)
+            self.__class__.__name__,
+            self.__owner and self.__owner.getName(),
+            self.__count)
 
     def acquire(self, blocking=1):
         me = currentThread()
@@ -150,6 +156,7 @@ class _RLock(_Verbose):
 
 def Condition(*args, **kwargs):
     return _Condition(*args, **kwargs)
+
 
 class _Condition(_Verbose):
 
@@ -214,7 +221,7 @@ class _Condition(_Verbose):
                 # little at first, longer as time goes on, but never longer
                 # than 20 times per second (or the timeout time remaining).
                 endtime = _time() + timeout
-                delay = 0.0005 # 500 us -> initial delay of 1 ms
+                delay = 0.0005  # 500 us -> initial delay of 1 ms
                 while True:
                     gotit = waiter.acquire(0)
                     if gotit:
@@ -246,7 +253,7 @@ class _Condition(_Verbose):
                 self._note("%s.notify(): no waiters", self)
             return
         self._note("%s.notify(): notifying %d waiter%s", self, n,
-                   n!=1 and "s" or "")
+                   n != 1 and "s" or "")
         for waiter in waiters:
             waiter.release()
             try:
@@ -260,6 +267,7 @@ class _Condition(_Verbose):
 
 def Semaphore(*args, **kwargs):
     return _Semaphore(*args, **kwargs)
+
 
 class _Semaphore(_Verbose):
 
@@ -303,8 +311,10 @@ class _Semaphore(_Verbose):
 def BoundedSemaphore(*args, **kwargs):
     return _BoundedSemaphore(*args, **kwargs)
 
+
 class _BoundedSemaphore(_Semaphore):
     """Semaphore that checks that # releases is <= # acquires"""
+
     def __init__(self, value=1, verbose=None):
         _Semaphore.__init__(self, value, verbose)
         self._initial_value = value
@@ -317,6 +327,7 @@ class _BoundedSemaphore(_Semaphore):
 
 def Event(*args, **kwargs):
     return _Event(*args, **kwargs)
+
 
 class _Event(_Verbose):
 
@@ -355,6 +366,8 @@ class _Event(_Verbose):
 
 # Helper to generate new thread names
 _counter = 0
+
+
 def _newname(template="Thread-%d"):
     global _counter
     _counter = _counter + 1
@@ -475,7 +488,8 @@ class Thread(_Verbose):
                                     exc_tb.tb_lineno,
                                     exc_tb.tb_frame.f_code.co_name))
                             exc_tb = exc_tb.tb_next
-                        print>>self.__stderr, ("%s: %s" % (exc_type, exc_value))
+                        print>>self.__stderr, ("%s: %s" %
+                                               (exc_type, exc_value))
                     # Make sure that exc_tb gets deleted since it is a memory
                     # hog; deleting everything else is just for thoroughness
                     finally:
@@ -582,8 +596,10 @@ class Thread(_Verbose):
 
 # The timer class was contributed by Itamar Shtull-Trauring
 
+
 def Timer(*args, **kwargs):
     return _Timer(*args, **kwargs)
+
 
 class _Timer(Thread):
     """Call a function after a specified number of seconds:
@@ -614,6 +630,7 @@ class _Timer(Thread):
 # Special thread class to represent the main thread
 # This is garbage collected through an exit handler
 
+
 class _MainThread(Thread):
 
     def __init__(self):
@@ -640,6 +657,7 @@ class _MainThread(Thread):
         if __debug__:
             self._note("%s: exiting", self)
         self._Thread__delete()
+
 
 def _pickSomeNonDaemonThread():
     for t in enumerate():
@@ -677,14 +695,16 @@ def currentThread():
     try:
         return _active[_get_ident()]
     except KeyError:
-        ##print "currentThread(): no current thread for", _get_ident()
+        # print "currentThread(): no current thread for", _get_ident()
         return _DummyThread()
+
 
 def activeCount():
     _active_limbo_lock.acquire()
     count = len(_active) + len(_limbo)
     _active_limbo_lock.release()
     return count
+
 
 def enumerate():
     _active_limbo_lock.acquire()
@@ -756,7 +776,6 @@ def _test():
                 self.queue.put("%s.%d" % (self.getName(), counter))
                 _sleep(random() * 0.00001)
 
-
     class ConsumerThread(Thread):
 
         def __init__(self, queue, count):
@@ -778,9 +797,9 @@ def _test():
     P = []
     for i in range(NP):
         t = ProducerThread(Q, NI)
-        t.setName("Producer-%d" % (i+1))
+        t.setName("Producer-%d" % (i + 1))
         P.append(t)
-    C = ConsumerThread(Q, NI*NP)
+    C = ConsumerThread(Q, NI * NP)
     for t in P:
         t.start()
         _sleep(0.000001)

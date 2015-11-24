@@ -24,6 +24,7 @@ from gnuradio import gr, gr_unittest
 import pmt
 import time
 
+
 class test_pdu(gr_unittest.TestCase):
 
     def setUp(self):
@@ -54,15 +55,15 @@ class test_pdu(gr_unittest.TestCase):
         self.assertEqual(pmt.pmt_length(pi), 0)
         self.assertEqual(pmt.pmt_length(po), 1)
 
-        #print "Message Debug input ports: "
-        #pmt.pmt_print(pi)
-        #print "Message Debug output ports: "
-        #pmt.pmt_print(po)
-        
-        #print "Stream to PDU input ports: "
-        #pmt.pmt_print(pi)
-        #print "Stream to PDU output ports: "
-        #pmt.pmt_print(po)
+        # print "Message Debug input ports: "
+        # pmt.pmt_print(pi)
+        # print "Message Debug output ports: "
+        # pmt.pmt_print(po)
+
+        # print "Stream to PDU input ports: "
+        # pmt.pmt_print(pi)
+        # print "Stream to PDU output ports: "
+        # pmt.pmt_print(po)
 
         self.tb.connect(src, snk)
         self.tb.connect(src, snk2)
@@ -73,14 +74,14 @@ class test_pdu(gr_unittest.TestCase):
 
         # make our reference and message pmts
         port = pmt.pmt_intern("pdus")
-        msg = pmt.pmt_cons( pmt.PMT_NIL, pmt.pmt_make_u8vector(16, 0xFF) )
-        
-        #print "printing port & msg"
-        #pmt.pmt_print(port)
-        #pmt.pmt_print(msg)
+        msg = pmt.pmt_cons(pmt.PMT_NIL, pmt.pmt_make_u8vector(16, 0xFF))
+
+        # print "printing port & msg"
+        # pmt.pmt_print(port)
+        # pmt.pmt_print(msg)
 
         # post the message
-        src.to_basic_block()._post( port, msg )
+        src.to_basic_block()._post(port, msg)
 
         while(dbg.num_messages() < 1):
             time.sleep(0.1)
@@ -101,7 +102,7 @@ class test_pdu(gr_unittest.TestCase):
         for i in xrange(16):
             msg_data.append(pmt.pmt_u8vector_ref(msg_vec, i))
 
-        actual_data = 16*[0xFF,]
+        actual_data = 16 * [0xFF, ]
         self.assertEqual(actual_data, list(result_data))
         self.assertEqual(actual_data, msg_data)
 

@@ -23,15 +23,16 @@
 from gnuradio import gr, gr_unittest
 import math
 
+
 class test_pll_freqdet (gr_unittest.TestCase):
 
-    def setUp (self):
+    def setUp(self):
         self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_pll_freqdet (self):
+    def test_pll_freqdet(self):
         expected_result = (0.0,
                            4.33888922882e-08,
                            0.367369994515,
@@ -136,25 +137,25 @@ class test_pll_freqdet (gr_unittest.TestCase):
         sampling_freq = 10e3
         freq = sampling_freq / 100
 
-        loop_bw = math.pi/100.0
+        loop_bw = math.pi / 100.0
         maxf = 1
         minf = -1
 
-        src = gr.sig_source_c (sampling_freq, gr.GR_COS_WAVE, freq, 1.0)
+        src = gr.sig_source_c(sampling_freq, gr.GR_COS_WAVE, freq, 1.0)
         pll = gr.pll_freqdet_cf(loop_bw, maxf, minf)
-        head = gr.head (gr.sizeof_float, int (freq))
-        dst = gr.vector_sink_f ()
+        head = gr.head(gr.sizeof_float, int(freq))
+        dst = gr.vector_sink_f()
 
-        self.tb.connect (src, pll, head)
-        self.tb.connect (head, dst)
+        self.tb.connect(src, pll, head)
+        self.tb.connect(head, dst)
 
-        self.tb.run ()
-        dst_data = dst.data ()
+        self.tb.run()
+        dst_data = dst.data()
 
         # convert it from normalized frequency to absolute frequency (Hz)
-        dst_data = [i*(sampling_freq/(2*math.pi)) for i in dst_data]
+        dst_data = [i * (sampling_freq / (2 * math.pi)) for i in dst_data]
 
-        self.assertFloatTuplesAlmostEqual (expected_result, dst_data, 3)
+        self.assertFloatTuplesAlmostEqual(expected_result, dst_data, 3)
 
 if __name__ == '__main__':
     gr_unittest.run(test_pll_freqdet, "test_pll_freqdet.xml")

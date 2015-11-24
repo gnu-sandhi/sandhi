@@ -24,21 +24,24 @@ from gnuradio import gr
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
 
+
 class dial_tone_source(gr.top_block):
+
     def __init__(self, host, port, pkt_size, sample_rate, eof):
         gr.top_block.__init__(self, "dial_tone_source")
 
         amplitude = 0.3
-        src0 = gr.sig_source_f (sample_rate, gr.GR_SIN_WAVE, 350, amplitude)
-        src1 = gr.sig_source_f (sample_rate, gr.GR_SIN_WAVE, 440, amplitude)
+        src0 = gr.sig_source_f(sample_rate, gr.GR_SIN_WAVE, 350, amplitude)
+        src1 = gr.sig_source_f(sample_rate, gr.GR_SIN_WAVE, 440, amplitude)
         add = gr.add_ff()
 
-        # Throttle needed here to account for the other side's audio card sampling rate
-	thr = gr.throttle(gr.sizeof_float, sample_rate)
-	sink = gr.udp_sink(gr.sizeof_float, host, port, pkt_size, eof=eof)
-	self.connect(src0, (add, 0))
-	self.connect(src1, (add, 1))
-	self.connect(add, thr, sink)
+        # Throttle needed here to account for the other side's audio card
+        # sampling rate
+        thr = gr.throttle(gr.sizeof_float, sample_rate)
+        sink = gr.udp_sink(gr.sizeof_float, host, port, pkt_size, eof=eof)
+        self.connect(src0, (add, 0))
+        self.connect(src1, (add, 1))
+        self.connect(add, thr, sink)
 
 if __name__ == '__main__':
     parser = OptionParser(option_class=eng_option)

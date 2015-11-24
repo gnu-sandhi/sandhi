@@ -22,18 +22,19 @@
 
 from gnuradio import gr, gr_unittest
 
+
 class test_glfsr_source(gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
     def test_000_make_b(self):
         src = gr.glfsr_source_b(16)
         self.assertEquals(src.mask(), 0x8016)
-        self.assertEquals(src.period(), 2**16-1)
+        self.assertEquals(src.period(), 2**16 - 1)
 
     def test_001_degree_b(self):
         self.assertRaises(RuntimeError,
@@ -42,52 +43,60 @@ class test_glfsr_source(gr_unittest.TestCase):
                           lambda: gr.glfsr_source_b(33))
 
     def test_002_correlation_b(self):
-        for degree in range(1,11):                # Higher degrees take too long to correlate
+        # Higher degrees take too long to correlate
+        for degree in range(1, 11):
             src = gr.glfsr_source_b(degree, False)
-            b2f = gr.chunks_to_symbols_bf((-1.0,1.0), 1)
+            b2f = gr.chunks_to_symbols_bf((-1.0, 1.0), 1)
             dst = gr.vector_sink_f()
-	    del self.tb # Discard existing top block
-	    self.tb = gr.top_block()
+            del self.tb  # Discard existing top block
+            self.tb = gr.top_block()
             self.tb.connect(src, b2f, dst)
             self.tb.run()
-	    self.tb.disconnect_all()
+            self.tb.disconnect_all()
             actual_result = dst.data()
             R = auto_correlate(actual_result)
-            self.assertEqual(R[0], float(len(R))) # Auto-correlation peak at origin
-            for i in range(len(R)-1):
-                self.assertEqual(R[i+1], -1.0)    # Auto-correlation minimum everywhere else
+            # Auto-correlation peak at origin
+            self.assertEqual(R[0], float(len(R)))
+            for i in range(len(R) - 1):
+                # Auto-correlation minimum everywhere else
+                self.assertEqual(R[i + 1], -1.0)
 
     def test_003_make_f(self):
         src = gr.glfsr_source_f(16)
         self.assertEquals(src.mask(), 0x8016)
-        self.assertEquals(src.period(), 2**16-1)
+        self.assertEquals(src.period(), 2**16 - 1)
 
     def test_004_degree_f(self):
         self.assertRaises(RuntimeError,
                           lambda: gr.glfsr_source_f(0))
         self.assertRaises(RuntimeError,
                           lambda: gr.glfsr_source_f(33))
+
     def test_005_correlation_f(self):
-        for degree in range(1,11):                # Higher degrees take too long to correlate
+        # Higher degrees take too long to correlate
+        for degree in range(1, 11):
             src = gr.glfsr_source_f(degree, False)
             dst = gr.vector_sink_f()
-	    del self.tb # Discard existing top block
-	    self.tb = gr.top_block()
+            del self.tb  # Discard existing top block
+            self.tb = gr.top_block()
             self.tb.connect(src, dst)
             self.tb.run()
 
             actual_result = dst.data()
             R = auto_correlate(actual_result)
-            self.assertEqual(R[0], float(len(R))) # Auto-correlation peak at origin
-            for i in range(len(R)-1):
-                self.assertEqual(R[i+1], -1.0)    # Auto-correlation minimum everywhere else
+            # Auto-correlation peak at origin
+            self.assertEqual(R[0], float(len(R)))
+            for i in range(len(R) - 1):
+                # Auto-correlation minimum everywhere else
+                self.assertEqual(R[i + 1], -1.0)
+
 
 def auto_correlate(data):
     l = len(data)
-    R = [0,]*l
+    R = [0, ] * l
     for lag in range(l):
         for i in range(l):
-            R[lag] += data[i]*data[i-lag]
+            R[lag] += data[i] * data[i - lag]
     return R
 
 if __name__ == '__main__':

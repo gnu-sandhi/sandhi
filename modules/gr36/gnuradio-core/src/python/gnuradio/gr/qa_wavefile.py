@@ -25,44 +25,45 @@ from gnuradio import gr, gr_unittest
 import os
 from os.path import getsize
 
-g_in_file = os.path.join (os.getenv ("srcdir"), "test_16bit_1chunk.wav")
+g_in_file = os.path.join(os.getenv("srcdir"), "test_16bit_1chunk.wav")
+
 
 class test_wavefile(gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_001_checkwavread (self):
-	wf = gr.wavfile_source(g_in_file)
-	self.assertEqual(wf.sample_rate(), 8000)
+    def test_001_checkwavread(self):
+        wf = gr.wavfile_source(g_in_file)
+        self.assertEqual(wf.sample_rate(), 8000)
 
-    def test_002_checkwavcopy (self):
-	infile  = g_in_file
-	outfile = "test_out.wav"
+    def test_002_checkwavcopy(self):
+        infile = g_in_file
+        outfile = "test_out.wav"
 
-	wf_in  = gr.wavfile_source(infile)
-	wf_out = gr.wavfile_sink(outfile,
-				 wf_in.channels(),
-				 wf_in.sample_rate(),
-				 wf_in.bits_per_sample())
-	self.tb.connect(wf_in, wf_out)
-	self.tb.run()
-	wf_out.close()
+        wf_in = gr.wavfile_source(infile)
+        wf_out = gr.wavfile_sink(outfile,
+                                 wf_in.channels(),
+                                 wf_in.sample_rate(),
+                                 wf_in.bits_per_sample())
+        self.tb.connect(wf_in, wf_out)
+        self.tb.run()
+        wf_out.close()
 
-	self.assertEqual(getsize(infile), getsize(outfile))
+        self.assertEqual(getsize(infile), getsize(outfile))
 
-	in_f  = file(infile,  'rb')
-	out_f = file(outfile, 'rb')
+        in_f = file(infile,  'rb')
+        out_f = file(outfile, 'rb')
 
-	in_data  = in_f.read()
-	out_data = out_f.read()
+        in_data = in_f.read()
+        out_data = out_f.read()
         out_f.close()
-	os.remove(outfile)
+        os.remove(outfile)
 
-	self.assertEqual(in_data, out_data)
+        self.assertEqual(in_data, out_data)
 
 
 if __name__ == '__main__':

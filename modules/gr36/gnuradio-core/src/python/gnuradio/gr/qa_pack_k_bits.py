@@ -23,18 +23,19 @@
 from gnuradio import gr, gr_unittest
 import random
 
+
 class test_pack(gr_unittest.TestCase):
 
     def setUp(self):
-        self.tb = gr.top_block ()
+        self.tb = gr.top_block()
 
     def tearDown(self):
         self.tb = None
 
     def test_001(self):
-        src_data =              (1,0,1,1,0,1,1,0)
-        expected_results =      (1,0,1,1,0,1,1,0)
-        src = gr.vector_source_b(src_data,False)
+        src_data = (1, 0, 1, 1, 0, 1, 1, 0)
+        expected_results = (1, 0, 1, 1, 0, 1, 1, 0)
+        src = gr.vector_source_b(src_data, False)
         op = gr.pack_k_bits_bb(1)
         dst = gr.vector_sink_b()
         self.tb.connect(src, op, dst)
@@ -42,9 +43,9 @@ class test_pack(gr_unittest.TestCase):
         self.assertEqual(expected_results, dst.data())
 
     def test_002(self):
-        src_data =              (1,0,1,1,0,0,0,1)
-        expected_results =      (  2,  3,  0,  1)
-        src = gr.vector_source_b(src_data,False)
+        src_data = (1, 0, 1, 1, 0, 0, 0, 1)
+        expected_results = (2,  3,  0,  1)
+        src = gr.vector_source_b(src_data, False)
         op = gr.pack_k_bits_bb(2)
         dst = gr.vector_sink_b()
         self.tb.connect(src, op, dst)
@@ -53,15 +54,15 @@ class test_pack(gr_unittest.TestCase):
         self.assertEqual(expected_results, dst.data())
 
     def test_003(self):
-        src_data = expected_results = map(lambda x: random.randint(0,3), range(10));
-        src = gr.vector_source_b( src_data );
-        pack = gr.pack_k_bits_bb(2);
-        unpack = gr.unpack_k_bits_bb(2);
-        snk = gr.vector_sink_b();
-        self.tb.connect(src,unpack,pack,snk);
+        src_data = expected_results = map(
+            lambda x: random.randint(0, 3), range(10))
+        src = gr.vector_source_b(src_data)
+        pack = gr.pack_k_bits_bb(2)
+        unpack = gr.unpack_k_bits_bb(2)
+        snk = gr.vector_sink_b()
+        self.tb.connect(src, unpack, pack, snk)
         self.tb.run()
-        self.assertEqual(list(expected_results), list(snk.data()));
-        
-if __name__ == '__main__':
-   gr_unittest.run(test_pack, "test_pack.xml")
+        self.assertEqual(list(expected_results), list(snk.data()))
 
+if __name__ == '__main__':
+    gr_unittest.run(test_pack, "test_pack.xml")

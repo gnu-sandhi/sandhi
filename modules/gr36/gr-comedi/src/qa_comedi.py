@@ -23,18 +23,19 @@
 from gnuradio import gr, gr_unittest
 import comedi
 
+
 class qa_comedi (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_000_nop (self):
+    def test_000_nop(self):
         """Just see if we can import the module...
         They may not have COMEDI library, etc.  Don't try to run anything"""
         pass
 
 if __name__ == '__main__':
-    gr_unittest.main ()
+    gr_unittest.main()

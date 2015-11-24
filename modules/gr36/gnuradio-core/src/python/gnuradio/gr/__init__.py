@@ -45,14 +45,14 @@ def enable_realtime_scheduling():
     See gras/thread_pool.hpp for greater options.
     """
 
-    #any prio greater than 0 means realtime scheduling
+    # any prio greater than 0 means realtime scheduling
     prio_value = 0.5
 
-    #test that prio
+    # test that prio
     if not gras.ThreadPool.test_thread_priority(prio_value):
         return RT_NO_PRIVS
 
-    #create a new thread pool with thread priority set
+    # create a new thread pool with thread priority set
     config = gras.ThreadPoolConfig()
     config.thread_priority = prio_value
     tp = gras.ThreadPool(config)
@@ -60,7 +60,9 @@ def enable_realtime_scheduling():
 
     return RT_OK
 
+
 class top_block(gras.TopBlock):
+
     def __init__(self, name="Top"):
         gras.TopBlock.__init__(self, name)
 
@@ -71,21 +73,25 @@ class top_block(gras.TopBlock):
         self.commit()
 
     def start(self, *args):
-        if args: self.global_config().maximum_output_items = args[0]
+        if args:
+            self.global_config().maximum_output_items = args[0]
         gras.TopBlock.start(self)
 
     def run(self, *args):
-        if args: self.global_config().maximum_output_items = args[0]
+        if args:
+            self.global_config().maximum_output_items = args[0]
         gras.TopBlock.run(self)
 
+
 class hier_block2(gras.HierBlock):
+
     def __init__(self, name="Hier", in_sig=None, out_sig=None):
         gras.HierBlock.__init__(self, name)
 
         self.__in_sig = in_sig
         self.__out_sig = out_sig
 
-        #backwards compatible silliness
+        # backwards compatible silliness
         import weakref
         self._hb = weakref.proxy(self)
 
@@ -96,6 +102,7 @@ class hier_block2(gras.HierBlock):
         self.commit()
 
     def input_signature(self): return self.__in_sig
+
     def output_signature(self): return self.__out_sig
 
 # create a couple of aliases
@@ -105,7 +112,7 @@ parallel_to_serial = vector_to_stream
 # Force the preference database to be initialized
 prefs = gr_prefs.singleton
 
-#alias old gr_add_vXX and gr_multiply_vXX
+# alias old gr_add_vXX and gr_multiply_vXX
 add_vcc = add_cc
 add_vff = add_ff
 add_vii = add_ii

@@ -23,10 +23,11 @@
 from gnuradio import gr, gr_unittest
 import blocks_swig
 
+
 def calc_expected_result(src_data, n):
     assert (len(src_data) % n) == 0
     result = [list() for x in range(n)]
-    #print "len(result) =", len(result)
+    # print "len(result) =", len(result)
     for i in xrange(len(src_data)):
         (result[i % n]).append(src_data[i])
     return [tuple(x) for x in result]
@@ -35,7 +36,7 @@ def calc_expected_result(src_data, n):
 class test_pipe_fittings(gr_unittest.TestCase):
 
     def setUp(self):
-        self.tb = gr.top_block ()
+        self.tb = gr.top_block()
 
     def tearDown(self):
         self.tb = None
@@ -49,7 +50,7 @@ class test_pipe_fittings(gr_unittest.TestCase):
         src_data = range(src_len)
 
         expected_results = calc_expected_result(src_data, n)
-        #print "expected results: ", expected_results
+        # print "expected results: ", expected_results
         src = gr.vector_source_i(src_data)
         op = gr.stream_to_streams(gr.sizeof_int, n)
         self.tb.connect(src, op)
@@ -89,7 +90,7 @@ class test_pipe_fittings(gr_unittest.TestCase):
 
     def test_003(self):
 
-        #Test streams_to_vector (using stream_to_streams & vector_to_stream).
+        # Test streams_to_vector (using stream_to_streams & vector_to_stream).
 
         n = 8
         src_len = n * 8
@@ -112,7 +113,7 @@ class test_pipe_fittings(gr_unittest.TestCase):
 
     def test_004(self):
 
-        #Test vector_to_streams.
+        # Test vector_to_streams.
 
         n = 8
         src_len = n * 8

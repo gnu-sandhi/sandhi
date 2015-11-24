@@ -26,6 +26,7 @@ from optparse import OptionParser
 from gruel import pmt
 from gnuradio.blocks import parse_file_metadata
 
+
 def main(filename, detached=False):
     handle = open(filename, "rb")
 
@@ -42,7 +43,8 @@ def main(filename, detached=False):
         try:
             header = pmt.pmt_deserialize_str(header_str)
         except RuntimeError:
-            sys.stderr.write("Could not deserialize header: invalid or corrupt data file.\n")
+            sys.stderr.write(
+                "Could not deserialize header: invalid or corrupt data file.\n")
             sys.exit(1)
 
         print "HEADER {0}".format(nheaders)
@@ -56,12 +58,14 @@ def main(filename, detached=False):
             try:
                 extra = pmt.pmt_deserialize_str(extra_str)
             except RuntimeError:
-                sys.stderr.write("Could not deserialize extras: invalid or corrupt data file.\n")
+                sys.stderr.write(
+                    "Could not deserialize extras: invalid or corrupt data file.\n")
                 sys.exit(1)
 
             print "\nExtra Header:"
-            extra_info = parse_file_metadata.parse_extra_dict(extra, info, True)
-        
+            extra_info = parse_file_metadata.parse_extra_dict(
+                extra, info, True)
+
         nheaders += 1
         nread += parse_file_metadata.HEADER_LENGTH + info["extra_len"]
         if(not detached):
@@ -70,14 +74,14 @@ def main(filename, detached=False):
         print "\n\n"
 
 if __name__ == "__main__":
-    usage="%prog: [options] filename"
+    usage = "%prog: [options] filename"
     description = "Read in a GNU Radio file with meta data, extracts the header and prints it."
 
     parser = OptionParser(conflict_handler="resolve",
                           usage=usage, description=description)
     parser.add_option("-D", "--detached", action="store_true", default=False,
                       help="Used if header is detached.")
-    (options, args) = parser.parse_args ()
+    (options, args) = parser.parse_args()
 
     if(len(args) < 1):
         sys.stderr.write("No filename given\n")

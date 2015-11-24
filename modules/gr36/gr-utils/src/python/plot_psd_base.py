@@ -37,7 +37,9 @@ from optparse import OptionParser
 from scipy import log10
 from gnuradio.eng_option import eng_option
 
+
 class plot_psd_base:
+
     def __init__(self, datatype, filename, options):
         self.hfile = open(filename, "r")
         self.block_length = options.block
@@ -48,8 +50,9 @@ class plot_psd_base:
 
         self.dospec = options.enable_spec  # if we want to plot the spectrogram
 
-        self.datatype = getattr(scipy, datatype) #scipy.complex64
-        self.sizeof_data = self.datatype().nbytes    # number of bytes per sample in file
+        self.datatype = getattr(scipy, datatype)  # scipy.complex64
+        # number of bytes per sample in file
+        self.sizeof_data = self.datatype().nbytes
 
         self.axis_font_size = 16
         self.label_font_size = 18
@@ -61,23 +64,27 @@ class plot_psd_base:
         rcParams['xtick.labelsize'] = self.axis_font_size
         rcParams['ytick.labelsize'] = self.axis_font_size
 
-        self.text_file     = figtext(0.10, 0.95, ("File: %s" % filename),
-                                     weight="heavy", size=self.text_size)
+        self.text_file = figtext(0.10, 0.95, ("File: %s" % filename),
+                                 weight="heavy", size=self.text_size)
         self.text_file_pos = figtext(0.10, 0.92, "File Position: ",
                                      weight="heavy", size=self.text_size)
-        self.text_block    = figtext(0.35, 0.92, ("Block Size: %d" % self.block_length),
-                                     weight="heavy", size=self.text_size)
-        self.text_sr       = figtext(0.60, 0.915, ("Sample Rate: %.2f" % self.sample_rate),
-                                     weight="heavy", size=self.text_size)
+        self.text_block = figtext(0.35, 0.92, ("Block Size: %d" % self.block_length),
+                                  weight="heavy", size=self.text_size)
+        self.text_sr = figtext(0.60, 0.915, ("Sample Rate: %.2f" % self.sample_rate),
+                               weight="heavy", size=self.text_size)
         self.make_plots()
 
-        self.button_left_axes = self.fig.add_axes([0.45, 0.01, 0.05, 0.05], frameon=True)
+        self.button_left_axes = self.fig.add_axes(
+            [0.45, 0.01, 0.05, 0.05], frameon=True)
         self.button_left = Button(self.button_left_axes, "<")
-        self.button_left_callback = self.button_left.on_clicked(self.button_left_click)
+        self.button_left_callback = self.button_left.on_clicked(
+            self.button_left_click)
 
-        self.button_right_axes = self.fig.add_axes([0.50, 0.01, 0.05, 0.05], frameon=True)
+        self.button_right_axes = self.fig.add_axes(
+            [0.50, 0.01, 0.05, 0.05], frameon=True)
         self.button_right = Button(self.button_right_axes, ">")
-        self.button_right_callback = self.button_right.on_clicked(self.button_right_click)
+        self.button_right_callback = self.button_right.on_clicked(
+            self.button_right_click)
 
         self.xlim = scipy.array(self.sp_iq.get_xlim())
 
@@ -87,10 +94,11 @@ class plot_psd_base:
         show()
 
     def get_data(self):
-        self.position = self.hfile.tell()/self.sizeof_data
+        self.position = self.hfile.tell() / self.sizeof_data
         self.text_file_pos.set_text("File Position: %d" % self.position)
         try:
-            self.iq = scipy.fromfile(self.hfile, dtype=self.datatype, count=self.block_length)
+            self.iq = scipy.fromfile(
+                self.hfile, dtype=self.datatype, count=self.block_length)
         except MemoryError:
             print "End of File"
             return False
@@ -100,7 +108,8 @@ class plot_psd_base:
             if(len(self.iq) > 0):
                 tstep = 1.0 / self.sample_rate
                 #self.time = scipy.array([tstep*(self.position + i) for i in xrange(len(self.iq))])
-                self.time = scipy.array([tstep*(i) for i in xrange(len(self.iq))])
+                self.time = scipy.array([tstep * (i)
+                                         for i in xrange(len(self.iq))])
 
                 self.iq_psd, self.freq = self.dopsd(self.iq)
                 return True
@@ -110,50 +119,60 @@ class plot_psd_base:
 
     def dopsd(self, iq):
         ''' Need to do this here and plot later so we can do the fftshift '''
-        overlap = self.psdfftsize/4
+        overlap = self.psdfftsize / 4
         winfunc = scipy.blackman
-        psd,freq = mlab.psd(iq, self.psdfftsize, self.sample_rate,
-                            window = lambda d: d*winfunc(self.psdfftsize),
-                            noverlap = overlap)
-        psd = 10.0*log10(abs(psd))
+        psd, freq = mlab.psd(iq, self.psdfftsize, self.sample_rate,
+                             window=lambda d: d * winfunc(self.psdfftsize),
+                             noverlap=overlap)
+        psd = 10.0 * log10(abs(psd))
         return (psd, freq)
 
     def make_plots(self):
         # if specified on the command-line, set file pointer
-        self.hfile.seek(self.sizeof_data*self.start, 1)
+        self.hfile.seek(self.sizeof_data * self.start, 1)
 
         iqdims = [[0.075, 0.2, 0.4, 0.6], [0.075, 0.55, 0.4, 0.3]]
         psddims = [[0.575, 0.2, 0.4, 0.6], [0.575, 0.55, 0.4, 0.3]]
         specdims = [0.2, 0.125, 0.6, 0.3]
 
         # Subplot for real and imaginary parts of signal
-        self.sp_iq = self.fig.add_subplot(2,2,1, position=iqdims[self.dospec])
-        self.sp_iq.set_title(("I&Q"), fontsize=self.title_font_size, fontweight="bold")
-        self.sp_iq.set_xlabel("Time (s)", fontsize=self.label_font_size, fontweight="bold")
-        self.sp_iq.set_ylabel("Amplitude (V)", fontsize=self.label_font_size, fontweight="bold")
+        self.sp_iq = self.fig.add_subplot(
+            2, 2, 1, position=iqdims[self.dospec])
+        self.sp_iq.set_title(
+            ("I&Q"), fontsize=self.title_font_size, fontweight="bold")
+        self.sp_iq.set_xlabel(
+            "Time (s)", fontsize=self.label_font_size, fontweight="bold")
+        self.sp_iq.set_ylabel(
+            "Amplitude (V)", fontsize=self.label_font_size, fontweight="bold")
 
         # Subplot for PSD plot
-        self.sp_psd = self.fig.add_subplot(2,2,2, position=psddims[self.dospec])
-        self.sp_psd.set_title(("PSD"), fontsize=self.title_font_size, fontweight="bold")
-        self.sp_psd.set_xlabel("Frequency (Hz)", fontsize=self.label_font_size, fontweight="bold")
-        self.sp_psd.set_ylabel("Power Spectrum (dBm)", fontsize=self.label_font_size, fontweight="bold")
+        self.sp_psd = self.fig.add_subplot(
+            2, 2, 2, position=psddims[self.dospec])
+        self.sp_psd.set_title(
+            ("PSD"), fontsize=self.title_font_size, fontweight="bold")
+        self.sp_psd.set_xlabel(
+            "Frequency (Hz)", fontsize=self.label_font_size, fontweight="bold")
+        self.sp_psd.set_ylabel("Power Spectrum (dBm)",
+                               fontsize=self.label_font_size, fontweight="bold")
 
         r = self.get_data()
 
-        self.plot_iq  = self.sp_iq.plot([], 'bo-') # make plot for reals
-        self.plot_iq += self.sp_iq.plot([], 'ro-') # make plot for imags
+        self.plot_iq = self.sp_iq.plot([], 'bo-')  # make plot for reals
+        self.plot_iq += self.sp_iq.plot([], 'ro-')  # make plot for imags
         self.draw_time(self.time, self.iq)         # draw the plot
 
         self.plot_psd = self.sp_psd.plot([], 'b')  # make plot for PSD
         self.draw_psd(self.freq, self.iq_psd)      # draw the plot
 
-
         if self.dospec:
             # Subplot for spectrogram plot
-            self.sp_spec = self.fig.add_subplot(2,2,3, position=specdims)
-            self.sp_spec.set_title(("Spectrogram"), fontsize=self.title_font_size, fontweight="bold")
-            self.sp_spec.set_xlabel("Time (s)", fontsize=self.label_font_size, fontweight="bold")
-            self.sp_spec.set_ylabel("Frequency (Hz)", fontsize=self.label_font_size, fontweight="bold")
+            self.sp_spec = self.fig.add_subplot(2, 2, 3, position=specdims)
+            self.sp_spec.set_title(
+                ("Spectrogram"), fontsize=self.title_font_size, fontweight="bold")
+            self.sp_spec.set_xlabel(
+                "Time (s)", fontsize=self.label_font_size, fontweight="bold")
+            self.sp_spec.set_ylabel(
+                "Frequency (Hz)", fontsize=self.label_font_size, fontweight="bold")
 
             self.draw_spec(self.time, self.iq)
 
@@ -165,21 +184,21 @@ class plot_psd_base:
         self.plot_iq[0].set_data([t, reals])
         self.plot_iq[1].set_data([t, imags])
         self.sp_iq.set_xlim(t.min(), t.max())
-        self.sp_iq.set_ylim([1.5*min([reals.min(), imags.min()]),
-                             1.5*max([reals.max(), imags.max()])])
+        self.sp_iq.set_ylim([1.5 * min([reals.min(), imags.min()]),
+                             1.5 * max([reals.max(), imags.max()])])
 
     def draw_psd(self, f, p):
         self.plot_psd[0].set_data([f, p])
-        self.sp_psd.set_ylim([p.min()-10, p.max()+10])
+        self.sp_psd.set_ylim([p.min() - 10, p.max() + 10])
         self.sp_psd.set_xlim([f.min(), f.max()])
 
     def draw_spec(self, t, s):
-        overlap = self.specfftsize/4
+        overlap = self.specfftsize / 4
         winfunc = scipy.blackman
         self.sp_spec.clear()
         self.sp_spec.specgram(s, self.specfftsize, self.sample_rate,
-                              window = lambda d: d*winfunc(self.specfftsize),
-                              noverlap = overlap, xextent=[t.min(), t.max()])
+                              window=lambda d: d * winfunc(self.specfftsize),
+                              noverlap=overlap, xextent=[t.min(), t.max()])
 
     def update_plots(self):
         self.draw_time(self.time, self.iq)
@@ -188,7 +207,8 @@ class plot_psd_base:
         if self.dospec:
             self.draw_spec(self.time, self.iq)
 
-        self.xlim = scipy.array(self.sp_iq.get_xlim()) # so zoom doesn't get called
+        # so zoom doesn't get called
+        self.xlim = scipy.array(self.sp_iq.get_xlim())
 
         draw()
 
@@ -198,11 +218,12 @@ class plot_psd_base:
         if(newxlim[0] != curxlim[0] or newxlim[1] != curxlim[1]):
             #xmin = max(0, int(ceil(self.sample_rate*(newxlim[0] - self.position))))
             #xmax = min(int(ceil(self.sample_rate*(newxlim[1] - self.position))), len(self.iq))
-            xmin = max(0, int(ceil(self.sample_rate*(newxlim[0]))))
-            xmax = min(int(ceil(self.sample_rate*(newxlim[1]))), len(self.iq))
+            xmin = max(0, int(ceil(self.sample_rate * (newxlim[0]))))
+            xmax = min(
+                int(ceil(self.sample_rate * (newxlim[1]))), len(self.iq))
 
-            iq = scipy.array(self.iq[xmin : xmax])
-            time = scipy.array(self.time[xmin : xmax])
+            iq = scipy.array(self.iq[xmin: xmax])
+            time = scipy.array(self.time[xmin: xmax])
 
             iq_psd, freq = self.dopsd(iq)
 
@@ -234,17 +255,17 @@ class plot_psd_base:
 
     def step_backward(self):
         # Step back in file position
-        if(self.hfile.tell() >= 2*self.sizeof_data*self.block_length ):
-            self.hfile.seek(-2*self.sizeof_data*self.block_length, 1)
+        if(self.hfile.tell() >= 2 * self.sizeof_data * self.block_length):
+            self.hfile.seek(-2 * self.sizeof_data * self.block_length, 1)
         else:
-            self.hfile.seek(-self.hfile.tell(),1)
+            self.hfile.seek(-self.hfile.tell(), 1)
         r = self.get_data()
         if(r):
             self.update_plots()
 
     @staticmethod
     def setup_options():
-        usage="%prog: [options] input_filename"
+        usage = "%prog: [options] input_filename"
         description = "Takes a GNU Radio binary file (with specified data type using --data-type) and displays the I&Q data versus time as well as the power spectral density (PSD) plot. The y-axis values are plotted assuming volts as the amplitude of the I&Q streams and converted into dBm in the frequency domain (the 1/N power adjustment out of the FFT is performed internally). The script plots a certain block of data at a time, specified on the command line as -B or --block. The start position in the file can be set by specifying -s or --start and defaults to 0 (the start of the file). By default, the system assumes a sample rate of 1, so in time, each sample is plotted versus the sample number. To set a true time and frequency axis, set the sample rate (-R or --sample-rate) to the sample rate used when capturing the samples. Finally, the size of the FFT to use for the PSD and spectrogram plots can be set independently with --psd-size and --spec-size, respectively. The spectrogram plot does not display by default and is turned on with -S or --enable-spec."
 
         parser = OptionParser(option_class=eng_option, conflict_handler="resolve",
@@ -266,15 +287,17 @@ class plot_psd_base:
 
         return parser
 
+
 def find(item_in, list_search):
     try:
-	return list_search.index(item_in) != None
+        return list_search.index(item_in) != None
     except ValueError:
-	return False
+        return False
+
 
 def main():
     parser = plot_psd_base.setup_options()
-    (options, args) = parser.parse_args ()
+    (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
         raise SystemExit, 1
@@ -287,6 +310,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         pass
-
-
-

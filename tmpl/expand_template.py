@@ -6,10 +6,13 @@ from Cheetah.Template import Template
 
 MAX_ARGS = 11
 
+
 def expand(t, n):
     out = list()
-    for i in range(n): out.append(t.replace('%d', str(i)))
+    for i in range(n):
+        out.append(t.replace('%d', str(i)))
     return ', '.join(out)
+
 
 def cleanup(code):
     code = code.replace('template <>', 'inline')
@@ -23,7 +26,7 @@ if __name__ == '__main__':
     out_path = sys.argv[2]
     tmpl = open(in_path, 'r').read()
     for key in ['define', 'include', 'if', 'endif', 'else', 'ifdef', 'ifndef', 'pragma']:
-        tmpl = tmpl.replace('#%s'%key, '\\#%s'%key)
+        tmpl = tmpl.replace('#%s' % key, '\\#%s' % key)
     code = str(Template(tmpl, dict(
         MAX_ARGS=MAX_ARGS, expand=expand,
     )))

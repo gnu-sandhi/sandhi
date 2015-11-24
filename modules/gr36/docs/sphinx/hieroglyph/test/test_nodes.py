@@ -3,6 +3,7 @@ from hieroglyph.nodes import Node, Arg, Raises, Except, Returns, Warning, Note
 
 __author__ = 'Robert Smallshire'
 
+
 class NodeTests(unittest.TestCase):
 
     def test_create_default_node(self):
@@ -18,7 +19,7 @@ class NodeTests(unittest.TestCase):
         self.assertIsNone(node.parent)
 
     def test_create_with_lines(self):
-        node = Node(lines= ['First', 'Second', 'Third'])
+        node = Node(lines=['First', 'Second', 'Third'])
         self.assertEqual(node.indent, 0)
         self.assertEqual(node.lines, ['First', 'Second', 'Third'])
         self.assertIsNone(node.parent)
@@ -55,18 +56,18 @@ class NodeTests(unittest.TestCase):
         self.assertEqual(len(rst), 0)
 
     def test_render_rst_lines(self):
-        node = Node(lines= ['First',
-                            'Second',
-                            'Third'])
+        node = Node(lines=['First',
+                           'Second',
+                           'Third'])
         rst = node.render_rst()
         self.assertEqual(rst, ['First',
                                'Second',
                                'Third'])
 
     def test_render_rst_indented_lines(self):
-        node = Node(indent=3, lines= ['First',
-                                      'Second',
-                                      'Third'])
+        node = Node(indent=3, lines=['First',
+                                     'Second',
+                                     'Third'])
         rst = node.render_rst()
         self.assertEqual(rst, ['   First',
                                '   Second',
@@ -256,7 +257,7 @@ class ExceptTests(unittest.TestCase):
         self.assertIs(node.children[1], child1)
 
     def test_repr(self):
-        node = Except(5,'FooError')
+        node = Except(5, 'FooError')
         actual = repr(node)
         expected = "Except('FooError', children=[])"
         self.assertEqual(expected, actual)
@@ -292,6 +293,7 @@ class ExceptTests(unittest.TestCase):
                                '          ChildB',
                                ''])
 
+
 class ReturnsTests(unittest.TestCase):
 
     def test_create(self):
@@ -323,6 +325,7 @@ class ReturnsTests(unittest.TestCase):
 
     # TODO test_render_rst
 
+
 class WarningTests(unittest.TestCase):
 
     def test_create(self):
@@ -353,6 +356,7 @@ class WarningTests(unittest.TestCase):
         self.assertEqual(expected, actual)
 
         # TODO test_render_rst
+
 
 class NoteTests(unittest.TestCase):
 

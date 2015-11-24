@@ -6,7 +6,7 @@ import numpy
 import time
 from gras import TestUtils
 
-#figure out the local include directories
+# figure out the local include directories
 import os
 root_dir = os.path.join(os.path.dirname(__file__), '..')
 gras_inc = os.path.join(root_dir, 'include')
@@ -94,6 +94,7 @@ struct MyAddConstFloat32 : gras::Block
 GRAS_REGISTER_FACTORY0("/tests/my_add_const_f32", MyAddConstFloat32)
 """
 
+
 class JITFactoryTest(unittest.TestCase):
 
     def setUp(self):
@@ -104,11 +105,14 @@ class JITFactoryTest(unittest.TestCase):
 
     def test_add_float32(self):
 
-        gras.jit_factory(ADD_F32_SOURCE, ["-O3", "-I"+gras_inc, "-I"+pmc_inc])
+        gras.jit_factory(ADD_F32_SOURCE, [
+                         "-O3", "-I" + gras_inc, "-I" + pmc_inc])
         op = gras.make("/tests/my_add_f32")
 
-        vec0 = numpy.array(numpy.random.randint(-150, +150, 10000), numpy.float32)
-        vec1 = numpy.array(numpy.random.randint(-150, +150, 10000), numpy.float32)
+        vec0 = numpy.array(
+            numpy.random.randint(-150, +150, 10000), numpy.float32)
+        vec1 = numpy.array(
+            numpy.random.randint(-150, +150, 10000), numpy.float32)
 
         src0 = TestUtils.VectorSource(numpy.float32, vec0)
         src1 = TestUtils.VectorSource(numpy.float32, vec1)
@@ -126,14 +130,16 @@ class JITFactoryTest(unittest.TestCase):
 
     def test_add_const_float32(self):
 
-        gras.jit_factory(ADD_CONST_F32_SOURCE, ["-O3", "-I"+gras_inc, "-I"+pmc_inc])
+        gras.jit_factory(ADD_CONST_F32_SOURCE, [
+                         "-O3", "-I" + gras_inc, "-I" + pmc_inc])
         op = gras.make("/tests/my_add_const_f32")
 
         offset = 42.
-        op.set_value(offset) #set offset for test
+        op.set_value(offset)  # set offset for test
         self.assertAlmostEqual(op.get_value(), offset)
 
-        vec = numpy.array(numpy.random.randint(-150, +150, 10000), numpy.float32)
+        vec = numpy.array(
+            numpy.random.randint(-150, +150, 10000), numpy.float32)
 
         src = TestUtils.VectorSource(numpy.float32, vec)
         dst = TestUtils.VectorSink(numpy.float32)
@@ -169,7 +175,7 @@ struct FooBar : gras::Block
 
 GRAS_REGISTER_FACTORY0("/tests/my_foo_bar", FooBar)
 """
-        gras.jit_factory(SOURCE, ["-O3", "-I"+gras_inc, "-I"+pmc_inc])
+        gras.jit_factory(SOURCE, ["-O3", "-I" + gras_inc, "-I" + pmc_inc])
 
 if __name__ == '__main__':
     unittest.main()
