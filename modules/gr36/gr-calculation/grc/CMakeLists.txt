@@ -19,6 +19,8 @@
 
 install(FILES
     Calculation_Calculator.xml
+    Max_val.xml
+    Calculation_Roots.xml
     DESTINATION ${GRC_BLOCKS_DIR}
     COMPONENT "input_python"
 )

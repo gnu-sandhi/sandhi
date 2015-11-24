@@ -30,6 +30,8 @@ GR_PYTHON_INSTALL(
 GR_PYTHON_INSTALL(
     FILES
     Calculator.py
+    Roots.py
+    Max_val.py
     DESTINATION ${GR_PYTHON_DIR}/gnuradio/calculation
     COMPONENT "input_python"
 )
