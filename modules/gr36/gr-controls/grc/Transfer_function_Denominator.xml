@@ -3,8 +3,8 @@
   <name>Denominator</name>
   <key>Transfer_function_Denominator</key>
   <category>Transfer_function</category>
-  <import>import gnuradio.input.Denominator</import>
-  <make>gnuradio.input.Denominator.Denominator($num_inputs)</make>
+  <import>import gnuradio.controls.Denominator</import>
+  <make>gnuradio.controls.Denominator.Denominator($num_inputs)</make>
 
 <param>
 <name>Order of Transfer Function</name>

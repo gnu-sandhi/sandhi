@@ -3,8 +3,8 @@
   <name>Numerator</name>
   <key>Transfer_function_Numerator</key>
   <category>Transfer_function</category>
-  <import>import gnuradio.input.Numerator</import>
-  <make>gnuradio.input.Numerator.Numerator($num_inputs)</make>
+  <import>import gnuradio.controls.Numerator</import>
+  <make>gnuradio.controls.Numerator.Numerator($num_inputs)</make>
 
 <param>
 <name>Order of Transfer Function</name>

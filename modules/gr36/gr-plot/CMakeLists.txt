@@ -18,40 +18,38 @@
 # Boston, MA 02110-1301, USA.
 
 ########################################################################
-include(GrPython)
+# Setup dependencies
+########################################################################
+#include(GrBoost)
 
-GR_PYTHON_INSTALL(
-    FILES
-    __init__.py
-    DESTINATION ${GR_PYTHON_DIR}/gnuradio/calculation
-    COMPONENT "input_python"
-)
-
-GR_PYTHON_INSTALL(
-    FILES
-    Calculator.py
-    DESTINATION ${GR_PYTHON_DIR}/gnuradio/calculation
-    COMPONENT "input_python"
-)
-
-
-
-
+#find_package(SCIGENW3f)
 
 ########################################################################
-# Handle the unit tests
+# Register component
 ########################################################################
-#if(ENABLE_TESTING)
+include(GrComponent)
 
-#list(APPEND GR_TEST_PYTHON_DIRS
-#    ${CMAKE_BINARY_DIR}/gr-input/python
-#)
-#list(APPEND GR_TEST_TARGET_DEPS gnuradio-input)
+GR_REGISTER_COMPONENT("gr-plot" ENABLE_GR_PLOT
+    ENABLE_GRUEL
+    ENABLE_VOLK
+    Boost_FOUND
+    ENABLE_GR_CORE
+)
 
-#include(GrTest)
-#file(GLOB py_qa_test_files "qa_*.py#")
-#foreach(py_qa_test_file ${py_qa_test_files})
-	#get_filename_component(py_qa_test_name ${py_qa_test_file} NAME_WE)
-    #    GR_ADD_TEST(${py_qa_test_name} ${PYTHON_EXECUTABLE} ${PYTHON_DASH_B} ${py_qa_test_file})
-    #endforeach(py_qa_test_file)
-#endif(ENABLE_TESTING)
+########################################################################
+# Begin conditional configuration
+########################################################################
+if(ENABLE_GR_PLOT)
+
+########################################################################
+# Add subdirectories
+########################################################################
+if(ENABLE_PYTHON)
+    add_subdirectory(python)
+    add_subdirectory(grc)
+endif(ENABLE_PYTHON)
+#add_subdirectory(examples)
+#add_subdirectory(doc)
+
+
+endif(ENABLE_GR_PLOT)

@@ -3,8 +3,8 @@
   <name>Response</name>
   <key>Transfer_function_Response</key>
   <category>Transfer_function</category>
-  <import>import gnuradio.input.Response</import>
-  <make>gnuradio.input.Response.Response($order,$itype,$tstart,$tstop,$tstep)</make>
+  <import>import gnuradio.controls.Response</import>
+  <make>gnuradio.controls.Response.Response($order,$itype,$tstart,$tstop,$tstep)</make>
 
 <param>
    <name>Order of transfer function</name>
