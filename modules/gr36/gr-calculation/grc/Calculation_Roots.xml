@@ -3,8 +3,8 @@
   <name>Roots</name>
   <key>Calculation_Roots</key>
   <category>Calculation</category>
-  <import>import gnuradio.input.Roots</import>
-  <make>gnuradio.input.Roots.Roots($order)</make>
+  <import>import gnuradio.calculation.Roots</import>
+  <make>gnuradio.calculation.Roots.Roots($order)</make>
 
 <param>
    <name>Order of transfer function</name>
