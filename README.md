@@ -53,9 +53,12 @@ Clone sciscipy-1.0.0 from our repository; run _install_ script from the director
 Control library is used to perform control system applications using python. It has inbuilt control system functions. To install it<br>
 
 *For ubuntu 12.04 and 14.04*-
+
 	sudo apt-get install python-pip
 	sudo pip install control
+
 *For lighter version of debian package like lubuntu*-
+
 	sudo apt-get install build-essential gfortran libatlas-base-dev python-pip python-dev
 	sudo pip install control
 
