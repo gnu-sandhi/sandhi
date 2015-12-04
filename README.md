@@ -23,16 +23,16 @@ Sandhi is conglomeration of lot of libraries and softwares. It uses GNU Radio at
 	libusb-dev sdcc libsdl1.2-dev python-wxgtk2.8 python-numpy \
 	python-cheetah python-lxml doxygen python-qt4 python-qwt5-qt4 libxi-dev \
 	libqt4-opengl-dev libqwt5-qt4-dev libfontconfig1-dev libxrender-dev \
-	python-serial python-matplotlib
+	python-serial python-matplotlib cmake
 
 *If on Ubuntu 14.04, one can directly install using command*-
 
-        sudo apt-get -y install git-core autoconf automake make libtool g++ python-dev swig \
-        pkg-config libboost1.55-all-dev libfftw3-dev libcppunit-dev libgsl0-dev \
-        libusb-dev sdcc libsdl1.2-dev python-wxgtk2.8 python-numpy \
-        python-cheetah python-lxml doxygen python-qt4 python-qwt5-qt4 libxi-dev \
-        libqt4-opengl-dev libqwt5-qt4-dev libfontconfig1-dev libxrender-dev \
-        python-serial python-matplotlib
+	sudo apt-get -y install git-core autoconf automake make libtool g++ python-dev swig \
+	pkg-config libboost1.55-all-dev libfftw3-dev libcppunit-dev libgsl0-dev \
+	libusb-dev sdcc libsdl1.2-dev python-wxgtk2.8 python-numpy \
+	python-cheetah python-lxml doxygen python-qt4 python-qwt5-qt4 libxi-dev \
+	libqt4-opengl-dev libqwt5-qt4-dev libfontconfig1-dev libxrender-dev \
+	python-serial python-matplotlib cmake
 
 
 _Please note that Sandhi has been known to **not** work libboost1.49 available in Ubuntu 12.10_
