@@ -47,6 +47,8 @@ Clone sciscipy-1.0.0 from our repository; run _install_ script from the director
 	cd sciscipy-1.0.0/
 	sudo ./install
 
+### Control Library
+
 -------------------------------------------------------------------------
 Get the source code
 -------------------------------------------------------------------------
