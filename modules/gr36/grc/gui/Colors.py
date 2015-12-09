@@ -28,11 +28,11 @@ HIGHLIGHT_COLOR = get_color('#00FFFF')
 BORDER_COLOR = get_color('black')
 #param entry boxes
 PARAM_ENTRY_TEXT_COLOR = get_color('black')
-ENTRYENUM_CUSTOM_COLOR = get_color('#EEEEEE')
+ENTRYENUM_CUSTOM_COLOR = get_color('#EEE0EE')
 #flow graph color constants
 FLOWGRAPH_BACKGROUND_COLOR = get_color('#FFF9FF')
 #block color constants
-BLOCK_ENABLED_COLOR = get_color('#F1ECFF')
+BLOCK_ENABLED_COLOR = get_color('#A1ECFF')
 BLOCK_DISABLED_COLOR = get_color('#CCCCCC')
 #connection color constants
 CONNECTION_ENABLED_COLOR = get_color('black')
