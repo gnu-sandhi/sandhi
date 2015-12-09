@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+###################################################
+##Histogram Sink
+###################################################
+ -->
+<block>
+	<name>Probs</name>
+	<key>Probs</key>
+	<param>
+		<name> Maincategory</name>
+		<key>Header</key>
+		<value>1111111</value> 
+	</param>
+
+</block>

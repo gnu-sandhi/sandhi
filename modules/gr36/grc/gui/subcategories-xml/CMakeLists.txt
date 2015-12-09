@@ -1,4 +1,4 @@
-# Copyright 2011 Free Software Foundation, Inc.
+# Copyright 2012 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -17,34 +17,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-########################################################################
-GR_PYTHON_INSTALL(FILES
-    Block.py
-    Colors.py
-    Constants.py
-    Connection.py
-    Element.py
-    FlowGraph.py
-    Param.py
-    Platform.py
-    Port.py
-    Utils.py
-    ActionHandler.py
-    Actions.py
-    Bars.py
-    BlockTreeWindow.py
-    Dialogs.py
-    DrawingArea.py
-    FileDialogs.py
-    MainWindow.py
-    Messages.py
-    NotebookPage.py
-    PropsDialog.py
-    Preferences.py
-    StateCache.py
-    __init__.py
-    DESTINATION ${GR_PYTHON_DIR}/gnuradio/grc/gui
-    COMPONENT "grc"
+install(FILES
+    *.xml
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/grc/subcategories-xml
+    COMPONENT "subcategories-xml"
 )
-##########################
-add_subdirectory(subcategories-xml)
+
