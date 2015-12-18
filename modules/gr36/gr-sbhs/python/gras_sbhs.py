@@ -5,12 +5,12 @@ import time
 from sbhs import *
 from scan_machines import *
 
-class gr_sbhs(gras.Block):
+class gras_sbhs(gras.Block):
 
         def __init__(self):
                 
                 gras.Block.__init__(self,
-                        name="gr_sbhs",
+                        name="gras_sbhs",
                         in_sig=[numpy.float32, numpy.float32],
                         out_sig=[numpy.float32])        
                 
