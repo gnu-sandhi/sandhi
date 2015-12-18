@@ -22,3 +22,16 @@ install(FILES
     DESTINATION ${GRC_BLOCKS_DIR}
     COMPONENT "scigen_python"
 )
+
+install(FILES
+    sci_python_sci_py_gras.xml
+    DESTINATION ${GRC_BLOCKS_DIR}
+    COMPONENT "scigen_python"
+)
+
+install(FILES
+    sci_python_sci_py.xml
+    DESTINATION ${GRC_BLOCKS_DIR}
+    COMPONENT "scigen_python"
+)
+
