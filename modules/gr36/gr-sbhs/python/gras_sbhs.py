@@ -1,16 +1,15 @@
-import gnuradio
-from gnuradio import gr
+import gras
 import numpy
 import serial
 import time
 from sbhs import *
 from scan_machines import *
 
-class gr_sbhs(gr.sync_block):
+class gr_sbhs(gras.Block):
 
         def __init__(self):
                 
-                gr.sync_block.__init__(self,
+                gras.Block.__init__(self,
                         name="gr_sbhs",
                         in_sig=[numpy.float32, numpy.float32],
                         out_sig=[numpy.float32])        
@@ -36,10 +35,9 @@ class gr_sbhs(gr.sync_block):
                         
                 
         def work(self, input_items, output_items):
-                print "length of input item\n",len(input_items[0]) 
-                print "value of input item\n",input_items[0][0]
+                
                 # Assuming input_items[0] and input_items[1] have same LENGTH
-                for heat_items, fan_items in zip(input_items[0][:1], input_items[1][:1]):
+                for heat_items, fan_items in zip(input_items[0], input_items[1]):
                         
                         print "HEAT WRITTEN", heat_items
                         
@@ -49,16 +47,21 @@ class gr_sbhs(gr.sync_block):
                         else:
                                 self.new_device.setHeat(heat_items)
 
-                        time.sleep(0.01)
+                        time.sleep(0.5)
                         self.new_device.setFan(fan_items)
-                        time.sleep(0.01)
+                        time.sleep(0.5)
                 
                 # For Zero Temperatures
                 if not self.new_device.getTemp():
                         raise Exception("Check SBHS connection, try re-plugging it and run scan_machines.py")
 
                 # Get temperature
-                output_items[0][:] =  numpy.float32(self.new_device.getTemp())
+                output_items[0][:1] =  self.new_device.getTemp()
 
                 print "Temperature: ",output_items[0][:1]
-                return len(output_items[0])
+
+                #Write a for loop for n_inputs
+                for i in range(len(input_items)):
+                        self.consume(i,1) # Consume from port 0 input_items
+
+                self.produce(0,self.n) # Produce from port 0 output_items

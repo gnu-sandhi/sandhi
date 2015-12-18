@@ -28,3 +28,10 @@ install(FILES
     DESTINATION ${GRC_BLOCKS_DIR}
     COMPONENT "sbhs_python"
 )
+
+install(FILES
+    sbhs_plant_gras.xml
+    DESTINATION ${GRC_BLOCKS_DIR}
+    COMPONENT "sbhs_python"
+)
+
