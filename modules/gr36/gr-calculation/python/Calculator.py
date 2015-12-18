@@ -31,8 +31,11 @@ class Calculator(gr.sync_block):
     And also takes the expression in terms of a0,a1,..,an where 0 < n <= 9
     e.g "a0+a2" is expression where number of inputs will be 2
     """
-    def __init__(self,num_inputs):
+    def __init__(self,num_inputs,in_var):
+	self.in_var = eval(in_var)
 	number = num_inputs
+	self.inp=0
+	self.y=0
 	a = []
 	for i in range(0,number):
             a.append(numpy.float32)
@@ -44,51 +47,17 @@ class Calculator(gr.sync_block):
     def set_parameters(self,Exp,num_inputs):
 	self.Exp = Exp
 	self.num_inputs = num_inputs
-
+    
+    def evaluate(self):
+	for (i,j) in zip(self.in_var,self.inp):
+	    globals()[i]=j[0]
+	self.y=eval(self.Exp) 
 
     def work(self, input_items, output_items):
-	try:
-            a0 = input_items[0]
-	except IndexError:
-	    pass
-	try:
-            a1 = input_items[1]
-	except IndexError:
-	    pass
-	try:
-	    a2 = input_items[2]
-	except IndexError:
-	    pass
-	try:
-	    a3 = input_items[3]
-	except IndexError:
-	    pass
-	try:
-	    a4 = input_items[4]
-	except IndexError:
-	    pass
-	try:
-	    a5 = input_items[5]
-	except IndexError:
-	    pass
-	try:
-	    a6 = input_items[6]
-	except IndexError:
-	    pass
-	try:
-	    a7 = input_items[7]
-	except IndexError:
-	    pass
-	try:
-	    a8 = input_items[8]
-	except IndexError:
-	    pass
-	try:
-	    a9 = input_items[9]
-	except IndexError:
-	    pass
-	
-        output_items[0][:] = eval(self.Exp)
+	self.inp=input_items
+	print "inside work"	
+	self.evaluate()
+        output_items[0][:] = numpy.float32(self.y)
         
         return len(output_items[0])
                                               
