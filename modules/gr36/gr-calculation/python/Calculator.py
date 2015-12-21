@@ -55,7 +55,6 @@ class Calculator(gr.sync_block):
 
     def work(self, input_items, output_items):
 	self.inp=input_items
-	print "inside work"	
 	self.evaluate()
         output_items[0][:] = numpy.float32(self.y)
         
