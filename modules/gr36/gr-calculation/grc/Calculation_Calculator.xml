@@ -4,14 +4,24 @@
   <key>Calculation_Calculator</key>
   <category>Calculation</category>
   <import>import gnuradio.calculation.Calculator</import>
-  <make>gnuradio.calculation.Calculator.Calculator($num_inputs)
+  <make>gnuradio.calculation.Calculator.Calculator($num_inputs,$in_var)
 self.$(id).set_parameters($Exp,$num_inputs)</make>
+
+
+<param>
+<name>Input Variables</name>
+<key>in_var</key>
+<value>"[]"</value>
+<type>string</type>
+</param>
+
 
 <param>
 <name>Expression</name>
 <key>Exp</key>
 <type>string</type>
 </param>
+
 
 <param>
 <name>Num inputs</name>
