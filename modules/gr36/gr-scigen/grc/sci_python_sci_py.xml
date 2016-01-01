@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<block>
+  <name>sci_py</name>
+  <key>sci_python_sci_py</key>
+  <category>scigen_flowgraph</category>
+  <import>import gnuradio.gr_sci_py</import>
+  <make>gnuradio.gr_sci_py.sci_py($in_num,$var_name_in,$path,$window,$var_name)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Path of the File</name>
+    <key>path</key>
+    <value>""</value>
+    <type>string</type>
+  </param>
+
+<param>
+    <name>Number of input variable</name>
+    <key>in_num</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+
+<param>
+    <name>List of Scilab input variable</name>
+    <key>var_name_in</key>
+    <value>""</value>
+    <type>string</type>
+  </param>
+
+  <param>
+    <name>Window Size</name>
+    <key>window</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+  <param>
+     <name>Name of Scilab Variable</name>
+     <key>var_name</key>
+     <value>""</value>
+     <type>string</type>
+   </param>
+
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <nports>$in_num</nports>
+  </sink>
+
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>
